@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "kiro-bridge": {
+      "command": "node",
+      "args": ["/media/ilja/DATA/prime/kiro-mcp-bridge/server.js"],
+      "env": {
+        "KIRO_PROJECT_ROOT": "/media/ilja/DATA/prime",
+        "KIRO_CLAUDE_BIN": "claude"
+      },
+      "alwaysAllow": []
+    }
+  }
+}

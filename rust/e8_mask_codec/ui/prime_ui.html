@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prime UI — Local Archive Queries</title>
+  <style>
+    :root {
+      --bg: #060816;
+      --bg-2: #0b1022;
+      --panel: rgba(12, 18, 38, 0.72);
+      --panel-strong: rgba(10, 16, 30, 0.92);
+      --border: rgba(114, 160, 255, 0.24);
+      --text: #e8efff;
+      --muted: #96a6d2;
+      --cyan: #56e7ff;
+      --violet: #9b6dff;
+      --blue: #4c8dff;
+      --green: #65f4af;
+      --red: #ff6c9a;
+      --shadow: 0 20px 80px rgba(0, 0, 0, 0.42);
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: radial-gradient(circle at top, rgba(76,141,255,0.16), transparent 35%), radial-gradient(circle at right, rgba(155,109,255,0.12), transparent 30%), linear-gradient(180deg, var(--bg), #05070f 55%, #04050b 100%); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    body::before, body::after {
+      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    }
+    body::before {
+      background:
+        linear-gradient(rgba(86,231,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(86,231,255,0.05) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.15));
+    }
+    body::after {
+      background:
+        radial-gradient(circle at 25% 25%, rgba(86,231,255,0.12), transparent 0 22%),
+        radial-gradient(circle at 78% 28%, rgba(155,109,255,0.13), transparent 0 18%),
+        linear-gradient(135deg, transparent 48%, rgba(86,231,255,0.10) 49%, transparent 50%),
+        linear-gradient(45deg, transparent 48%, rgba(155,109,255,0.09) 49%, transparent 50%);
+      opacity: 0.35;
+      animation: drift 18s ease-in-out infinite alternate;
+    }
+    @keyframes drift { from { transform: translateY(-8px) scale(1); } to { transform: translateY(10px) scale(1.02); } }
+    .shell { position: relative; z-index: 1; width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 56px; }
+    .badge { display: inline-flex; gap: 10px; align-items: center; border: 1px solid var(--border); background: rgba(10, 17, 34, 0.55); color: var(--muted); padding: 10px 14px; border-radius: 999px; backdrop-filter: blur(18px); box-shadow: var(--shadow); font-size: 13px; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); box-shadow: 0 0 18px rgba(101, 244, 175, 0.95); }
+    .hero { display: grid; grid-template-columns: 1.25fr 0.95fr; gap: 24px; margin-top: 24px; }
+    .card { background: linear-gradient(180deg, rgba(13, 20, 40, 0.92), rgba(8, 13, 26, 0.9)); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); backdrop-filter: blur(18px); overflow: hidden; }
+    .hero-main { padding: 34px; position: relative; }
+    .hero-main::after {
+      content: ""; position: absolute; inset: 18px; border: 1px solid rgba(86,231,255,0.08); border-radius: 18px; pointer-events: none;
+    }
+    h1 { margin: 0 0 14px; font-size: clamp(34px, 5vw, 64px); line-height: 0.95; letter-spacing: -0.04em; }
+    .accent { background: linear-gradient(90deg, var(--cyan), #83aaff 50%, #c59aff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lead { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.75; max-width: 64ch; }
+    .hero-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
+    .stat { padding: 18px; border-radius: 18px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); }
+    .stat strong { display: block; font-size: 20px; margin-bottom: 8px; }
+    .stat span { color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .hero-side { padding: 26px; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; position: relative; }
+    .wireframe {
+      min-height: 280px;
+      border-radius: 18px;
+      border: 1px solid rgba(86,231,255,0.14);
+      background:
+        radial-gradient(circle at center, rgba(86,231,255,0.12), transparent 32%),
+        radial-gradient(circle at 40% 30%, rgba(76,141,255,0.18), transparent 18%),
+        radial-gradient(circle at 63% 66%, rgba(155,109,255,0.16), transparent 20%),
+        linear-gradient(135deg, rgba(86,231,255,0.08), transparent 40%),
+        rgba(255,255,255,0.02);
+      position: relative;
+      overflow: hidden;
+    }
+    .wireframe::before, .wireframe::after {
+      content: ""; position: absolute; inset: 12%; border: 1px solid rgba(86,231,255,0.12); transform: rotate(45deg); border-radius: 10px;
+    }
+    .wireframe::after { inset: 22%; transform: rotate(0deg); border-color: rgba(155,109,255,0.14); }
+    .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 26px; }
+    .tool { padding: 24px; }
+    .tool h2 { margin: 0 0 8px; font-size: 22px; }
+    .tool p { margin: 0 0 18px; color: var(--muted); line-height: 1.65; }
+    .input-shell { display: flex; flex-direction: column; gap: 12px; }
+    label { font-size: 13px; color: var(--muted); letter-spacing: 0.02em; text-transform: uppercase; }
+    input {
+      width: 100%; padding: 16px 18px; border-radius: 16px; border: 1px solid rgba(114,160,255,0.22);
+      background: rgba(3, 8, 20, 0.72); color: var(--text); font-size: 16px; outline: none;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+    input:focus { border-color: rgba(86,231,255,0.58); box-shadow: 0 0 0 4px rgba(86,231,255,0.10); }
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    button {
+      appearance: none; border: none; cursor: pointer; border-radius: 999px; padding: 14px 18px; font-size: 14px; font-weight: 700; letter-spacing: 0.01em;
+      transition: transform .16s ease, box-shadow .16s ease, opacity .16s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    button:disabled { cursor: wait; opacity: 0.7; transform: none; }
+    .btn-primary { background: linear-gradient(90deg, var(--cyan), var(--blue)); color: #03111b; box-shadow: 0 12px 26px rgba(86,231,255,0.24); }
+    .btn-secondary { background: linear-gradient(90deg, rgba(155,109,255,0.18), rgba(76,141,255,0.16)); color: var(--text); border: 1px solid rgba(155,109,255,0.18); }
+    .result { margin-top: 18px; padding: 18px; min-height: 144px; border-radius: 18px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); }
+    .result h3 { margin: 0 0 10px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .value { font-size: 22px; font-weight: 800; line-height: 1.35; word-break: break-word; }
+    .meta { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; color: var(--muted); font-size: 13px; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
+    .ok { color: var(--green); }
+    .bad { color: var(--red); }
+    .info-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px; margin-top: 26px; }
+    .info { padding: 24px; }
+    .info h2 { margin: 0 0 12px; font-size: 24px; }
+    .info p, .info li { color: var(--muted); line-height: 1.75; }
+    ul { margin: 0; padding-left: 20px; }
+    footer { margin-top: 26px; padding: 22px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); }
+    .diag { display: flex; flex-wrap: wrap; gap: 10px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    @media (max-width: 960px) {
+      .hero, .tool-grid, .info-grid { grid-template-columns: 1fr; }
+      .hero-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="badge"><span class="dot"></span><span>Local-only archive query interface · Web3 geometry restrained</span></div>
+    <section class="hero">
+      <article class="card hero-main">
+        <h1>Prime queries through a <span class="accent">wheel210 archive</span>.</h1>
+        <p class="lead">A local interface for exact <strong>isPrime(N)</strong> and <strong>nextPrime(N)</strong>, backed by the project’s archive-aware runtime. Inspired by infra-grade neon UI and by the E8 / 24-cell / tesseract structure explored in the project documentation.</p>
+        <div class="hero-grid">
+          <div class="stat"><strong>E8-informed</strong><span>Geometry-inspired layering, sparse selectors, and archive-backed query semantics.</span></div>
+          <div class="stat"><strong>Wheel210 exactness</strong><span>When the archive covers the range, answers come directly from the committed wheel210 base.</span></div>
+          <div class="stat"><strong>Local only</strong><span>Bound to 127.0.0.1 with no remote deployment surface in v1.</span></div>
+        </div>
+      </article>
+      <aside class="card hero-side">
+        <div class="wireframe" aria-hidden="true"></div>
+        <div>
+          <div class="pill">Motifs: <span class="mono">E8</span> · <span class="mono">24-cell</span> · <span class="mono">tesseract</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="tool-grid">
+      <article class="card tool">
+        <h2>Check primality</h2>
+        <p>Submit a single large integer and get an exact primality answer with source attribution and latency.</p>
+        <div class="input-shell">
+          <label for="is-prime-input">Integer N</label>
+          <input id="is-prime-input" type="text" inputmode="numeric" placeholder="2760727302517" autocomplete="off" />
+          <div class="btn-row">
+            <button id="is-prime-btn" class="btn-primary">Check primality</button>
+            <button id="copy-is-prime-btn" class="btn-secondary" type="button">Copy result</button>
+          </div>
+        </div>
+        <div id="is-prime-result" class="result">
+          <h3>Result</h3>
+          <div class="value">Awaiting input…</div>
+          <div class="meta"></div>
+        </div>
+      </article>
+
+      <article class="card tool">
+        <h2>Find next prime</h2>
+        <p>Ask for the first prime strictly greater than a large starting value, using the same archive-aware runtime.</p>
+        <div class="input-shell">
+          <label for="next-prime-input">Start value N</label>
+          <input id="next-prime-input" type="text" inputmode="numeric" placeholder="2760727302510" autocomplete="off" />
+          <div class="btn-row">
+            <button id="next-prime-btn" class="btn-primary">Find next prime</button>
+            <button id="copy-next-prime-btn" class="btn-secondary" type="button">Copy result</button>
+          </div>
+        </div>
+        <div id="next-prime-result" class="result">
+          <h3>Result</h3>
+          <div class="value">Awaiting input…</div>
+          <div class="meta"></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="info-grid">
+      <article class="card info">
+        <h2>How it works</h2>
+        <p>The UI calls a local Rust HTTP server, which then invokes the project runtime directly. Queries prefer the committed <span class="mono">wheel210</span> archive when the requested number lies inside the queryable range, and can fall back to direct E8-mask evaluation when the query is not archive-backed.</p>
+        <ul>
+          <li><strong>wheel210 archive</strong> — exact lookup from committed compressed chunks.</li>
+          <li><strong>E8 mask fallback</strong> — runtime evaluation path for non-archive contexts.</li>
+          <li><strong>Local-only binding</strong> — v1 listens on <span class="mono">127.0.0.1</span> only.</li>
+        </ul>
+      </article>
+      <article class="card info">
+        <h2>Diagnostics</h2>
+        <p>This panel reflects local health and the archive configuration that the server was started with.</p>
+        <div class="diag" id="diag"></div>
+      </article>
+    </section>
+
+    <footer class="card">
+      <div>Prime UI · local archive tool · no wallet / no auth / no remote surface</div>
+      <div class="diag">
+        <span class="pill">API <span id="health-pill" class="ok">healthy</span></span>
+        <span class="pill">Local-only</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const state = { isPrimeText: '', nextPrimeText: '' };
+
+    function setResult(root, value, metaItems = [], statusClass = '') {
+      const valueEl = root.querySelector('.value');
+      const metaEl = root.querySelector('.meta');
+      valueEl.textContent = value;
+      valueEl.className = `value ${statusClass}`.trim();
+      metaEl.innerHTML = metaItems.map((item) => `<span class="pill">${item}</span>`).join('');
+    }
+
+    function normalizeInteger(input) {
+      return input.trim();
+    }
+
+    async function postJson(url, payload) {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch (_) { throw new Error(text || `HTTP ${res.status}`); }
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      return data;
+    }
+
+    async function runIsPrime() {
+      const input = normalizeInteger(document.getElementById('is-prime-input').value);
+      const root = document.getElementById('is-prime-result');
+      const btn = document.getElementById('is-prime-btn');
+      btn.disabled = true;
+      setResult(root, 'Checking…', ['processing local request']);
+      try {
+        const data = await postJson('/api/is-prime', { n: input });
+        state.isPrimeText = `${data.n} => is_prime=${data.is_prime}`;
+        setResult(
+          root,
+          data.is_prime ? `${data.n} is prime` : `${data.n} is composite`,
+          [`source: ${data.source}`, `elapsed: ${data.elapsed_ms.toFixed(3)} ms`],
+          data.is_prime ? 'ok' : 'bad'
+        );
+      } catch (error) {
+        state.isPrimeText = '';
+        setResult(root, `Error: ${error.message}`, ['request failed'], 'bad');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function runNextPrime() {
+      const input = normalizeInteger(document.getElementById('next-prime-input').value);
+      const root = document.getElementById('next-prime-result');
+      const btn = document.getElementById('next-prime-btn');
+      btn.disabled = true;
+      setResult(root, 'Searching…', ['processing local request']);
+      try {
+        const data = await postJson('/api/next-prime', { n: input });
+        state.nextPrimeText = `${data.n} => next_prime=${data.next_prime}`;
+        setResult(
+          root,
+          `nextPrime(${data.n}) > ${data.n} => ${data.next_prime}`,
+          [`source: ${data.source}`, `elapsed: ${data.elapsed_ms.toFixed(3)} ms`],
+          'ok'
+        );
+      } catch (error) {
+        state.nextPrimeText = '';
+        setResult(root, `Error: ${error.message}`, ['request failed'], 'bad');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function refreshHealth() {
+      const diag = document.getElementById('diag');
+      const pill = document.getElementById('health-pill');
+      try {
+        const res = await fetch('/healthz');
+        const data = await res.json();
+        pill.textContent = 'healthy';
+        pill.className = 'ok';
+        diag.innerHTML = [
+          `archive: <span class="mono">${data.archive_dir}</span>`,
+          `host: <span class="mono">${data.host}</span>`,
+          `port: <span class="mono">${data.port}</span>`,
+        ].map((v) => `<span class="pill">${v}</span>`).join('');
+      } catch (_) {
+        pill.textContent = 'unreachable';
+        pill.className = 'bad';
+        diag.innerHTML = '<span class="pill">health check failed</span>';
+      }
+    }
+
+    function bindCopy(buttonId, getter) {
+      document.getElementById(buttonId).addEventListener('click', async () => {
+        const value = getter();
+        if (!value) return;
+        try { await navigator.clipboard.writeText(value); } catch (_) {}
+      });
+    }
+
+    document.getElementById('is-prime-btn').addEventListener('click', runIsPrime);
+    document.getElementById('next-prime-btn').addEventListener('click', runNextPrime);
+    document.getElementById('is-prime-input').addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') runIsPrime();
+    });
+    document.getElementById('next-prime-input').addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') runNextPrime();
+    });
+    bindCopy('copy-is-prime-btn', () => state.isPrimeText);
+    bindCopy('copy-next-prime-btn', () => state.nextPrimeText);
+    refreshHealth();
+  </script>
+</body>
+</html>

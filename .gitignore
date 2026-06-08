@@ -1,0 +1,49 @@
+# Rust / Cargo
+/target/
+**/target/
+
+# Project-local Cargo/Rust build/cache homes
+/data/cargo-home/
+/data/cargo-target/
+/data/home/
+
+# Runtime data and archives
+/data/runs/
+/data/tmp/
+/data/cache/
+/data/**/*.pid
+/data/**/*.log
+/data/**/*.tmp
+/data/**/*.progress
+/data/**/*.checkpoint
+/data/**/*.prev
+
+# Large prime archives
+/data/**/*.bin
+/data/**/*.zst
+/data/**/index.tsv
+/data/**/manifest.txt
+
+# Python cache
+__pycache__/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS / local junk
+.DS_Store
+Thumbs.db
+
+# Local diagnostics and scratch
+*.pid
+*.log
+*.tmp
+/media/ilja/DATA/tmp/

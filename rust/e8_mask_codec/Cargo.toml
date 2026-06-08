@@ -1,0 +1,75 @@
+[package]
+name = "e8-mask-codec"
+version = "0.1.0"
+edition = "2024"
+build = "build.rs"
+
+[lib]
+name = "e8_mask_codec"
+path = "src/lib.rs"
+
+[[bin]]
+name = "bench_scan"
+path = "src/bin/bench_scan.rs"
+
+[[bin]]
+name = "bench_cpu_threads"
+path = "src/bin/bench_cpu_threads.rs"
+
+[[bin]]
+name = "bench_gpu"
+path = "src/bin/bench_gpu.rs"
+
+[[bin]]
+name = "bench_hybrid"
+path = "src/bin/bench_hybrid.rs"
+
+[[bin]]
+name = "is_prime"
+path = "src/bin/is_prime.rs"
+
+[[bin]]
+name = "next_prime"
+path = "src/bin/next_prime.rs"
+
+[[bin]]
+name = "memory_report"
+path = "src/bin/memory_report.rs"
+
+[[bin]]
+name = "repair_wheel210_missing"
+path = "src/bin/repair_wheel210_missing.rs"
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+panic = "abort"
+
+[dependencies]
+ctrlc = "3.4"
+num-bigint = "0.4"
+num-traits = "0.2"
+rayon = "1.10"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+zstd = "0.13"
+
+[[bin]]
+name = "count_first_n"
+path = "src/bin/count_first_n.rs"
+
+[[bin]]
+name = "is_prime_big"
+path = "src/bin/is_prime_big.rs"
+
+[[bin]]
+name = "next_prime_big"
+path = "src/bin/next_prime_big.rs"
+
+[[bin]]
+name = "rebuild_wheel210_archive"
+path = "src/bin/rebuild_wheel210_archive.rs"
+
+[[bin]]
+name = "prime_ui"
+path = "src/bin/prime_ui.rs"
