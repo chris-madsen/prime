@@ -42,7 +42,7 @@ WHEEL_REPAIR_PID ?= $(RUN_DIR)/repair_wheel210_missing.pid
 WHEEL_REPAIR_PARALLEL_LOG ?= $(RUN_DIR)/repair_wheel210_parallel.log
 WHEEL_REPAIR_PARALLEL_PID ?= $(RUN_DIR)/repair_wheel210_parallel.pid
 
-.PHONY: help prime-build test ui-build ui-start ui-status ui-stop count-start count-start-fresh count-stop count-status count-progress count-log count-wheel210-rebuild count-wheel210-status count-wheel210-repair-missing count-wheel210-repair-status count-wheel210-repair-parallel count-wheel210-repair-parallel-status count-restart is-prime next-prime isPrime nextPrime
+.PHONY: help prime-build test ui-build ui-start ui-status ui-stop count-start count-start-fresh count-stop count-status count-progress count-log count-wheel210-rebuild count-wheel210-status count-wheel210-repair-missing count-wheel210-repair-status count-wheel210-repair-parallel count-wheel210-repair-parallel-status count-restart is-prime next-prime isPrime nextPrime is-prime-big next-prime-big isPrimeBig nextPrimeBig is-prime-big-file next-prime-big-file isPrimeBigFile nextPrimeBigFile
 
 help:
 	@echo "make prime-build"
@@ -64,6 +64,10 @@ help:
 	@echo "make next-prime N=1234567"
 	@echo "make isPrime N=1234567"
 	@echo "make nextPrime N=1234567"
+	@echo "make isPrimeBig N=<large_number> [BACKEND=cpu|gpu|hybrid]"
+	@echo "make nextPrimeBig N=<large_number> [BACKEND=cpu|gpu|hybrid]"
+	@echo "make isPrimeBigFile FILE=<path> [BACKEND=cpu|gpu|hybrid]"
+	@echo "make nextPrimeBigFile FILE=<path> [BACKEND=cpu|gpu|hybrid]"
 	@echo "  build/cache env: HOME=$(PROJECT_HOME) CARGO_HOME=$(CARGO_HOME) CARGO_TARGET_DIR=$(CARGO_TARGET_DIR)"
 
 ENV_PREFIX = HOME=$(PROJECT_HOME) PATH=$(TOOLCHAIN_BIN):$$PATH CARGO_HOME=$(CARGO_HOME) CARGO_TARGET_DIR=$(CARGO_TARGET_DIR) RUSTC=$(RUSTC) RUSTDOC=$(RUSTDOC)
@@ -195,6 +199,32 @@ count-restart: count-stop
 isPrime: is-prime
 
 nextPrime: next-prime
+
+is-prime-big: prime-build
+	@if [ -z "$(N)" ]; then echo "usage: make is-prime-big N=<number>"; exit 1; fi
+	@$(ENV_PREFIX) $(BIN_DIR)/is_prime_big --n $(N) --backend $(BACKEND)
+
+next-prime-big: prime-build
+	@if [ -z "$(N)" ]; then echo "usage: make next-prime-big N=<number>"; exit 1; fi
+	@$(ENV_PREFIX) $(BIN_DIR)/next_prime_big --n $(N) --backend $(BACKEND)
+
+isPrimeBig: is-prime-big
+
+nextPrimeBig: next-prime-big
+
+is-prime-big-file: prime-build
+	@if [ -z "$(FILE)" ]; then echo "usage: make is-prime-big-file FILE=<path>"; exit 1; fi
+	@if [ ! -f "$(FILE)" ]; then echo "error: file not found: $(FILE)"; exit 1; fi
+	@$(ENV_PREFIX) $(BIN_DIR)/is_prime_big --file $(FILE) --backend $(BACKEND)
+
+next-prime-big-file: prime-build
+	@if [ -z "$(FILE)" ]; then echo "usage: make next-prime-big-file FILE=<path>"; exit 1; fi
+	@if [ ! -f "$(FILE)" ]; then echo "error: file not found: $(FILE)"; exit 1; fi
+	@$(ENV_PREFIX) $(BIN_DIR)/next_prime_big --file $(FILE) --backend $(BACKEND)
+
+isPrimeBigFile: is-prime-big-file
+
+nextPrimeBigFile: next-prime-big-file
 
 count-wheel210-repair-missing: prime-build
 	@mkdir -p $(RUN_DIR)

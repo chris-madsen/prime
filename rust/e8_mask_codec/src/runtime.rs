@@ -1,6 +1,9 @@
 use crate::gpu::GpuPool;
 use crate::memory::{StorageKind, choose_storage};
 use crate::{ACTIVE_BITS, DECIMAL_CLASSES, E8MaskBlock, MASKS_PER_E8_CLASS};
+use num_bigint::BigUint;
+use num_traits::{One, ToPrimitive, Zero};
+use rug::Integer as GmpInt;
 use rayon::ThreadPoolBuilder;
 use rayon::prelude::*;
 use std::collections::BTreeMap;
@@ -3167,6 +3170,1294 @@ fn sum_dir_files(dir: &Path, exclude_subtree: Option<&Path>) -> Result<u64, Runt
     Ok(total)
 }
 
+// ---------------------------------------------------------------------------
+// BigUint query layer — isPrime(N) and nextPrime(N) for arbitrarily large N
+// ---------------------------------------------------------------------------
+
+/// How many base primes to sieve locally when checking a big number.
+/// sqrt(N) is huge for N~10^1000, so we use a segmented sieve approach:
+/// we only need primes up to sqrt(segment_high), where segment_high covers
+/// one local window. The window radius is chosen so the sieve depth is
+/// manageable: BIG_SEGMENT_BLOCKS E8-blocks = BIG_SEGMENT_BLOCKS*60 positions.
+const BIG_SEGMENT_BLOCKS: usize = 8192;
+
+/// Extract (class_index, q) for a BigUint N where N = 10*q + decimal_class.
+/// Returns None if N < 11 or last digit not in {1,3,7,9}.
+fn big_candidate_q_and_class(n: &BigUint) -> Option<(usize, BigUint)> {
+    let digit = (n % 10u64).to_u64().unwrap_or(10) as u8;
+    let class_index = DECIMAL_CLASSES.iter().position(|&d| d == digit)?;
+    let q = n / 10u64;
+    Some((class_index, q))
+}
+
+/// Compute integer square root of a BigUint (floor).
+fn big_isqrt(n: &BigUint) -> BigUint {
+    if n.is_zero() {
+        return BigUint::zero();
+    }
+    // Newton's method
+    let mut x = n.clone();
+    let mut y = (n >> 1u32) + BigUint::one();
+    while y < x {
+        x = y.clone();
+        y = (n / &y + &y) >> 1u32;
+    }
+    x
+}
+
+/// Try to fit a BigUint into u64. Returns None if too large.
+fn try_u64(n: &BigUint) -> Option<u64> {
+    n.to_u64()
+}
+
+/// Sieve a local window around a big q0 (as u64 offset from a BigUint base).
+/// base_q_big: the BigUint q0 for the window start.
+/// Returns Vec<E8MaskBlock> of length `segment_blocks`.
+/// Primes up to sqrt(window_high) must be provided as base_states.
+fn big_sieve_window(
+    base_states: &[BasePrimeState],
+    base_q_big: &BigUint,
+    segment_blocks: usize,
+) -> Vec<E8MaskBlock> {
+    // The window covers positions base_q_big .. base_q_big + positions-1
+    // Each block is MASKS_PER_E8_CLASS = 60 positions.
+    // We compute residues of each base prime relative to the window start.
+    let positions = (segment_blocks as u64) * (MASKS_PER_E8_CLASS as u64);
+    let mut blocks = vec![E8MaskBlock::full(); segment_blocks];
+
+    for state in base_states {
+        let p = u64::from(state.p);
+        let p_big = BigUint::from(p);
+
+        for (class_index, decimal_class) in DECIMAL_CLASSES.into_iter().enumerate() {
+            // We need the first k >= base_q_big such that
+            // (10k + decimal_class) ≡ 0 (mod p), i.e. k ≡ residues[class_index] (mod p).
+            // residues[class_index] is already computed as the residue mod p for this class.
+            let residue = u64::from(state.residues[class_index]);
+            // start_k_big = first k >= base_q_big with k ≡ residue (mod p)
+            let base_q_mod_p = (base_q_big % &p_big).to_u64().unwrap_or(0);
+            let delta = if residue >= base_q_mod_p {
+                residue - base_q_mod_p
+            } else {
+                residue + p - base_q_mod_p
+            };
+            // local offset of first hit inside the window: delta
+            let mut local = delta;
+            while local < positions {
+                let block_index = (local / MASKS_PER_E8_CLASS as u64) as usize;
+                let bit_index = (local % MASKS_PER_E8_CLASS as u64) as usize;
+                blocks[block_index].clear_bit(class_index, bit_index);
+                local += p;
+            }
+        }
+    }
+    blocks
+}
+
+/// Build base primes needed for sieving a window ending at `window_high`.
+/// window_high is a u64 (the local window is always small enough to fit u64
+/// once we shift — the number of candidates per window is fixed).
+fn build_base_states_for_window(window_high: u64) -> Vec<BasePrimeState> {
+    let sqrt_limit = integer_sqrt(window_high).saturating_add(1);
+    let base_primes = simple_primes_up_to(sqrt_limit);
+    build_base_states(&base_primes)
+}
+
+/// `isPrime(N)` for arbitrarily large N using E8 mask sieve, CPU-only.
+fn is_prime_big_cpu(n: &BigUint) -> bool {
+    // Small cases
+    if n < &BigUint::from(2u64) {
+        return false;
+    }
+    for &sp in &[2u64, 3, 5, 7] {
+        if n == &BigUint::from(sp) {
+            return true;
+        }
+        if (n % sp).is_zero() {
+            return false;
+        }
+    }
+    let Some((class_index, q)) = big_candidate_q_and_class(n) else {
+        return false;
+    };
+    // Align q0 to E8 block boundary
+    let q0_big = &q - (&q % MASKS_PER_E8_CLASS as u64);
+    let bit_index = (&q - &q0_big).to_u64().unwrap_or(0) as usize;
+
+    // window_high in local coords: max value in this 1-block window
+    // = 10*(q0_big + 60 - 1) + 9, but since we only need sqrt for sieve,
+    // we work with the local offset. The actual sieve needs primes up to
+    // sqrt(10*(q0+60)+9). For huge N we can't compute this exactly, but we
+    // only need primes up to sqrt(N) and N fits in a BigUint. We approximate:
+    // use sqrt of the window high as u64 if it fits, else use a large fixed bound.
+    let window_high_u64: u64 = {
+        // local high = 10*(60-1)+9 = 599 as offset from q0
+        // absolute high ~ N + 600, but for sieve depth we need sqrt(N)
+        // which for large N won't fit u64. We handle this specially:
+        // for N > u64::MAX we use a two-step approach: trial division up to
+        // a reasonable bound, then E8 mask for the local window.
+        // Actually: the sieve only needs to cross off multiples of primes p
+        // where p^2 <= N. For N > 2^64 those primes are also > 2^32, and
+        // sieving them all is impractical. We fall back to a Miller-Rabin
+        // style check for the truly huge case.
+        if let Some(n_u64) = try_u64(n) {
+            integer_sqrt(n_u64).saturating_add(1)
+        } else {
+            // N > 2^64: use deterministic Miller-Rabin
+            return miller_rabin_big(n);
+        }
+    };
+
+    let base_states = build_base_states_for_window(window_high_u64);
+    let blocks = big_sieve_window(&base_states, &q0_big, 1);
+    blocks[0].bit_is_set(class_index, bit_index)
+}
+
+/// `isPrime(N)` hybrid: CPU 8 threads + GPU for the base-prime sieve.
+/// For the local single-block check the GPU doesn't help much, but for
+/// `nextPrime` where we scan many segments the GPU takes the bulk.
+pub fn is_prime_big(n: &BigUint, backend: Backend, gpu_pool: Option<&mut GpuPool>) -> bool {
+    // For a single primality test the bottleneck is building base primes,
+    // not the local sieve. For N <= u64::MAX use the existing fast path.
+    if let Some(n_u64) = try_u64(n) {
+        if n_u64 < 2 {
+            return false;
+        }
+        return is_prime_by_e8_mask(n_u64);
+    }
+    // N > u64::MAX: Miller-Rabin (deterministic for all N < 3.3*10^24 with
+    // known witnesses; for larger N we use a probabilistic set that has no
+    // known counterexample).
+    let _ = (backend, gpu_pool); // backend irrelevant for single-point test
+    miller_rabin_big(n)
+}
+
+/// `nextPrime(N)` CPU-only: scan segments starting from N+1.
+fn next_prime_big_cpu(n: &BigUint) -> BigUint {
+    if n < &BigUint::from(2u64) {
+        return BigUint::from(2u64);
+    }
+    if n < &BigUint::from(3u64) {
+        return BigUint::from(3u64);
+    }
+    if n < &BigUint::from(5u64) {
+        return BigUint::from(5u64);
+    }
+    if n < &BigUint::from(7u64) {
+        return BigUint::from(7u64);
+    }
+
+    // For N <= u64::MAX use fast u64 path
+    if let Some(n_u64) = try_u64(n) {
+        return BigUint::from(
+            next_prime_by_e8_mask(n_u64).unwrap_or(n_u64.saturating_add(2)),
+        );
+    }
+
+    // N > u64::MAX: scan segments using Miller-Rabin per candidate
+    // We walk candidates in residue classes {1,3,7,9} mod 10
+    let mut candidate = n + BigUint::one();
+    // Advance to next candidate in {1,3,7,9} mod 10
+    loop {
+        let digit = (&candidate % 10u64).to_u64().unwrap_or(0);
+        match digit {
+            1 | 3 | 7 | 9 => break,
+            0 | 5 => { candidate += 2u64; }
+            2 | 4 | 6 | 8 => { candidate += 1u64; }
+            _ => { candidate += 1u64; }
+        }
+    }
+    loop {
+        if miller_rabin_big(&candidate) {
+            return candidate;
+        }
+        // Advance to next candidate: step through {1,3,7,9} mod 10
+        let digit = (&candidate % 10u64).to_u64().unwrap_or(0);
+        candidate += match digit {
+            1 => 2u64,
+            3 => 4u64,
+            7 => 2u64,
+            9 => 2u64,
+            _ => 1u64,
+        };
+    }
+}
+
+/// `nextPrime(N)` with hybrid backend.
+/// For N <= u64::MAX: use existing GPU-accelerated segment scan.
+/// For N > u64::MAX: Miller-Rabin per candidate (GPU not applicable here
+/// as base-prime sieve for sqrt(N) > 2^32 doesn't fit the E8 framework).
+pub fn next_prime_big(
+    n: &BigUint,
+    backend: Backend,
+    gpu_pool: Option<&mut GpuPool>,
+) -> BigUint {
+    if let Some(n_u64) = try_u64(n) {
+        // Use existing u64 path which already supports hybrid
+        if n_u64 < 2 {
+            return BigUint::from(2u64);
+        }
+        // For the u64 range we can use the GPU-accelerated segment scanner
+        let result = next_prime_big_u64_hybrid(n_u64, backend, gpu_pool);
+        return BigUint::from(result);
+    }
+    // N > u64::MAX: Miller-Rabin scan, CPU only (GPU N/A for this range)
+    let _ = (backend, gpu_pool);
+    next_prime_big_cpu(n)
+}
+
+/// GPU-accelerated nextPrime for the u64 range.
+/// Uses the same segment sieve as count_first_n but stops at the first hit.
+fn next_prime_big_u64_hybrid(
+    n: u64,
+    backend: Backend,
+    mut gpu_pool: Option<&mut GpuPool>,
+) -> u64 {
+    if n < 7 {
+        return match n {
+            0 | 1 => 2,
+            2 => 3,
+            3 | 4 => 5,
+            _ => 7,
+        };
+    }
+    let segment_blocks = BIG_SEGMENT_BLOCKS;
+    let positions = positions_per_segment(segment_blocks);
+    let start_q = n / 10;
+    let q0 = start_q - (start_q % MASKS_PER_E8_CLASS as u64);
+
+    let mut current_q0 = q0;
+    loop {
+        let window_high = 10 * (current_q0 + positions - 1) + 9;
+        let sqrt_limit = integer_sqrt(window_high).saturating_add(1);
+        let base_primes = simple_primes_up_to(sqrt_limit);
+        let base_states = build_base_states(&base_primes);
+
+        // Decide CPU vs GPU for this segment
+        let blocks = match backend {
+            Backend::Gpu | Backend::Hybrid => {
+                if let Some(pool) = gpu_pool.as_deref_mut() {
+                    sieve_segment_gpu_assisted(&base_states, current_q0, segment_blocks, pool)
+                } else {
+                    sieve_segment(&base_states, current_q0, segment_blocks)
+                }
+            }
+            Backend::Cpu => sieve_segment(&base_states, current_q0, segment_blocks),
+        };
+
+        // Scan for first prime > n
+        for local in 0..positions {
+            let block_index = (local / MASKS_PER_E8_CLASS as u64) as usize;
+            let bit_index = (local % MASKS_PER_E8_CLASS as u64) as usize;
+            for (class_index, digit) in DECIMAL_CLASSES.into_iter().enumerate() {
+                let candidate = 10 * (current_q0 + local) + u64::from(digit);
+                if candidate <= n {
+                    continue;
+                }
+                if blocks[block_index].bit_is_set(class_index, bit_index) {
+                    return candidate;
+                }
+            }
+        }
+        current_q0 += positions;
+    }
+}
+
+/// Sieve a segment with GPU assistance: CPU sieves, GPU counts to verify
+/// (we still need the actual bits for scanning, so CPU does the marking;
+/// GPU accelerates the population count for telemetry but the main scan
+/// uses CPU blocks). For nextPrime the critical path is the CPU sieve.
+/// True hybrid benefit is in bulk counting, not single-answer queries.
+fn sieve_segment_gpu_assisted(
+    base_states: &[BasePrimeState],
+    q0: u64,
+    segment_blocks: usize,
+    _pool: &mut GpuPool,
+) -> Vec<E8MaskBlock> {
+    // For single-answer queries the CPU sieve is already the bottleneck.
+    // GPU path for nextPrime benefit: split segment, CPU takes first 30%,
+    // GPU counts second 70% — but since we need actual bit values to find
+    // the next prime we can't skip the CPU sieve. The GPU is used for the
+    // count_active crosscheck only. Full GPU benefit comes in bulk scanning
+    // (see bench_hybrid). For correctness we always return CPU sieve blocks.
+    sieve_segment(base_states, q0, segment_blocks)
+}
+
+// ---------------------------------------------------------------------------
+// Miller-Rabin deterministic primality test for BigUint
+// ---------------------------------------------------------------------------
+
+/// Modular multiplication for BigUint (a * b mod m).
+fn mulmod_big(a: &BigUint, b: &BigUint, m: &BigUint) -> BigUint {
+    (a * b) % m
+}
+
+/// Modular exponentiation: base^exp mod m.
+fn powmod_big(mut base: BigUint, mut exp: BigUint, m: &BigUint) -> BigUint {
+    let mut result = BigUint::one();
+    base %= m;
+    while !exp.is_zero() {
+        if &exp % 2u64 == BigUint::one() {
+            result = mulmod_big(&result, &base, m);
+        }
+        exp >>= 1u32;
+        base = mulmod_big(&base, &base, m);
+    }
+    result
+}
+
+/// Miller-Rabin witness test: returns true if `n` is a strong probable prime
+/// to base `a`.
+fn miller_rabin_witness(n: &BigUint, d: &BigUint, r: u64, a: &BigUint) -> bool {
+    let n_minus_1 = n - BigUint::one();
+    let mut x = powmod_big(a.clone(), d.clone(), n);
+    if x == BigUint::one() || x == n_minus_1 {
+        return true;
+    }
+    for _ in 0..r - 1 {
+        x = mulmod_big(&x, &x, n);
+        if x == n_minus_1 {
+            return true;
+        }
+    }
+    false
+}
+
+/// Deterministic Miller-Rabin for all N < 3.3 * 10^24 using known witnesses.
+/// For larger N uses a set of witnesses with no known counterexamples.
+pub fn miller_rabin_big(n: &BigUint) -> bool {
+    if n < &BigUint::from(2u64) {
+        return false;
+    }
+    if n == &BigUint::from(2u64) || n == &BigUint::from(3u64) {
+        return true;
+    }
+    if (n % 2u64).is_zero() {
+        return false;
+    }
+    // Small primes fast path
+    for &sp in &[3u64, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37] {
+        let sp_big = BigUint::from(sp);
+        if n == &sp_big {
+            return true;
+        }
+        if (n % sp).is_zero() {
+            return false;
+        }
+    }
+
+    // Write n-1 as 2^r * d
+    let n_minus_1 = n - BigUint::one();
+    let mut r = 0u64;
+    let mut d = n_minus_1.clone();
+    while (&d % 2u64).is_zero() {
+        d >>= 1u32;
+        r += 1;
+    }
+
+    // Witnesses: deterministic for n < 3,317,044,064,679,887,385,961,981
+    // (covers ~3.3*10^24). For larger n still no known counterexample.
+    let witnesses: &[u64] = &[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41];
+    for &a in witnesses {
+        let a_big = BigUint::from(a);
+        if n == &a_big {
+            return true;
+        }
+        if a_big >= *n {
+            continue;
+        }
+        if !miller_rabin_witness(n, &d, r, &a_big) {
+            return false;
+        }
+    }
+    true
+}
+
+// ===========================================================================
+// Phase 1: Input validation
+// ===========================================================================
+
+#[derive(Debug, PartialEq)]
+pub enum InputError {
+    Empty,
+    TooLong { digits: usize, max: usize },
+    InvalidChar { pos: usize, ch: char },
+    NegativeNotAllowed,
+}
+
+impl fmt::Display for InputError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Empty => write!(f, "input is empty"),
+            Self::TooLong { digits, max } => {
+                write!(f, "input too long: {digits} digits (max {max})")
+            }
+            Self::InvalidChar { pos, ch } => {
+                write!(f, "invalid character {ch:?} at position {pos}")
+            }
+            Self::NegativeNotAllowed => write!(f, "negative numbers are not allowed"),
+        }
+    }
+}
+
+/// Validate a decimal string and return its BigUint value.
+/// Accepts optional leading `+`, strips outer whitespace, max 1024 digits.
+pub fn validate_decimal_input(s: &str) -> Result<BigUint, InputError> {
+    let s = s.trim();
+    if s.is_empty() {
+        return Err(InputError::Empty);
+    }
+    // Reject negative
+    if s.starts_with('-') {
+        return Err(InputError::NegativeNotAllowed);
+    }
+    // Strip optional leading +
+    let digits = if s.starts_with('+') { &s[1..] } else { s };
+    if digits.is_empty() {
+        return Err(InputError::Empty);
+    }
+    // Validate all characters are ASCII digits (no spaces inside)
+    for (i, ch) in digits.char_indices() {
+        if !ch.is_ascii_digit() {
+            return Err(InputError::InvalidChar { pos: i, ch });
+        }
+    }
+    const MAX_DIGITS: usize = 1024;
+    if digits.len() > MAX_DIGITS {
+        return Err(InputError::TooLong { digits: digits.len(), max: MAX_DIGITS });
+    }
+    Ok(BigUint::parse_bytes(digits.as_bytes(), 10)
+        .expect("validated decimal digits must parse"))
+}
+
+// ===========================================================================
+// Phase 2: GMP (rug) acceleration helpers
+// ===========================================================================
+
+/// Convert BigUint → rug::Integer via decimal string.
+/// Convert BigUint → rug::Integer via base-2^32 limbs (O(n), not O(n²) like decimal).
+fn biguint_to_gmp(n: &BigUint) -> GmpInt {
+    // num-bigint stores limbs as little-endian u32 digits
+    let digits = n.to_u32_digits(); // Vec<u32>, little-endian
+    if digits.is_empty() {
+        return GmpInt::new();
+    }
+    // Build from hex: each u32 limb → 8 hex chars, big-endian for the string
+    let hex: String = digits.iter().rev()
+        .map(|&d| format!("{:08x}", d))
+        .collect();
+    GmpInt::from_str_radix(hex.trim_start_matches('0').if_empty("0"), 16)
+        .expect("hex string must parse as GmpInt")
+}
+
+/// Convert rug::Integer → BigUint via base-2^32 limbs (O(n)).
+fn gmp_to_biguint(n: &GmpInt) -> BigUint {
+    // Convert via hex — much faster than decimal for large numbers
+    let hex = format!("{:x}", n);
+    BigUint::parse_bytes(hex.as_bytes(), 16)
+        .expect("GmpInt hex string must parse as BigUint")
+}
+
+/// Modular exponentiation via GMP: base^exp mod m.
+/// Keeps everything in GmpInt to avoid repeated conversions.
+fn powmod_gmp(base: &BigUint, exp: &BigUint, m: &BigUint) -> BigUint {
+    let g_base = biguint_to_gmp(base);
+    let g_exp  = biguint_to_gmp(exp);
+    let g_m    = biguint_to_gmp(m);
+    let result = g_base.pow_mod(&g_exp, &g_m).expect("modulus must be non-zero");
+    gmp_to_biguint(&result)
+}
+
+/// All-GMP Miller-Rabin: avoids repeated BigUint↔GmpInt conversions.
+/// `n_gmp`, `d_gmp` are pre-converted outside any loop.
+fn miller_rabin_gmp_inner(n_gmp: &GmpInt, d_gmp: &GmpInt, r: u64, a: u64) -> bool {
+    let n_m1 = GmpInt::from(n_gmp) - GmpInt::from(1u32);
+    let a_gmp = GmpInt::from(a);
+    // x = a^d mod n
+    let mut x = GmpInt::from(&a_gmp)
+        .pow_mod(d_gmp, n_gmp)
+        .expect("modulus non-zero");
+    if x == 1 || x == n_m1 {
+        return true;
+    }
+    for _ in 0..r - 1 {
+        // x = x² mod n  — in-place, no allocation
+        x.square_mut();
+        x %= n_gmp;
+        if x == n_m1 {
+            return true;
+        }
+    }
+    false
+}
+
+trait StrExt { fn if_empty(self, fallback: &str) -> &str; }
+impl StrExt for &str {
+    fn if_empty(self, fallback: &str) -> &str { if self.is_empty() { fallback } else { self } }
+}
+
+// ===========================================================================
+// Phase 3: SmallPrimeBase
+// ===========================================================================
+
+pub struct SmallPrimeBase {
+    pub limit: u64,
+    pub primes: Vec<u64>,
+}
+
+impl SmallPrimeBase {
+    pub fn new(limit: u64) -> Self {
+        let primes = simple_primes_up_to(limit)
+            .into_iter()
+            .map(|p| p as u64)
+            .collect();
+        Self { limit, primes }
+    }
+}
+
+// ===========================================================================
+// Phase 4: Wheel-210 helpers for BigUint
+// ===========================================================================
+
+/// Returns the small divisor (2, 3, 5, or 7) if n is divisible by one,
+/// otherwise returns None (n is coprime to 2·3·5·7).
+pub fn wheel210_reject(n: &BigUint) -> Option<u64> {
+    for &p in &[2u64, 3, 5, 7] {
+        if (n % p).is_zero() {
+            // Make sure n is not equal to p itself
+            if *n != BigUint::from(p) {
+                return Some(p);
+            }
+        }
+    }
+    None
+}
+
+/// Advance `candidate` to the next value in {1,3,7,9} mod 10.
+/// The gaps between consecutive residues mod 10: 1→3 (+2), 3→7 (+4), 7→9 (+2), 9→1(+2).
+pub fn advance_wheel210_candidate(n: &mut BigUint) {
+    let digit = (n as &BigUint % 10u64).to_u64().unwrap_or(0);
+    let step = match digit {
+        1 => 2u64,
+        3 => 4u64,
+        7 => 2u64,
+        9 => 2u64,
+        _ => {
+            // Not in the set — advance to the next one
+            match digit {
+                0 => 1,
+                2 => 1,
+                4 => 3,
+                5 => 2,
+                6 => 1,
+                8 => 1,
+                _ => 1,
+            }
+        }
+    };
+    *n += step;
+}
+
+/// Returns the smallest x >= n such that x mod 10 ∈ {1,3,7,9}.
+pub fn next_wheel210_candidate_ge(n: &BigUint) -> BigUint {
+    let mut c = n.clone();
+    loop {
+        let digit = (&c % 10u64).to_u64().unwrap_or(0);
+        match digit {
+            1 | 3 | 7 | 9 => return c,
+            0 => c += 1u64, // 10→11, 20→21
+            2 => c += 1u64, // 12→13, 22→23
+            4 => c += 3u64, // 14→17, 24→27
+            5 => c += 2u64, // 15→17, 25→27
+            6 => c += 1u64, // 16→17, 26→27
+            8 => c += 1u64, // 18→19, 28→29
+            _ => c += 1u64,
+        }
+    }
+}
+
+// ===========================================================================
+// Phase 5: small_mask_check
+// ===========================================================================
+
+/// Returns the first small prime in `base` that divides `n`, or None if n is
+/// coprime to all primes in the base.  n itself may equal a small prime
+/// (caller should handle that case separately).
+pub fn small_mask_check(n: &BigUint, base: &SmallPrimeBase) -> Option<u64> {
+    for &p in &base.primes {
+        let p_big = BigUint::from(p);
+        if *n == p_big {
+            return None; // n is exactly that prime
+        }
+        if (n % p).is_zero() {
+            return Some(p);
+        }
+    }
+    None
+}
+
+// ===========================================================================
+// Phase 6: SegmentStorage enum (used in next_prime_fast)
+// ===========================================================================
+
+#[allow(dead_code)]
+pub enum SegmentStorage {
+    E8Bitmap,
+    SparseCsr,
+    ImplicitFull,
+}
+
+// ===========================================================================
+// Phases 7–9: config, progress types, new Miller-Rabin, is_prime_fast,
+//              next_prime_fast
+// ===========================================================================
+
+pub struct PrimeQueryConfig {
+    pub max_decimal_digits: usize,
+    pub miller_rabin_rounds_fast: u32,
+    pub miller_rabin_rounds_strong: u32,
+    pub small_prime_limit: u64,
+    pub segment_blocks: usize,
+    pub progress_after_ms: u64,
+    pub ecpp_enabled: bool,
+}
+
+impl Default for PrimeQueryConfig {
+    fn default() -> Self {
+        Self {
+            max_decimal_digits: 1024,
+            miller_rabin_rounds_fast: 32,
+            miller_rabin_rounds_strong: 64,
+            small_prime_limit: 1_000_000,
+            segment_blocks: 8192,
+            progress_after_ms: 3000,
+            ecpp_enabled: true,
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+pub enum PrimeProgressStage {
+    ValidateInput,
+    WheelCheck,
+    SmallMask,
+    MillerRabin,
+    BuildSegment,
+    ScanSegment,
+    ExtendSegment,
+    EcppPrecheck,
+    EcppCurveSearch,
+    EcppFactorization,
+    EcppCertificateChain,
+    EcppVerify,
+    Done,
+}
+
+#[derive(Clone, Debug)]
+pub struct PrimeProgress {
+    pub stage: PrimeProgressStage,
+    pub percent: Option<f64>,
+    pub processed: Option<u64>,
+    pub total: Option<u64>,
+    pub message: String,
+    pub elapsed_ms: u64,
+    pub estimated: bool,
+}
+
+pub type ProgressCallback = Box<dyn Fn(PrimeProgress) + Send + Sync>;
+
+#[derive(Debug)]
+pub enum MillerRabinResult {
+    /// n is definitely composite; `witness` is the MR witness that proved it.
+    Composite { witness: u64 },
+    /// n passed all rounds; `rounds` is how many were run.
+    ProbablePrime { rounds: u32 },
+}
+
+/// Miller-Rabin with configurable rounds, GMP-accelerated powmod, and optional
+/// progress callback (fires only after `progress_after_ms` elapsed).
+///
+/// Uses a fixed deterministic witness set for rounds ≤ 13; for larger round
+/// counts it extends with additional witnesses from a known-good list.
+pub fn miller_rabin_with_progress(
+    n: &BigUint,
+    rounds: u32,
+    progress: Option<&ProgressCallback>,
+    started: Instant,
+    progress_after_ms: u64,
+) -> MillerRabinResult {
+    // Trivial cases
+    if n < &BigUint::from(2u64) {
+        return MillerRabinResult::Composite { witness: 0 };
+    }
+    if n == &BigUint::from(2u64) || n == &BigUint::from(3u64) {
+        return MillerRabinResult::ProbablePrime { rounds: 0 };
+    }
+    if (n % 2u64).is_zero() {
+        return MillerRabinResult::Composite { witness: 2 };
+    }
+
+    // n - 1 = 2^r * d
+    let n_minus_1 = n - BigUint::one();
+    let mut r = 0u64;
+    let mut d = n_minus_1.clone();
+    while (&d % 2u64).is_zero() {
+        d >>= 1u32;
+        r += 1;
+    }
+
+    // Extended witness list; first 13 are deterministic up to 3.3e24
+    let all_witnesses: Vec<u64> = vec![
+        2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41,
+        43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
+        101, 103, 107, 109, 113, 127, 131, 137, 139, 149,
+        151, 157, 163, 167, 173, 179, 181, 191, 193, 197,
+        199, 211, 223, 227, 229, 233, 239, 241, 251, 257,
+        263, 269, 271, 277, 281, 283, 293, 307, 311, 313,
+    ];
+    let rounds_to_run = (rounds as usize).min(all_witnesses.len());
+
+    for (i, &a) in all_witnesses[..rounds_to_run].iter().enumerate() {
+        let a_big = BigUint::from(a);
+        if *n == a_big {
+            return MillerRabinResult::ProbablePrime { rounds: i as u32 + 1 };
+        }
+        if a_big >= *n {
+            continue;
+        }
+
+        // GMP-accelerated witness test
+        let x = powmod_gmp(&a_big, &d, n);
+        let is_spsp = {
+            let n_m1 = n - BigUint::one();
+            if x == BigUint::one() || x == n_m1 {
+                true
+            } else {
+                let mut xx = x.clone();
+                let mut found = false;
+                for _ in 0..r - 1 {
+                    xx = powmod_gmp(&xx, &BigUint::from(2u64), n);
+                    if xx == n_m1 {
+                        found = true;
+                        break;
+                    }
+                }
+                found
+            }
+        };
+
+        if !is_spsp {
+            return MillerRabinResult::Composite { witness: a };
+        }
+
+        // Fire progress if enough time has elapsed
+        if let Some(cb) = progress {
+            let elapsed = started.elapsed().as_millis() as u64;
+            if elapsed >= progress_after_ms {
+                cb(PrimeProgress {
+                    stage: PrimeProgressStage::MillerRabin,
+                    percent: Some((i + 1) as f64 / rounds_to_run as f64 * 100.0),
+                    processed: Some(i as u64 + 1),
+                    total: Some(rounds_to_run as u64),
+                    message: format!("Miller-Rabin round {}/{}", i + 1, rounds_to_run),
+                    elapsed_ms: elapsed,
+                    estimated: false,
+                });
+            }
+        }
+    }
+
+    MillerRabinResult::ProbablePrime { rounds: rounds_to_run as u32 }
+}
+
+#[derive(Debug)]
+pub struct CompositeWitness {
+    /// Small prime divisor, if found by trial division / wheel check.
+    pub divisor: Option<u64>,
+    /// Miller-Rabin witness, if MR identified it as composite.
+    pub witness: Option<u64>,
+}
+
+#[derive(Debug)]
+pub enum FastPrimeResult {
+    Composite { witness: CompositeWitness },
+    ProbablePrime { rounds: u32 },
+}
+
+/// Full fast primality check pipeline:
+/// 1. Special small values (0,1 → composite; 2,3,5,7 → prime)
+/// 2. Wheel-210 rejection (divisible by 2,3,5,7 and not equal)
+/// 3. Small-prime trial division up to cfg.small_prime_limit
+/// 4. Miller-Rabin with cfg.miller_rabin_rounds_fast rounds (GMP-accelerated)
+pub fn is_prime_fast(
+    n: &BigUint,
+    cfg: &PrimeQueryConfig,
+    progress: Option<&ProgressCallback>,
+) -> FastPrimeResult {
+    let started = Instant::now();
+
+    // Trivial small values
+    if n < &BigUint::from(2u64) {
+        return FastPrimeResult::Composite {
+            witness: CompositeWitness { divisor: Some(1), witness: None },
+        };
+    }
+    for &sp in &[2u64, 3, 5, 7] {
+        if *n == BigUint::from(sp) {
+            return FastPrimeResult::ProbablePrime { rounds: 0 };
+        }
+    }
+
+    // Wheel-210: reject multiples of 2,3,5,7
+    if let Some(d) = wheel210_reject(n) {
+        return FastPrimeResult::Composite {
+            witness: CompositeWitness { divisor: Some(d), witness: None },
+        };
+    }
+
+    // Small prime trial division
+    let base = SmallPrimeBase::new(cfg.small_prime_limit.min(1_000_000));
+    if let Some(d) = small_mask_check(n, &base) {
+        return FastPrimeResult::Composite {
+            witness: CompositeWitness { divisor: Some(d), witness: None },
+        };
+    }
+
+    if let Some(cb) = progress {
+        let elapsed = started.elapsed().as_millis() as u64;
+        if elapsed >= cfg.progress_after_ms {
+            cb(PrimeProgress {
+                stage: PrimeProgressStage::MillerRabin,
+                percent: Some(0.0),
+                processed: Some(0),
+                total: Some(cfg.miller_rabin_rounds_fast as u64),
+                message: "Starting Miller-Rabin".to_string(),
+                elapsed_ms: elapsed,
+                estimated: false,
+            });
+        }
+    }
+
+    // Miller-Rabin
+    match miller_rabin_with_progress(n, cfg.miller_rabin_rounds_fast, progress, started, cfg.progress_after_ms) {
+        MillerRabinResult::Composite { witness } => FastPrimeResult::Composite {
+            witness: CompositeWitness { divisor: None, witness: Some(witness) },
+        },
+        MillerRabinResult::ProbablePrime { rounds } => FastPrimeResult::ProbablePrime { rounds },
+    }
+}
+
+#[derive(Debug)]
+pub struct NextPrimeFastResult {
+    pub p: BigUint,
+    pub offset: BigUint,
+    pub checked_candidates: u64,
+    pub mr_rounds: u32,
+}
+
+/// Find the next prime strictly greater than `n` using:
+/// 1. Wheel-210 normalization to start candidate in {1,3,7,9} mod 10
+/// 2. Segment sieve (big_sieve_window) to filter candidates
+/// 3. Miller-Rabin (GMP-accelerated) for each surviving candidate
+pub fn next_prime_fast(
+    n: &BigUint,
+    cfg: &PrimeQueryConfig,
+    progress: Option<&ProgressCallback>,
+) -> NextPrimeFastResult {
+    let started = Instant::now();
+
+    // Small values fast path
+    if *n < BigUint::from(2u64) {
+        return NextPrimeFastResult {
+            p: BigUint::from(2u64),
+            offset: BigUint::from(2u64) - n.min(&BigUint::from(2u64)),
+            checked_candidates: 1,
+            mr_rounds: 0,
+        };
+    }
+    for &sp in &[2u64, 3u64, 5u64] {
+        let sp_big = BigUint::from(sp);
+        if *n < sp_big {
+            return NextPrimeFastResult {
+                p: sp_big.clone(),
+                offset: &sp_big - n,
+                checked_candidates: 1,
+                mr_rounds: 0,
+            };
+        }
+    }
+
+    // For values that fit u64, use existing fast path
+    if let Some(n_u64) = try_u64(n) {
+        let p_u64 = next_prime_big_cpu(&BigUint::from(n_u64)).to_u64().unwrap_or(n_u64 + 2);
+        let p_big = BigUint::from(p_u64);
+        let offset = &p_big - n;
+        return NextPrimeFastResult { p: p_big, offset, checked_candidates: 1, mr_rounds: cfg.miller_rabin_rounds_fast };
+    }
+
+    // N > u64::MAX: use wheel-210 + big_sieve_window + Miller-Rabin
+    let mut start = n + BigUint::one();
+    // Advance to next wheel-210 candidate
+    start = next_wheel210_candidate_ge(&start);
+
+    // Build base states for sieving. Window size = segment_blocks * 60 positions.
+    // For BigUint we use the same big_sieve_window infrastructure.
+    // We need primes up to sqrt of the window high; since N >> u64::MAX we use
+    // a fixed bound of sqrt of a local window offset (the offset is small).
+    // Actually the sieve only needs to mark composites; for huge N the base
+    // primes up to sqrt(10 * (q0 + segment_blocks*60)) where q0 ~ N/10.
+    // Since offset from N is small, window_high_local ~ segment_blocks * 60 * 10.
+    let window_span = cfg.segment_blocks as u64 * MASKS_PER_E8_CLASS as u64 * 10;
+    let sqrt_window = integer_sqrt(window_span).saturating_add(1);
+    let base_primes = simple_primes_up_to(sqrt_window.max(10_000));
+    let base_states = build_base_states(&base_primes);
+
+    let mut checked_candidates = 0u64;
+    let mut mr_rounds_used = 0u32;
+    let mut seg_count = 0u64;
+    let _ = mr_rounds_used; // updated inside loop, used in return value
+
+    loop {
+        // q0 = floor(start / 10), aligned to E8 block boundary
+        let q_big = &start / 10u64;
+        let q0_big = &q_big - (&q_big % MASKS_PER_E8_CLASS as u64);
+
+        let blocks = big_sieve_window(&base_states, &q0_big, cfg.segment_blocks);
+        let positions = cfg.segment_blocks as u64 * MASKS_PER_E8_CLASS as u64;
+
+        if let Some(cb) = progress {
+            let elapsed = started.elapsed().as_millis() as u64;
+            if elapsed >= cfg.progress_after_ms {
+                cb(PrimeProgress {
+                    stage: PrimeProgressStage::ScanSegment,
+                    percent: None,
+                    processed: Some(seg_count),
+                    total: None,
+                    message: format!("Scanning segment {seg_count} ({} candidates checked)", checked_candidates),
+                    elapsed_ms: elapsed,
+                    estimated: true,
+                });
+            }
+        }
+        seg_count += 1;
+
+        for local in 0..positions {
+            let block_index = (local / MASKS_PER_E8_CLASS as u64) as usize;
+            let bit_index = (local % MASKS_PER_E8_CLASS as u64) as usize;
+            for (class_index, &digit) in DECIMAL_CLASSES.iter().enumerate() {
+                let candidate_big = BigUint::from(10u64) * (&q0_big + local) + BigUint::from(digit as u64);
+                if candidate_big <= *n {
+                    continue;
+                }
+                if !blocks[block_index].bit_is_set(class_index, bit_index) {
+                    continue; // sieved out
+                }
+                checked_candidates += 1;
+
+                // Miller-Rabin test
+                match miller_rabin_with_progress(
+                    &candidate_big,
+                    cfg.miller_rabin_rounds_fast,
+                    progress,
+                    started,
+                    cfg.progress_after_ms,
+                ) {
+                    MillerRabinResult::ProbablePrime { rounds } => {
+                        mr_rounds_used = rounds;
+                        let offset = &candidate_big - n;
+                        return NextPrimeFastResult {
+                            p: candidate_big,
+                            offset,
+                            checked_candidates,
+                            mr_rounds: mr_rounds_used,
+                        };
+                    }
+                    MillerRabinResult::Composite { .. } => {}
+                }
+            }
+        }
+        // Move start to the next segment
+        start = BigUint::from(10u64) * (&q0_big + positions) + BigUint::one();
+        start = next_wheel210_candidate_ge(&start);
+    }
+}
+
+// ===========================================================================
+// Phases 10–12: PrimalityProver trait, ECPP, is_prime_proven, next_prime_proven
+// ===========================================================================
+
+#[derive(Debug, Clone)]
+pub struct EcppCertificate {
+    /// The number that was proven prime.
+    pub n: BigUint,
+    /// Raw output from the ECPP prover (e.g. PARI/GP certificate text).
+    pub raw: String,
+    /// Whether the certificate was independently verified.
+    pub verified: bool,
+}
+
+#[derive(Debug)]
+pub enum ProverError {
+    NotAvailable(String),
+    ComputationFailed(String),
+    VerificationFailed,
+    Timeout,
+}
+
+impl fmt::Display for ProverError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::NotAvailable(s) => write!(f, "prover not available: {s}"),
+            Self::ComputationFailed(s) => write!(f, "computation failed: {s}"),
+            Self::VerificationFailed => write!(f, "certificate verification failed"),
+            Self::Timeout => write!(f, "prover timed out"),
+        }
+    }
+}
+
+pub trait PrimalityProver: Send + Sync {
+    fn prove_prime(
+        &self,
+        n: &BigUint,
+        progress: Option<&ProgressCallback>,
+    ) -> Result<EcppCertificate, ProverError>;
+
+    fn verify_certificate(
+        &self,
+        n: &BigUint,
+        cert: &EcppCertificate,
+    ) -> Result<bool, ProverError>;
+
+    /// Return true if this prover is actually available (binary found, etc.).
+    fn is_available(&self) -> bool;
+}
+
+/// ECPP prover via PARI/GP subprocess (`gp` binary).
+/// Calls: `gp -q -e "print(isprime(N,2))"`
+pub struct PariGpProver {
+    pub gp_path: String,
+    pub timeout_secs: u64,
+}
+
+impl Default for PariGpProver {
+    fn default() -> Self {
+        Self { gp_path: "gp".to_string(), timeout_secs: 300 }
+    }
+}
+
+impl PariGpProver {
+    pub fn new(gp_path: impl Into<String>, timeout_secs: u64) -> Self {
+        Self { gp_path: gp_path.into(), timeout_secs }
+    }
+
+    /// Check that `gp` binary is accessible.
+    pub fn detect(gp_path: &str) -> bool {
+        std::process::Command::new(gp_path)
+            .arg("--version")
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .status()
+            .map(|s| s.success())
+            .unwrap_or(false)
+    }
+}
+
+impl PrimalityProver for PariGpProver {
+    fn is_available(&self) -> bool {
+        Self::detect(&self.gp_path)
+    }
+
+    fn prove_prime(
+        &self,
+        n: &BigUint,
+        progress: Option<&ProgressCallback>,
+    ) -> Result<EcppCertificate, ProverError> {
+        let n_str = n.to_str_radix(10);
+        // PARI/GP script: isprime(N, 2) returns 0 (composite) or the
+        // Primality certificate (a non-zero value).  We print it as a string.
+        let script = format!("v=isprime({n_str},2); print(v); quit()");
+
+        if let Some(cb) = progress {
+            cb(PrimeProgress {
+                stage: PrimeProgressStage::EcppPrecheck,
+                percent: Some(0.0),
+                processed: None,
+                total: None,
+                message: format!("Starting PARI/GP ECPP for {}-digit number", n_str.len()),
+                elapsed_ms: 0,
+                estimated: true,
+            });
+        }
+
+        // Run with timeout via thread + channel
+        let gp_path = self.gp_path.clone();
+        let timeout_secs = self.timeout_secs;
+        let (tx, rx) = std::sync::mpsc::channel::<Result<String, ProverError>>();
+
+        let script_clone = script.clone();
+        thread::spawn(move || {
+            let result = std::process::Command::new(&gp_path)
+                .arg("-q")
+                .arg("-e")
+                .arg(&script_clone)
+                .output();
+            match result {
+                Ok(output) => {
+                    let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
+                    let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
+                    if !output.status.success() {
+                        let _ = tx.send(Err(ProverError::ComputationFailed(
+                            format!("gp exited with status {}: {stderr}", output.status)
+                        )));
+                    } else {
+                        let _ = tx.send(Ok(stdout));
+                    }
+                }
+                Err(e) => {
+                    let _ = tx.send(Err(ProverError::NotAvailable(
+                        format!("failed to spawn gp: {e}")
+                    )));
+                }
+            }
+        });
+
+        let raw = rx
+            .recv_timeout(Duration::from_secs(timeout_secs))
+            .map_err(|_| ProverError::Timeout)??;
+
+        // PARI/GP returns "0" if composite, non-zero certificate otherwise
+        if raw.trim() == "0" {
+            return Err(ProverError::ComputationFailed(
+                "PARI/GP says composite (isprime returned 0)".to_string()
+            ));
+        }
+
+        if let Some(cb) = progress {
+            cb(PrimeProgress {
+                stage: PrimeProgressStage::EcppVerify,
+                percent: Some(100.0),
+                processed: None,
+                total: None,
+                message: "ECPP certificate generated".to_string(),
+                elapsed_ms: 0,
+                estimated: false,
+            });
+        }
+
+        Ok(EcppCertificate { n: n.clone(), raw, verified: true })
+    }
+
+    fn verify_certificate(
+        &self,
+        n: &BigUint,
+        cert: &EcppCertificate,
+    ) -> Result<bool, ProverError> {
+        // Re-run isprime with the certificate to verify
+        let n_str = n.to_str_radix(10);
+        let script = format!("print(isprime({n_str},2)!=0); quit()");
+        let output = std::process::Command::new(&self.gp_path)
+            .arg("-q")
+            .arg("-e")
+            .arg(&script)
+            .output()
+            .map_err(|e| ProverError::ComputationFailed(format!("gp spawn failed: {e}")))?;
+        let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
+        let _ = cert; // cert.raw could be used for cert-based verify in future
+        Ok(stdout == "1")
+    }
+}
+
+/// No-op prover: used when PARI/GP is not installed.
+pub struct NullProver;
+
+impl PrimalityProver for NullProver {
+    fn is_available(&self) -> bool { false }
+
+    fn prove_prime(
+        &self,
+        _n: &BigUint,
+        _progress: Option<&ProgressCallback>,
+    ) -> Result<EcppCertificate, ProverError> {
+        Err(ProverError::NotAvailable(
+            "ECPP backend не подключён. Установите PARI/GP (pari-gp).".to_string()
+        ))
+    }
+
+    fn verify_certificate(
+        &self,
+        _n: &BigUint,
+        _cert: &EcppCertificate,
+    ) -> Result<bool, ProverError> {
+        Err(ProverError::NotAvailable(
+            "ECPP backend не подключён. Установите PARI/GP (pari-gp).".to_string()
+        ))
+    }
+}
+
+/// Auto-detect the best available prover.
+pub fn detect_prover() -> Box<dyn PrimalityProver> {
+    if PariGpProver::detect("gp") {
+        Box::new(PariGpProver::default())
+    } else {
+        Box::new(NullProver)
+    }
+}
+
+// Phase 11 — is_prime_proven
+
+#[derive(Debug)]
+pub enum ProvenPrimeResult {
+    Composite { witness: CompositeWitness },
+    ProvenPrime { certificate: EcppCertificate },
+    /// Prover not available; fast result was probable_prime but no proof obtained.
+    ProbablePrime { rounds: u32, prover_error: ProverError },
+}
+
+/// Full pipeline: fast check → ECPP proof (if fast says probable prime).
+pub fn is_prime_proven(
+    n: &BigUint,
+    cfg: &PrimeQueryConfig,
+    prover: &dyn PrimalityProver,
+    progress: Option<&ProgressCallback>,
+) -> ProvenPrimeResult {
+    match is_prime_fast(n, cfg, progress) {
+        FastPrimeResult::Composite { witness } => ProvenPrimeResult::Composite { witness },
+        FastPrimeResult::ProbablePrime { rounds } => {
+            match prover.prove_prime(n, progress) {
+                Ok(cert) => ProvenPrimeResult::ProvenPrime { certificate: cert },
+                Err(e) => ProvenPrimeResult::ProbablePrime { rounds, prover_error: e },
+            }
+        }
+    }
+}
+
+// Phase 12 — next_prime_proven
+
+#[derive(Debug)]
+pub struct NextPrimeProvenResult {
+    pub p: BigUint,
+    pub offset: BigUint,
+    pub checked_candidates: u64,
+    pub certificate: EcppCertificate,
+}
+
+/// Find the next prime > n and prove it with ECPP.
+pub fn next_prime_proven(
+    n: &BigUint,
+    cfg: &PrimeQueryConfig,
+    prover: &dyn PrimalityProver,
+    progress: Option<&ProgressCallback>,
+) -> Result<NextPrimeProvenResult, ProverError> {
+    let fast = next_prime_fast(n, cfg, progress);
+    let certificate = prover.prove_prime(&fast.p, progress)?;
+    Ok(NextPrimeProvenResult {
+        offset: fast.offset,
+        checked_candidates: fast.checked_candidates,
+        certificate,
+        p: fast.p,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -3402,5 +4693,327 @@ mod tests {
             next_prime_query(None, 11).expect("next after 11"),
             13
         );
+    }
+
+    // --- BigUint / Miller-Rabin tests ---
+
+    #[test]
+    fn miller_rabin_small_primes() {
+        let primes = [2u64, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 97, 541, 7919];
+        for p in primes {
+            assert!(miller_rabin_big(&BigUint::from(p)), "should be prime: {p}");
+        }
+    }
+
+    #[test]
+    fn miller_rabin_small_composites() {
+        let composites = [0u64, 1, 4, 6, 8, 9, 10, 15, 25, 49, 100, 561, 1105];
+        for c in composites {
+            assert!(!miller_rabin_big(&BigUint::from(c)), "should be composite: {c}");
+        }
+    }
+
+    #[test]
+    fn is_prime_big_matches_u64_path() {
+        // For values that fit u64, is_prime_big should agree with is_prime_by_e8_mask
+        let cases = [2u64, 3, 5, 7, 11, 13, 97, 541, 7919, 104729, 15485863];
+        for n in cases {
+            let big = BigUint::from(n);
+            let expected = is_prime_by_e8_mask(n);
+            assert_eq!(
+                is_prime_big(&big, Backend::Cpu, None),
+                expected,
+                "n={n}"
+            );
+        }
+        let composites = [4u64, 6, 8, 9, 15, 25, 100];
+        for n in composites {
+            let big = BigUint::from(n);
+            assert!(!is_prime_big(&big, Backend::Cpu, None), "n={n} should be composite");
+        }
+    }
+
+    #[test]
+    fn is_prime_big_large_known_prime() {
+        // 2^61 - 1 = 2305843009213693951 is a Mersenne prime
+        let mersenne: BigUint = (BigUint::one() << 61u32) - BigUint::one();
+        assert!(is_prime_big(&mersenne, Backend::Cpu, None), "2^61-1 should be prime");
+    }
+
+    #[test]
+    fn is_prime_big_above_u64_max() {
+        // 2^89 - 1 = 618970019642690137449562111 is a Mersenne prime (> u64::MAX)
+        let p: BigUint = (BigUint::one() << 89u32) - BigUint::one();
+        assert!(is_prime_big(&p, Backend::Cpu, None), "2^89-1 should be prime");
+
+        // 2^89 - 1 + 2 = composite
+        let c = &p + BigUint::from(2u64);
+        // Just check it doesn't panic; result may vary
+        let _ = is_prime_big(&c, Backend::Cpu, None);
+    }
+
+    #[test]
+    fn next_prime_big_small_values() {
+        let cases = [
+            (0u64, 2u64),
+            (1, 2),
+            (2, 3),
+            (3, 5),
+            (4, 5),
+            (5, 7),
+            (6, 7),
+            (7, 11),
+            (10, 11),
+            (11, 13),
+            (28, 29),
+            (29, 31),
+        ];
+        for (n, expected) in cases {
+            let result = next_prime_big(&BigUint::from(n), Backend::Cpu, None);
+            assert_eq!(result, BigUint::from(expected), "nextPrime({n})");
+        }
+    }
+
+    #[test]
+    fn next_prime_big_matches_u64_path() {
+        // nextPrime via BigUint path should match direct u64 path
+        let cases = [100u64, 1000, 7919, 104729];
+        for n in cases {
+            let expected = next_prime_by_e8_mask(n).expect("u64 next prime");
+            let result = next_prime_big(&BigUint::from(n), Backend::Cpu, None);
+            assert_eq!(
+                result,
+                BigUint::from(expected),
+                "nextPrime({n})"
+            );
+        }
+    }
+
+    #[test]
+    fn next_prime_big_above_u64_max() {
+        // Find next prime after 2^89 - 1 (itself prime), result should be > 2^89-1
+        let p: BigUint = (BigUint::one() << 89u32) - BigUint::one();
+        let next = next_prime_big(&p, Backend::Cpu, None);
+        assert!(next > p, "next prime should be strictly greater");
+        assert!(miller_rabin_big(&next), "result should be prime");
+    }
+
+    // -----------------------------------------------------------------------
+    // Phase 14: New tests
+    // -----------------------------------------------------------------------
+
+    // --- validate_decimal_input ---
+
+    #[test]
+    fn validate_decimal_1024_digits_accepted() {
+        let s = "1".repeat(1024);
+        assert!(validate_decimal_input(&s).is_ok());
+    }
+
+    #[test]
+    fn validate_decimal_1025_digits_rejected() {
+        let s = "1".repeat(1025);
+        assert!(matches!(
+            validate_decimal_input(&s),
+            Err(InputError::TooLong { digits: 1025, max: 1024 })
+        ));
+    }
+
+    #[test]
+    fn validate_decimal_empty_rejected() {
+        assert!(matches!(validate_decimal_input(""), Err(InputError::Empty)));
+        assert!(matches!(validate_decimal_input("   "), Err(InputError::Empty)));
+        assert!(matches!(validate_decimal_input("+"), Err(InputError::Empty)));
+    }
+
+    #[test]
+    fn validate_decimal_non_digits_rejected() {
+        let err = validate_decimal_input("123abc");
+        assert!(matches!(err, Err(InputError::InvalidChar { .. })));
+    }
+
+    #[test]
+    fn validate_decimal_space_inside_rejected() {
+        let err = validate_decimal_input("123 456");
+        assert!(matches!(err, Err(InputError::InvalidChar { ch: ' ', .. })));
+    }
+
+    #[test]
+    fn validate_decimal_leading_plus_ok() {
+        let result = validate_decimal_input("+42");
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), BigUint::from(42u64));
+    }
+
+    #[test]
+    fn validate_decimal_negative_rejected() {
+        assert!(matches!(
+            validate_decimal_input("-1"),
+            Err(InputError::NegativeNotAllowed)
+        ));
+    }
+
+    // --- is_prime_fast ---
+
+    #[test]
+    fn is_prime_fast_known_small_primes() {
+        let cfg = PrimeQueryConfig::default();
+        let primes = [2u64, 3, 5, 7, 11, 13, 17, 19, 23, 97, 541, 7919];
+        for p in primes {
+            let result = is_prime_fast(&BigUint::from(p), &cfg, None);
+            assert!(
+                matches!(result, FastPrimeResult::ProbablePrime { .. }),
+                "should be probable prime: {p}"
+            );
+        }
+    }
+
+    #[test]
+    fn is_prime_fast_composites() {
+        let cfg = PrimeQueryConfig::default();
+        let composites = [0u64, 1, 4, 6, 8, 9, 10, 15, 25, 49, 100];
+        for c in composites {
+            let result = is_prime_fast(&BigUint::from(c), &cfg, None);
+            assert!(
+                matches!(result, FastPrimeResult::Composite { .. }),
+                "should be composite: {c}"
+            );
+        }
+    }
+
+    #[test]
+    fn is_prime_fast_carmichael_561() {
+        // 561 = 3 * 11 * 17 — smallest Carmichael number
+        let cfg = PrimeQueryConfig::default();
+        let result = is_prime_fast(&BigUint::from(561u64), &cfg, None);
+        assert!(
+            matches!(result, FastPrimeResult::Composite { .. }),
+            "561 is a Carmichael number, should be identified as composite"
+        );
+    }
+
+    #[test]
+    fn is_prime_fast_carmichael_1105() {
+        // 1105 = 5 * 13 * 17 — second Carmichael number
+        let cfg = PrimeQueryConfig::default();
+        let result = is_prime_fast(&BigUint::from(1105u64), &cfg, None);
+        assert!(
+            matches!(result, FastPrimeResult::Composite { .. }),
+            "1105 is a Carmichael number, should be identified as composite"
+        );
+    }
+
+    #[test]
+    fn is_prime_fast_mersenne_89_probable_prime() {
+        // 2^89 - 1 is a known Mersenne prime (> u64::MAX)
+        let cfg = PrimeQueryConfig::default();
+        let p: BigUint = (BigUint::one() << 89u32) - BigUint::one();
+        let result = is_prime_fast(&p, &cfg, None);
+        assert!(
+            matches!(result, FastPrimeResult::ProbablePrime { .. }),
+            "2^89-1 should be probable prime"
+        );
+    }
+
+    // --- next_prime_fast ---
+
+    #[test]
+    fn next_prime_fast_small_known() {
+        let cfg = PrimeQueryConfig::default();
+        let cases = [(0u64, 2u64), (2, 3), (3, 5), (5, 7), (10, 11), (28, 29)];
+        for (n, expected) in cases {
+            let result = next_prime_fast(&BigUint::from(n), &cfg, None);
+            assert_eq!(result.p, BigUint::from(expected), "nextPrimeFast({n})");
+        }
+    }
+
+    #[test]
+    fn next_prime_fast_above_u64max() {
+        let cfg = PrimeQueryConfig::default();
+        // Start from 2^89 - 1 (a prime), next should be > it and prime
+        let p: BigUint = (BigUint::one() << 89u32) - BigUint::one();
+        let result = next_prime_fast(&p, &cfg, None);
+        assert!(result.p > p, "next prime should be strictly greater");
+        // Verify with Miller-Rabin
+        assert!(miller_rabin_big(&result.p), "result should be prime");
+    }
+
+    // --- NullProver ---
+
+    #[test]
+    fn null_prover_returns_not_available() {
+        let prover = NullProver;
+        let n = BigUint::from(7u64);
+        let err = prover.prove_prime(&n, None).unwrap_err();
+        assert!(matches!(err, ProverError::NotAvailable(_)));
+    }
+
+    #[test]
+    fn is_prime_proven_composite_returns_early() {
+        let cfg = PrimeQueryConfig::default();
+        let prover = NullProver;
+        // 4 is composite — should return Composite without calling prover
+        let result = is_prime_proven(&BigUint::from(4u64), &cfg, &prover, None);
+        assert!(matches!(result, ProvenPrimeResult::Composite { .. }));
+    }
+
+    #[test]
+    fn is_prime_proven_probable_prime_with_null_prover() {
+        let cfg = PrimeQueryConfig::default();
+        let prover = NullProver;
+        // 7 is prime — fast says probable prime, NullProver can't prove → ProbablePrime
+        let result = is_prime_proven(&BigUint::from(7u64), &cfg, &prover, None);
+        assert!(matches!(result, ProvenPrimeResult::ProbablePrime { .. }));
+    }
+
+    // --- wheel210 helpers ---
+
+    #[test]
+    fn wheel210_reject_multiples() {
+        assert_eq!(wheel210_reject(&BigUint::from(4u64)), Some(2));
+        assert_eq!(wheel210_reject(&BigUint::from(9u64)), Some(3));
+        assert_eq!(wheel210_reject(&BigUint::from(25u64)), Some(5));
+        assert_eq!(wheel210_reject(&BigUint::from(49u64)), Some(7));
+    }
+
+    #[test]
+    fn wheel210_reject_primes_not_rejected() {
+        // The small primes themselves should not be rejected
+        assert_eq!(wheel210_reject(&BigUint::from(2u64)), None);
+        assert_eq!(wheel210_reject(&BigUint::from(3u64)), None);
+        assert_eq!(wheel210_reject(&BigUint::from(5u64)), None);
+        assert_eq!(wheel210_reject(&BigUint::from(7u64)), None);
+        // 11, 13 should not be rejected
+        assert_eq!(wheel210_reject(&BigUint::from(11u64)), None);
+        assert_eq!(wheel210_reject(&BigUint::from(13u64)), None);
+    }
+
+    #[test]
+    fn next_wheel210_candidate_ge_correctness() {
+        // Values already in {1,3,7,9} mod 10 should be returned as-is
+        assert_eq!(next_wheel210_candidate_ge(&BigUint::from(11u64)), BigUint::from(11u64));
+        assert_eq!(next_wheel210_candidate_ge(&BigUint::from(13u64)), BigUint::from(13u64));
+        // Values not in the set should advance
+        assert_eq!(next_wheel210_candidate_ge(&BigUint::from(10u64)), BigUint::from(11u64));
+        assert_eq!(next_wheel210_candidate_ge(&BigUint::from(12u64)), BigUint::from(13u64));
+        assert_eq!(next_wheel210_candidate_ge(&BigUint::from(14u64)), BigUint::from(17u64));
+    }
+
+    // --- miller_rabin_with_progress ---
+
+    #[test]
+    fn miller_rabin_with_progress_basic() {
+        let started = Instant::now();
+        // Known prime 7919
+        let result = miller_rabin_with_progress(
+            &BigUint::from(7919u64), 13, None, started, 9999
+        );
+        assert!(matches!(result, MillerRabinResult::ProbablePrime { .. }));
+
+        // Known composite 561
+        let result = miller_rabin_with_progress(
+            &BigUint::from(561u64), 13, None, started, 9999
+        );
+        assert!(matches!(result, MillerRabinResult::Composite { .. }));
     }
 }

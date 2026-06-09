@@ -1,0 +1,10 @@
+data/
+docs/
+examples_py/
+tools/
+big/
+win/
+*.md
+*.xlsx
+*.qpw
+.git/

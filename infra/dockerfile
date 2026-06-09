@@ -1,0 +1,62 @@
+# ── Stage 1: Сборка Rust бинарников и кастомного Caddy ───────────
+FROM docker.io/rust:1.87-slim-bookworm AS builder
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Сборка твоего Rust приложения
+WORKDIR /app
+COPY rust/ ./rust/
+RUN cargo build --release --manifest-path rust/e8_mask_codec/Cargo.toml
+
+# Сборка Caddy с модулем для Cloudflare DNS
+# Скачиваем xcaddy (официальный билдер)
+RUN curl -sL "https://github.com/caddyserver/xcaddy/releases/download/v0.4.4/xcaddy_0.4.4_linux_amd64.tar.gz" | tar -xz -C /usr/local/bin/ xcaddy
+RUN xcaddy build v2.8.4 --with github.com/caddy-dns/cloudflare
+
+
+# ── Stage 2: Минимальный Runtime (Финальный образ) ───────────────
+FROM docker.io/debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Копируем кастомный Caddy из билдера
+COPY --from=builder /usr/local/bin/caddy /usr/local/bin/caddy
+
+# Копируем твои Rust бинарники
+COPY --from=builder /app/rust/e8_mask_codec/target/release/prime_ui      ./bin/
+COPY --from=builder /app/rust/e8_mask_codec/target/release/count_first_n  ./bin/
+COPY --from=builder /app/rust/e8_mask_codec/target/release/is_prime       ./bin/
+COPY --from=builder /app/rust/e8_mask_codec/target/release/next_prime     ./bin/
+
+# Пишем Caddyfile. Он будет брать токен из переменной окружения CF_API_TOKEN
+RUN echo 'math.network-communications.net {\n\
+    tls {\n\
+        dns cloudflare {env.CF_API_TOKEN}\n\
+    }\n\
+    reverse_proxy 127.0.0.1:43173\n\
+}' > /app/Caddyfile
+
+# Скрипт-entrypoint для одновременного запуска бэкенда и прокси
+RUN echo '#!/bin/sh\n\
+# Запуск Rust приложения в фоне\n\
+/app/bin/prime_ui --host 127.0.0.1 --port 43173 --archive-dir /app/data/archive &\n\
+\n\
+# Запуск Caddy на переднем плане\n\
+exec caddy run --config /app/Caddyfile --adapter caddyfile\n\
+' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+
+# Открываем только стандартные веб-порты наружу
+EXPOSE 80
+EXPOSE 443
+
+# Папки для данных приложения и для сохранения сертификатов Let's Encrypt
+VOLUME ["/app/data", "/root/.local/share/caddy"]
+
+CMD ["/app/entrypoint.sh"]
