@@ -43,11 +43,11 @@ WHEEL_REPAIR_PARALLEL_LOG ?= $(RUN_DIR)/repair_wheel210_parallel.log
 WHEEL_REPAIR_PARALLEL_PID ?= $(RUN_DIR)/repair_wheel210_parallel.pid
 
 # ── Docker / Podman ──────────────────────────────────────────────
-CONTAINER_RUNTIME ?= podman
+CONTAINER_RUNTIME ?= docker
 IMAGE_NAME        ?= localhost/prime-ui
 IMAGE_TAG         ?= latest
 CONTAINER_NAME    ?= math_service
-CF_TOKEN_FILE     ?= infra/CF2.txt
+CF_TOKEN_FILE     ?= /tmp/CF2.txt
 # Extract token: last word on the Authorization: Bearer line
 CF_API_TOKEN      ?= $(shell grep -oP '(?<=Bearer )[^\s"]+' $(CF_TOKEN_FILE) 2>/dev/null)
 DATA_VOLUME       ?= $(CURDIR)/data
@@ -247,6 +247,7 @@ nextPrimeBigFile: next-prime-big-file
 docker-build:
 	@test -n "$(CF_API_TOKEN)" || { echo "ERROR: CF_API_TOKEN is empty — check $(CF_TOKEN_FILE)"; exit 1; }
 	$(CONTAINER_RUNTIME) build \
+		--network host \
 		-f infra/dockerfile \
 		-t $(IMAGE_NAME):$(IMAGE_TAG) \
 		.

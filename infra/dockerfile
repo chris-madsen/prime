@@ -1,4 +1,4 @@
-# ── Build-time arguments (override with --build-arg) ─────────────
+# ── Build-time arguments ─────────────────────────────────────────
 ARG RUST_VERSION=1.87
 ARG DEBIAN_VERSION=bookworm
 ARG GO_VERSION=1.22.4
@@ -16,14 +16,18 @@ ARG XCADDY_VERSION
 ARG CADDY_VERSION
 ARG CADDY_DNS_MODULE
 
-RUN printf 'APT::Sandbox::User "root";\nAcquire::ForceIPv4 "true";\n' > /etc/apt/apt.conf.d/99podman \
-    && apt-get update && apt-get install -y \
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99force-ipv4 \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
     m4 \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Go (bookworm ships 1.19 which is too old for Caddy 2.8)
+# Install Go
 RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" \
     | tar -C /usr/local -xz
 ENV PATH="/usr/local/go/bin:${PATH}"
@@ -48,33 +52,31 @@ FROM docker.io/debian:${DEBIAN_VERSION}-slim
 ARG APP_PORT
 ARG DOMAIN
 
-RUN printf 'APT::Sandbox::User "root";\nAcquire::ForceIPv4 "true";\n' > /etc/apt/apt.conf.d/99podman \
-    && apt-get update && apt-get install -y \
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99force-ipv4 \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
     ca-certificates \
     pari-gp \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Caddy binary
-COPY --from=builder /usr/local/bin/caddy /usr/local/bin/caddy
+COPY --from=builder /app/caddy /usr/local/bin/caddy
 
-# Rust binaries
 COPY --from=builder /app/rust/e8_mask_codec/target/release/prime_ui      ./bin/
 COPY --from=builder /app/rust/e8_mask_codec/target/release/count_first_n  ./bin/
 COPY --from=builder /app/rust/e8_mask_codec/target/release/is_prime       ./bin/
 COPY --from=builder /app/rust/e8_mask_codec/target/release/next_prime     ./bin/
 
-# Caddyfile — domain and port come from build args
 RUN printf '%s {\n    tls {\n        dns cloudflare {env.CF_API_TOKEN}\n    }\n    reverse_proxy 127.0.0.1:%s\n}\n' \
     "${DOMAIN}" "${APP_PORT}" > /app/Caddyfile
 
-# Entrypoint: start backend then Caddy
 RUN printf '#!/bin/sh\n/app/bin/prime_ui --host 127.0.0.1 --port %s --archive-dir /app/data/archive &\nexec caddy run --config /app/Caddyfile --adapter caddyfile\n' \
     "${APP_PORT}" > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 EXPOSE 80 443
-
 VOLUME ["/app/data", "/root/.local/share/caddy"]
-
 CMD ["/app/entrypoint.sh"]
