@@ -1,2 +1,1 @@
-curl -X GET "https://api.cloudflare.com/client/v4/accounts/226254a5a06181cd189b6b053a22d341/tokens/verify" \
-     -H "Authorization: Bearer cfat_fFEHq85ljFA4PSRg2I1JA0ItiuZMFEQANn7VVzqb97bfa1dd"
+Y3VybCAtWCBHRVQgImh0dHBzOi8vYXBpLmNsb3VkZmxhcmUuY29tL2NsaWVudC92NC9hY2NvdW50cy8yMjYyNTRhNWEwNjE4MWNkMTg5YjZiMDUzYTIyZDM0MS90b2tlbnMvdmVyaWZ5IiBcCiAgICAgLUggIkF1dGhvcml6YXRpb246IEJlYXJlciBjZmF0X2ZGRUhxODVsakZBNFBTUmcySTFKQTBJdGl1Wk1GRVFBTm43VlZ6cWI5N2JmYTFkZCIK
