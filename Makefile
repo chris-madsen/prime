@@ -264,6 +264,7 @@ docker-run:
 		-e CF_API_TOKEN="$(CF_API_TOKEN)" \
 		-v "$(DATA_VOLUME):/app/data" \
 		-v "$(CADDY_VOLUME):/root/.local/share/caddy" \
+		-v "$(CURDIR)/rust/e8_mask_codec/ui:/app/ui:ro" \
 		--restart unless-stopped \
 		--name $(CONTAINER_NAME) \
 		$(IMAGE_NAME):$(IMAGE_TAG)

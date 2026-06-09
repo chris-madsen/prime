@@ -1,0 +1,3144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>�������������� �������������������� �������������� ����������</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>
+:root {
+  --bg: #071225;
+  --panel: #0c1a2f;
+  --panel-2: #07111f;
+  --text: #dbe7f7;
+  --muted: #9fb1c8;
+  --heading: #f1f6ff;
+  --line: #22324d;
+  --accent: #8ab4ff;
+  --accent-2: #c7d8ff;
+  --code-bg: #061020;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: radial-gradient(circle at 18% -12%, rgba(68, 109, 178, .24), transparent 32rem), var(--bg);
+  color: var(--text);
+  font: 17px/1.72 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+main, .page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 44px 48px 96px;
+  background: linear-gradient(180deg, rgba(12, 26, 47, .92), rgba(9, 21, 39, .92));
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  min-height: 100vh;
+}
+h1, h2, h3, h4 {
+  color: var(--heading);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 2.1em 0 .75em;
+}
+h1 {
+  margin-top: 0;
+  font-size: clamp(2.1rem, 5vw, 4.1rem);
+  letter-spacing: -0.045em;
+}
+h2 {
+  font-size: 1.55rem;
+  padding-top: .65rem;
+  border-top: 1px solid var(--line);
+}
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.05rem; color: var(--accent-2); }
+p { margin: 1rem 0; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul, ol { padding-left: 1.55rem; }
+li { margin: .28rem 0; }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .8rem 1.2rem;
+  border-left: 4px solid var(--accent);
+  background: rgba(138, 180, 255, .08);
+  color: var(--accent-2);
+}
+pre {
+  overflow-x: auto;
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1.15rem 1.25rem;
+  line-height: 1.55;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.015);
+}
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: .94em;
+}
+:not(pre) > code {
+  background: rgba(148, 167, 205, .16);
+  border: 1px solid rgba(148, 167, 205, .13);
+  border-radius: 6px;
+  padding: .08rem .32rem;
+  color: #edf4ff;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2rem 0 1.7rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  display: table;
+}
+th, td {
+  padding: .75rem .9rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+th { text-align: left; color: var(--heading); background: rgba(138, 180, 255, .09); }
+tr:last-child td { border-bottom: 0; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+/* Оглавление из markdown: одна колонка, без карточек и без двухколоночной сетки */
+h2#оглавление + ol, h2:has(+ ol) + ol:first-of-type {
+  columns: 1 !important;
+  column-count: 1 !important;
+  list-style-position: outside;
+  background: rgba(8, 18, 33, .45);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1rem 1rem 1rem 2.25rem;
+}
+h2#оглавление + ol li, h2:has(+ ol) + ol:first-of-type li {
+  border-bottom: 1px solid rgba(34, 50, 77, .75);
+  padding: .28rem 0;
+}
+h2#оглавление + ol li:last-child, h2:has(+ ol) + ol:first-of-type li:last-child { border-bottom: 0; }
+/* MathJax: без рамок, без фона, только аккуратное центрирование display-формул */
+.MathJax, mjx-container { color: var(--text) !important; }
+mjx-container[display="true"] {
+  display: block;
+  margin: 1.15rem 0 1.35rem !important;
+  padding: 0 !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+mjx-container[display="true"] svg, mjx-container[display="true"] mjx-math {
+  max-width: 100%;
+}
+/* Pandoc display math wrapper */
+.math.display {
+  display: block;
+  margin: 1.15rem 0 1.35rem;
+  overflow-x: auto;
+  text-align: center;
+}
+.math.inline { white-space: nowrap; }
+.subtitle { color: var(--muted); font-size: 1.08rem; margin-top: -1.2rem; }
+@media (max-width: 760px) {
+  body { font-size: 16px; }
+  main, .page { padding: 28px 20px 72px; border: 0; }
+  table { display: block; overflow-x: auto; }
+  h1 { font-size: 2.2rem; }
+}
+math {
+  color: var(--text);
+  font-size: 1.06em;
+}
+math[display="block"] {
+  display: block;
+  text-align: center;
+  margin: 1.15rem auto 1.35rem;
+  overflow-x: auto;
+  max-width: 100%;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+</style>
+</head>
+<body>
+<main class="page">
+<header id="title-block-header">
+<h1 class="title">�������������� �������������������� ��������������
+����������</h1>
+</header>
+<h1 id="быстрое-вычисление-простых-чисел">Быстрое вычисление простых
+чисел</h1>
+<p><em>Групповое кодирование циклических масок, исполнительный слой
+E8/24-cell и запросы к большим целым числам.</em></p>
+<h2 id="оглавление">Оглавление</h2>
+<ol type="1">
+<li><a href="#goal">Цель и главный результат</a></li>
+<li><a href="#mask-model">Математическая модель маски</a></li>
+<li><a href="#channel-cycle">Оптимизация № 1: один канал вместо
+четырёх</a></li>
+<li><a href="#mirror">Оптимизация № 2: зеркало без отдельного
+хранения</a></li>
+<li><a href="#affine">Оптимизация № 3: аффинный переход между
+периодами</a></li>
+<li><a href="#mask-algorithm">Алгоритм генерации полной и очищенной
+масок</a></li>
+<li><a href="#b4">Тессеракт и группа
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mn>4</mn></msub><annotation encoding="application/x-tex">B_4</annotation></semantics></math>:
+пакет из двух масок</a></li>
+<li><a href="#f4">24-ячейник и группа
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mn>4</mn></msub><annotation encoding="application/x-tex">F_4</annotation></semantics></math>:
+пакет из шести масок</a></li>
+<li><a href="#h4">600-ячейник: пакет из тридцати масок</a></li>
+<li><a
+href="#e8"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>
+и политоп Гоше
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mn>4</mn><mn>21</mn></msub><annotation encoding="application/x-tex">4_{21}</annotation></semantics></math>:
+пакет из шестидесяти масок</a></li>
+<li><a href="#hopf">Роль золотого сечения, дуальности и расслоения
+Хопфа</a></li>
+<li><a href="#compression">Точные коэффициенты оптимизации</a></li>
+<li><a href="#storage">Что именно хранится</a></li>
+<li><a href="#implementations">Алгоритмы и проверочные
+программы</a></li>
+<li><a href="#architecture">Рекомендуемая архитектура</a></li>
+<li><a href="#measured-state">Текущее состояние реализации и измеренные
+тесты производительности</a></li>
+<li><a href="#first-trillion">Практический рубеж: первые
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>12</mn></msup><annotation encoding="application/x-tex">10^{12}</annotation></semantics></math>
+простых</a></li>
+<li><a href="#where-wins">Где оптимизации реально дают выигрыш</a></li>
+<li><a href="#range-10e19-10e20">Почему диапазон
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>10</mn><mn>19</mn></msup><mo>→</mo><msup><mn>10</mn><mn>20</mn></msup></mrow><annotation encoding="application/x-tex">10^{19}\to10^{20}</annotation></semantics></math>
+не является первой практической целью</a></li>
+<li><a href="#big-primes-api">Большие отдельные простые:
+<code>isPrime(N)</code> и <code>nextPrime(N)</code></a></li>
+<li><a href="#practical-scenarios">Практические сценарии
+применения</a></li>
+<li><a href="#sources">Источники</a></li>
+<li><a href="#makefile-long-run">Практический запуск длинного прогона
+через Makefile</a></li>
+<li><a href="#runtime-update-appendix">Приложение: текущий
+исполнительный и операционный слой</a></li>
+<li><a href="#universal-makefile-operations">Универсальные операции
+Makefile</a></li>
+<li><a href="#truth-model-long-runs">Модель истины для длинных
+прогонов</a></li>
+<li><a href="#archive-backed-prime-queries">Архивные запросы к простым
+числам</a></li>
+<li><a href="#current-production-runtime-shape">Текущая рабочая форма
+исполнительного слоя</a></li>
+<li><a href="#targets-and-neutral-roadmap">Цели и нейтральная дорожная
+карта</a></li>
+<li><a href="#local-ui-prime-queries">Локальный интерфейс для
+<code>isPrime(N)</code> и <code>nextPrime(N)</code></a></li>
+</ol>
+<p><a id="goal"></a></p>
+<h2 id="цель-и-главный-результат">1. Цель и главный результат</h2>
+<p>Маска рассматривается как первичный циклический объект, из которого
+порождаются числа. Плотная строка битов не является обязательным
+форматом хранения.</p>
+<p>Для каждого периода требуется знать:</p>
+<ul>
+<li>начальное условие;</li>
+<li>общий канальный генератор;</li>
+<li>правило перехода между соседними периодами;</li>
+<li>длину вычисляемого диапазона.</li>
+</ul>
+<p>Найдена следующая иерархия точных пакетных представлений:</p>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Геометрия</th>
+<th style="text-align: right;">Число состояний</th>
+<th style="text-align: right;">Каналов</th>
+<th style="text-align: right;">Масок в пакете</th>
+<th style="text-align: right;">Пакетное сокращение seed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Канальный цикл
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>4</mn></msub><annotation encoding="application/x-tex">C_4</annotation></semantics></math></td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">1\times</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td>Тессерактный слой
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mn>4</mn></msub><annotation encoding="application/x-tex">B_4</annotation></semantics></math></td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">2\times</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td>Один 24-ячейник</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">6\times</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td>Один 600-ячейник</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">30</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>30</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">30\times</annotation></semantics></math></td>
+</tr>
+<tr class="odd">
+<td>Корни
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>,
+политоп
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mn>4</mn><mn>21</mn></msub><annotation encoding="application/x-tex">4_{21}</annotation></semantics></math></td>
+<td style="text-align: right;">240</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">60</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">60\times</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+<p>Последняя строка означает:</p>
+<blockquote>
+<p>Одно начальное условие
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-макроблока
+вместе с общими операторами порождает 60 последовательных масок и все
+четыре канала каждой маски.</p>
+</blockquote>
+<p>Относительно уже построенного 24-ячейникового пакета это даёт
+потенциальное укрупнение:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>60</mn><mn>6</mn></mfrac><mo>=</mo><mn>10</mn><mo>×</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{60}{6}=10\times.
+</annotation></semantics></math></p>
+<p>Относительно независимого хранения четырёх канальных seed каждой
+маски один
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-макроблок
+охватывает:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mo>⋅</mo><mn>4</mn><mo>=</mo><mn>240</mn></mrow><annotation encoding="application/x-tex">
+60\cdot4=240
+</annotation></semantics></math></p>
+<p>канальных состояний.</p>
+<p>При этом число вершин многогранника само по себе ничего не сжимает.
+Сжатие возникает только потому, что состояния вычисляются из:</p>
+<ol type="1">
+<li>общего seed;</li>
+<li>фиксированных групповых генераторов;</li>
+<li>точного аффинного кокцикла.</li>
+</ol>
+<p><a id="mask-model"></a></p>
+<h2 id="математическая-модель-маски">2. Математическая модель маски</h2>
+<p>Пусть:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>10</mn><mi>q</mi><mo>+</mo><mi>r</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>r</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>7</mn><mo>,</mo><mn>9</mn><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+p=10q+r,
+\qquad
+r\in\{1,3,7,9\}.
+</annotation></semantics></math></p>
+<p>Четыре канала задаются множителями:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>m</mi><mi>a</mi></msub><mo>∈</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>9</mn><mo>,</mo><mn>7</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>a</mi><mo>∈</mo><mi>ℤ</mi><mi>/</mi><mn>4</mn><mi>ℤ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+m_a\in(1,3,9,7),
+\qquad
+a\in\mathbb Z/4\mathbb Z.
+</annotation></semantics></math></p>
+<p>Событие канала
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+имеет числовое значение:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>q</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><msub><mi>m</mi><mi>a</mi></msub><mi>p</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+x_{q,r,a}=m_a p.
+</annotation></semantics></math></p>
+<p>Разложим его по основанию 10:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>q</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><mn>10</mn><msub><mi>k</mi><mrow><mi>q</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>+</mo><msub><mi>d</mi><mrow><mi>q</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+x_{q,r,a}=10k_{q,r,a}+d_{q,r,a}.
+</annotation></semantics></math></p>
+<p>Тогда:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>k</mi><mrow><mi>q</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><annotation encoding="application/x-tex">k_{q,r,a}</annotation></semantics></math>
+— позиция в маске;</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mrow><mi>q</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>7</mn><mo>,</mo><mn>9</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">d_{q,r,a}\in\{1,3,7,9\}</annotation></semantics></math>
+— десятичный канал;</li>
+<li>четыре значения
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+задают четыре специальные позиции периода.</li>
+</ul>
+<p>Полная маска
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>G</mi><mi>p</mi></msub><annotation encoding="application/x-tex">G_p</annotation></semantics></math>
+содержит все четыре события:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>,</mo><mspace width="1.0em"></mspace><mn>3</mn><mi>p</mi><mo>,</mo><mspace width="1.0em"></mspace><mn>9</mn><mi>p</mi><mo>,</mo><mspace width="1.0em"></mspace><mn>7</mn><mi>p</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+p,\quad3p,\quad9p,\quad7p.
+</annotation></semantics></math></p>
+<p>Очищенная маска
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mi>p</mi></msub><annotation encoding="application/x-tex">E_p</annotation></semantics></math>
+отличается удалением самопопадания:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+p.
+</annotation></semantics></math></p>
+<p><a id="channel-cycle"></a></p>
+<h2 id="оптимизация-1-один-канал-вместо-четырёх">3. Оптимизация № 1:
+один канал вместо четырёх</h2>
+<p>Определим канальный оператор:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>p</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>3</mn><mi>x</mi><mrow><mspace width="0.222em"></mspace><mo>mod</mo><mspace width="0.222em"></mspace><mn>10</mn></mrow><mi>p</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+T_p(x)=3x\bmod 10p.
+</annotation></semantics></math></p>
+<p>Он создаёт цикл:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>→</mo><mn>3</mn><mo>→</mo><mn>9</mn><mo>→</mo><mn>7</mn><mo>→</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+1\longrightarrow3\longrightarrow9\longrightarrow7\longrightarrow1.
+</annotation></semantics></math></p>
+<p>Следовательно:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><msub><mi>T</mi><mi>p</mi></msub><mo stretchy="false" form="postfix">⟩</mo><mo>≅</mo><msub><mi>C</mi><mn>4</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\langle T_p\rangle\cong C_4.
+</annotation></semantics></math></p>
+<p>Из одного события
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">x=p</annotation></semantics></math>
+вычисляются:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msubsup><mi>T</mi><mi>p</mi><mn>0</mn></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mi>p</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msubsup><mi>T</mi><mi>p</mi><mn>1</mn></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>3</mn><mi>p</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msubsup><mi>T</mi><mi>p</mi><mn>2</mn></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>9</mn><mi>p</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msubsup><mi>T</mi><mi>p</mi><mn>3</mn></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mn>7</mn><mi>p</mi><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+T_p^0(p)&amp;=p,\\
+T_p^1(p)&amp;=3p,\\
+T_p^2(p)&amp;=9p,\\
+T_p^3(p)&amp;=7p.
+\end{aligned}
+</annotation></semantics></math></p>
+<p>Поэтому четыре канала не должны храниться независимо.</p>
+<p>Если плотное четырёхканальное представление одного периода
+занимает:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>4</mn><mi>p</mi></mrow><annotation encoding="application/x-tex">
+B_{\mathrm{full}}(p)=4p
+</annotation></semantics></math></p>
+<p>бит, то один материализованный базовый канал занимает:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">l</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">
+B_{\mathrm{channel}}(p)=p
+</annotation></semantics></math></p>
+<p>бит.</p>
+<p>Первое точное сокращение:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>×</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+4\times.
+</annotation></semantics></math></p>
+<p>На практике полный базовый канал также не требуется материализовать:
+его события вычисляются непосредственно из seed.</p>
+<p><a id="mirror"></a></p>
+<h2 id="оптимизация-2-зеркало-без-отдельного-хранения">4. Оптимизация №
+2: зеркало без отдельного хранения</h2>
+<p>Зеркальное преобразование действует так:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mi>p</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>k</mi><mo>,</mo><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo>−</mo><mn>1</mn><mo>−</mo><mi>k</mi><mo>,</mo><mspace width="0.278em"></mspace><mn>10</mn><mo>−</mo><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+R_p(k,d)=(p-1-k,\;10-d).
+</annotation></semantics></math></p>
+<p>Оно меняет пары:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>↔</mo><mn>9</mn><mo>,</mo><mspace width="2.0em"></mspace><mn>3</mn><mo>↔</mo><mn>7</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+1\leftrightarrow9,
+\qquad
+3\leftrightarrow7.
+</annotation></semantics></math></p>
+<p>На событиях маски выполняется:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mi>p</mi></msub><mo>=</mo><msubsup><mi>T</mi><mi>p</mi><mn>2</mn></msubsup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+R_p=T_p^2.
+</annotation></semantics></math></p>
+<p>Действительно:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>T</mi><mi>p</mi><mn>2</mn></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>9</mn><mi>x</mi><mo>≡</mo><mi>−</mi><mi>x</mi><mrow><mspace width="0.222em"></mspace><mo stretchy="false" form="prefix">(</mo><mo>mod</mo><mspace width="0.222em"></mspace><mrow><mn>10</mn><mi>p</mi></mrow><mo stretchy="false" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+T_p^2(x)=9x\equiv-x\pmod{10p},
+</annotation></semantics></math></p>
+<p>поскольку
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>∣</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">p\mid x</annotation></semantics></math>.</p>
+<p>Зеркало уже находится внутри канальной группы:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><msub><mi>R</mi><mi>p</mi></msub><mo stretchy="false" form="postfix">⟩</mo><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><msubsup><mi>T</mi><mi>p</mi><mn>2</mn></msubsup><mo stretchy="false" form="postfix">⟩</mo><mo>⊂</mo><msub><mi>C</mi><mn>4</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\langle R_p\rangle
+=
+\langle T_p^2\rangle
+\subset C_4.
+</annotation></semantics></math></p>
+<p>Поэтому зеркало не требует:</p>
+<ul>
+<li>второй половины маски;</li>
+<li>отдельного генератора;</li>
+<li>отдельного бита направления;</li>
+<li>отдельного множителя
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">2\times</annotation></semantics></math>
+поверх канального
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">4\times</annotation></semantics></math>.</li>
+</ul>
+<p>Иначе одно и то же преобразование было бы учтено дважды.</p>
+<p><a id="affine"></a></p>
+<h2 id="оптимизация-3-аффинный-переход-между-периодами">5. Оптимизация №
+3: аффинный переход между периодами</h2>
+<p>Рассмотрим соседний период того же десятичного класса:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>q</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>r</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>q</mi><mo>,</mo><mi>r</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mn>10</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+p(q+1,r)=p(q,r)+10.
+</annotation></semantics></math></p>
+<p>Для канала
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>q</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><msub><mi>m</mi><mi>a</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo>+</mo><mn>10</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>x</mi><mrow><mi>q</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>+</mo><mn>10</mn><msub><mi>m</mi><mi>a</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+x_{q+1,r,a}
+=
+m_a(p+10)
+=
+x_{q,r,a}+10m_a.
+</annotation></semantics></math></p>
+<p>Следовательно:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mrow><mi>q</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><msub><mi>k</mi><mrow><mi>q</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>+</mo><msub><mi>m</mi><mi>a</mi></msub></mrow><annotation encoding="application/x-tex">
+k_{q+1,r,a}=k_{q,r,a}+m_a
+</annotation></semantics></math></p>
+<p>и:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mrow><mi>q</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><msub><mi>d</mi><mrow><mi>q</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+d_{q+1,r,a}=d_{q,r,a}.
+</annotation></semantics></math></p>
+<p>Позиции четырёх каналов сдвигаются на:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>9</mn><mo>,</mo><mn>7</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(1,3,9,7).
+</annotation></semantics></math></p>
+<p>Через
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+периодов:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mrow><mi>q</mi><mo>+</mo><mi>n</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><msub><mi>k</mi><mrow><mi>q</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>+</mo><mi>n</mi><msub><mi>m</mi><mi>a</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+k_{q+n,r,a}=k_{q,r,a}+nm_a.
+</annotation></semantics></math></p>
+<p>Это основной межмасочный алгоритм.</p>
+<p>Он справедлив для любого:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>≥</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+n\ge0.
+</annotation></semantics></math></p>
+<p>Следовательно, пакеты из 2, 3, 6, 30 и 60 масок — не разные
+арифметические алгоритмы. Это разные геометрические размеры блока одного
+универсального аффинного автомата.</p>
+<h3 id="универсальный-декодер">5.1. Универсальный декодер</h3>
+<p>Для базового индекса
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mn>0</mn></msub><annotation encoding="application/x-tex">q_0</annotation></semantics></math>,
+номера маски
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+и канала
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>n</mi></msub><mo>=</mo><mn>10</mn><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>q</mi><mn>0</mn></msub><mo>+</mo><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>r</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+p_n=10(q_0+n)+r,
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><msub><mi>m</mi><mi>a</mi></msub><msub><mi>p</mi><mi>n</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+x_{n,a}=m_a p_n,
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>k</mi><mrow><mi>n</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>d</mi><mrow><mi>n</mi><mo>,</mo><mi>a</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>divmod</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mi>n</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>,</mo><mn>10</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(k_{n,a},d_{n,a})
+=
+\operatorname{divmod}(x_{n,a},10).
+</annotation></semantics></math></p>
+<p>Эквивалентная рекуррентная форма:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><msub><mi>k</mi><mrow><mi>n</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>+</mo><msub><mi>m</mi><mi>a</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+k_{n+1,a}=k_{n,a}+m_a.
+</annotation></semantics></math></p>
+<h3 id="псевдокод">5.2. Псевдокод</h3>
+<pre class="text"><code>input:
+    q0        начальный индекс
+    r         один из 1, 3, 7, 9
+    count     число масок
+
+multipliers = [1, 3, 9, 7]
+
+for n in 0 .. count-1:
+    p = 10 * (q0 + n) + r
+
+    for a in 0 .. 3:
+        x = multipliers[a] * p
+        k, d = divmod(x, 10)
+        emit(period=p, channel=a, position=k, digit=d)</code></pre>
+<p>Плотная маска при этом не строится.</p>
+<p><a id="mask-algorithm"></a></p>
+<h2 id="алгоритм-генерации-полной-и-очищенной-масок">6. Алгоритм
+генерации полной и очищенной масок</h2>
+<h3 id="полная-маска-g_p">6.1. Полная маска
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>G</mi><mi>p</mi></msub><annotation encoding="application/x-tex">G_p</annotation></semantics></math></h3>
+<p>Для каждого периода
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+создаются четыре события:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒢</mi><mi>p</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mi>p</mi><mo>,</mo><mn>3</mn><mi>p</mi><mo>,</mo><mn>9</mn><mi>p</mi><mo>,</mo><mn>7</mn><mi>p</mi><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathcal G_p
+=
+\{p,3p,9p,7p\}.
+</annotation></semantics></math></p>
+<p>Каждое событие преобразуется в координату:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>k</mi><mo>,</mo><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>divmod</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>,</mo><mn>10</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(k,d)=\operatorname{divmod}(x,10).
+</annotation></semantics></math></p>
+<p>Если требуется строка длины
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>,
+все позиции сначала получают символ <code>f</code>, после чего в четырёх
+вычисленных позициях очищается соответствующий бит.</p>
+<h3 id="очищенная-маска-e_p">6.2. Очищенная маска
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mi>p</mi></msub><annotation encoding="application/x-tex">E_p</annotation></semantics></math></h3>
+<p>Для маски
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mi>p</mi></msub><annotation encoding="application/x-tex">E_p</annotation></semantics></math>
+не создаётся событие:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mi>p</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+x=p.
+</annotation></semantics></math></p>
+<p>То есть используется проектор:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mi>E</mi></msub><mo>:</mo><msub><mi>𝒢</mi><mi>p</mi></msub><mo>↦</mo><msub><mi>𝒢</mi><mi>p</mi></msub><mo>\</mo><mo stretchy="false" form="prefix">{</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+P_E:
+\mathcal G_p
+\longmapsto
+\mathcal G_p\setminus\{p\}.
+</annotation></semantics></math></p>
+<p>Правило очистки одинаково для всех периодов и не является
+индивидуальными данными маски.</p>
+<h3 id="генерация-чисел-напрямую">6.3. Генерация чисел напрямую</h3>
+<p>Если конечная задача состоит в генерации или вычёркивании чисел,
+строковое представление <code>E/G</code> не требуется вообще.</p>
+<p>Автомат выдаёт непосредственно:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>+</mo><mn>10</mn><msub><mi>p</mi><mi>n</mi></msub><mi>t</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>t</mi><mo>=</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">
+x_{n,a}+10p_nt,
+\qquad
+t=0,1,2,\ldots
+</annotation></semantics></math></p>
+<p>для нужных каналов и периодов.</p>
+<p><a id="b4"></a></p>
+<h2 id="тессеракт-и-группа-b_4-пакет-из-двух-масок">7. Тессеракт и
+группа
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mn>4</mn></msub><annotation encoding="application/x-tex">B_4</annotation></semantics></math>:
+пакет из двух масок</h2>
+<p>В группе симметрий тессеракта
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>B</mi><mn>4</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">W(B_4)</annotation></semantics></math>
+используется подгруппа:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mn>2</mn></msub><mo>≅</mo><msub><mi>C</mi><mn>4</mn></msub><mo>×</mo><msub><mi>C</mi><mn>2</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+H_2\cong C_4\times C_2.
+</annotation></semantics></math></p>
+<p>Здесь:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>4</mn></msub><annotation encoding="application/x-tex">C_4</annotation></semantics></math>
+— четыре канала;</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>2</mn></msub><annotation encoding="application/x-tex">C_2</annotation></semantics></math>
+— два последовательных значения
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mrow><mspace width="0.222em"></mspace><mo>mod</mo><mspace width="0.222em"></mspace><mn>2</mn></mrow></mrow><annotation encoding="application/x-tex">q\bmod2</annotation></semantics></math>.</li>
+</ul>
+<p>Состояние:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><msub><mi>C</mi><mn>4</mn></msub><mo>×</mo><msub><mi>C</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">
+(a,b)\in C_4\times C_2
+</annotation></semantics></math></p>
+<p>задаёт:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> маски</mtext></mrow><mo>×</mo><mn>4</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> канала</mtext></mrow><mo>=</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">
+2\text{ маски}\times4\text{ канала}=8
+</annotation></semantics></math></p>
+<p>событий.</p>
+<p>Позиционный переход между масками:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>↦</mo><mi>k</mi><mo>+</mo><msub><mi>m</mi><mi>a</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+k\longmapsto k+m_a.
+</annotation></semantics></math></p>
+<p>Точное пакетное сокращение числа независимых seed:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+2\times.
+</annotation></semantics></math></p>
+<p>Вершины и ориентированные рёбра тессеракта не хранятся. Они
+вычисляются как состояния действия группы.</p>
+<p><a id="f4"></a></p>
+<h2 id="ячейник-и-группа-f_4-пакет-из-шести-масок">8. 24-ячейник и
+группа
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mn>4</mn></msub><annotation encoding="application/x-tex">F_4</annotation></semantics></math>:
+пакет из шести масок</h2>
+<h3 id="три-слоя-f_4">8.1. Три слоя
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mn>4</mn></msub><annotation encoding="application/x-tex">F_4</annotation></semantics></math></h3>
+<p>Пусть
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>∈</mo><mi>W</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>F</mi><mn>4</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">c\in W(F_4)</annotation></semantics></math>
+— элемент Кокстера порядка 12:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>c</mi><mn>12</mn></msup><mo>=</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+c^{12}=1.
+</annotation></semantics></math></p>
+<p>Определим:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>=</mo><msup><mi>c</mi><mn>3</mn></msup><mo>,</mo><mspace width="2.0em"></mspace><mi>L</mi><mo>=</mo><msup><mi>c</mi><mn>4</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+A=c^3,
+\qquad
+L=c^4.
+</annotation></semantics></math></p>
+<p>Тогда:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>A</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>4</mn><mo>,</mo><mspace width="2.0em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><mi>L</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>3</mn><mo>,</mo><mspace width="2.0em"></mspace><mi>A</mi><mi>L</mi><mo>=</mo><mi>L</mi><mi>A</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+|A|=4,
+\qquad
+|L|=3,
+\qquad
+AL=LA.
+</annotation></semantics></math></p>
+<p>Поэтому:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><mi>A</mi><mo>,</mo><mi>L</mi><mo stretchy="false" form="postfix">⟩</mo><mo>≅</mo><msub><mi>C</mi><mn>4</mn></msub><mo>×</mo><msub><mi>C</mi><mn>3</mn></msub><mo>≅</mo><msub><mi>C</mi><mn>12</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\langle A,L\rangle
+\cong
+C_4\times C_3
+\cong
+C_{12}.
+</annotation></semantics></math></p>
+<p>Это кодирует:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> маски</mtext></mrow><mo>×</mo><mn>4</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> канала</mtext></mrow><mo>=</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">
+3\text{ маски}\times4\text{ канала}=12
+</annotation></semantics></math></p>
+<p>состояний.</p>
+<h3 id="добавление-двоичного-слоя">8.2. Добавление двоичного слоя</h3>
+<p>Совместная структура:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mn>6</mn></msub><mo>≅</mo><msub><mi>C</mi><mn>4</mn></msub><mo>×</mo><msub><mi>C</mi><mn>2</mn></msub><mo>×</mo><msub><mi>C</mi><mn>3</mn></msub></mrow><annotation encoding="application/x-tex">
+H_6\cong C_4\times C_2\times C_3
+</annotation></semantics></math></p>
+<p>имеет порядок:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>H</mi><mn>6</mn></msub><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>24</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+|H_6|=24.
+</annotation></semantics></math></p>
+<p>Номер маски:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>∈</mo><mi>ℤ</mi><mi>/</mi><mn>6</mn><mi>ℤ</mi></mrow><annotation encoding="application/x-tex">
+n\in\mathbb Z/6\mathbb Z
+</annotation></semantics></math></p>
+<p>восстанавливается из:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>=</mo><mi>n</mi><mrow><mspace width="0.222em"></mspace><mo>mod</mo><mspace width="0.222em"></mspace><mn>2</mn></mrow><mo>,</mo><mspace width="2.0em"></mspace><mo>ℓ</mo><mo>=</mo><mi>n</mi><mrow><mspace width="0.222em"></mspace><mo>mod</mo><mspace width="0.222em"></mspace><mn>3</mn></mrow></mrow><annotation encoding="application/x-tex">
+b=n\bmod2,
+\qquad
+\ell=n\bmod3
+</annotation></semantics></math></p>
+<p>по китайской теореме об остатках:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>≡</mo><mn>3</mn><mi>b</mi><mo>+</mo><mn>4</mn><mo>ℓ</mo><mrow><mspace width="0.222em"></mspace><mo stretchy="false" form="prefix">(</mo><mo>mod</mo><mspace width="0.222em"></mspace><mn>6</mn><mo stretchy="false" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+n\equiv3b+4\ell\pmod6.
+</annotation></semantics></math></p>
+<p>Состояние:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo>,</mo><mo>ℓ</mo><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><msub><mi>C</mi><mn>4</mn></msub><mo>×</mo><msub><mi>C</mi><mn>2</mn></msub><mo>×</mo><msub><mi>C</mi><mn>3</mn></msub></mrow><annotation encoding="application/x-tex">
+(a,b,\ell)
+\in
+C_4\times C_2\times C_3
+</annotation></semantics></math></p>
+<p>кодирует:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> масок</mtext></mrow><mo>×</mo><mn>4</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> канала</mtext></mrow><mo>=</mo><mn>24</mn></mrow><annotation encoding="application/x-tex">
+6\text{ масок}\times4\text{ канала}=24
+</annotation></semantics></math></p>
+<p>события.</p>
+<h3 id="один-24-ячейник">8.3. Один 24-ячейник</h3>
+<p>На 24 вершинах реализуется транзитивное скрученное действие порядка
+24.</p>
+<p>Эквивалентный групповой язык использует бинарную тетраэдральную
+группу:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>T</mi><mo>,</mo><mspace width="2.0em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><mn>2</mn><mi>T</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>24</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+2T,
+\qquad
+|2T|=24.
+</annotation></semantics></math></p>
+<p>В ней выбирается канальная подгруппа:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mn>4</mn></msub><mo>⊂</mo><mn>2</mn><mi>T</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+C_4\subset2T.
+</annotation></semantics></math></p>
+<p>Число её левых классов:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mn>2</mn><mi>T</mi><mo>:</mo><msub><mi>C</mi><mn>4</mn></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mfrac><mn>24</mn><mn>4</mn></mfrac><mo>=</mo><mn>6</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+[2T:C_4]=\frac{24}{4}=6.
+</annotation></semantics></math></p>
+<p>Поэтому множество состояний имеет точную факторизацию:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>T</mi><mo>=</mo><munderover><mo>⨆</mo><mrow><mi>j</mi><mo>=</mo><mn>0</mn></mrow><mn>5</mn></munderover><msub><mi>t</mi><mi>j</mi></msub><msub><mi>C</mi><mn>4</mn></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+2T
+=
+\bigsqcup_{j=0}^{5}t_jC_4.
+</annotation></semantics></math></p>
+<p>Здесь:</p>
+<ul>
+<li>номер класса
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+— номер одной из шести масок;</li>
+<li>элемент
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>4</mn></msub><annotation encoding="application/x-tex">C_4</annotation></semantics></math>
+— номер канала.</li>
+</ul>
+<p>Точное пакетное сокращение seed:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mo>×</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+6\times.
+</annotation></semantics></math></p>
+<p>Относительно независимых канальных seed пакет содержит:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mo>⋅</mo><mn>4</mn><mo>=</mo><mn>24</mn></mrow><annotation encoding="application/x-tex">
+6\cdot4=24
+</annotation></semantics></math></p>
+<p>вычисляемых состояний.</p>
+<p><a id="h4"></a></p>
+<h2 id="ячейник-пакет-из-тридцати-масок">9. 600-ячейник: пакет из
+тридцати масок</h2>
+<h3 id="точная-групповая-цепочка">9.1. Точная групповая цепочка</h3>
+<p>120 вершин 600-ячейника образуют бинарную икосаэдральную группу:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>I</mi><mo>,</mo><mspace width="2.0em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><mn>2</mn><mi>I</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>120</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+2I,
+\qquad
+|2I|=120.
+</annotation></semantics></math></p>
+<p>В неё входит бинарная тетраэдральная группа:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>T</mi><mo>⊂</mo><mn>2</mn><mi>I</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+2T\subset2I.
+</annotation></semantics></math></p>
+<p>Индекс:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mn>2</mn><mi>I</mi><mo>:</mo><mn>2</mn><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mfrac><mn>120</mn><mn>24</mn></mfrac><mo>=</mo><mn>5</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+[2I:2T]
+=
+\frac{120}{24}
+=
+5.
+</annotation></semantics></math></p>
+<p>Следовательно:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>I</mi><mo>=</mo><munderover><mo>⨆</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mn>4</mn></munderover><msub><mi>g</mi><mi>i</mi></msub><mn>2</mn><mi>T</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+2I
+=
+\bigsqcup_{i=0}^{4}g_i2T.
+</annotation></semantics></math></p>
+<p>Каждый класс
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>i</mi></msub><mn>2</mn><mi>T</mi></mrow><annotation encoding="application/x-tex">g_i2T</annotation></semantics></math>
+является 24-ячейником.</p>
+<p>В статье <a href="https://arxiv.org/abs/1912.06156">The Geometry of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>4</mn></msub><annotation encoding="application/x-tex">H_4</annotation></semantics></math>
+Polytopes</a> доказано:</p>
+<ul>
+<li>в 600-ячейнике находятся 25 различных 24-ячейников;</li>
+<li>существует ровно 10 разбиений 120 вершин;</li>
+<li>каждое такое разбиение состоит из пяти непересекающихся
+24-ячейников.</li>
+</ul>
+<p>Для кодирования достаточно выбрать одно из этих разбиений как
+глобальный инвариант формата.</p>
+<h3 id="иерархия-состояний">9.2. Иерархия состояний</h3>
+<p>Используем цепочку:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mn>4</mn></msub><mo>⊂</mo><mn>2</mn><mi>T</mi><mo>⊂</mo><mn>2</mn><mi>I</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+C_4\subset2T\subset2I.
+</annotation></semantics></math></p>
+<p>Тогда:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mn>2</mn><mi>I</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mn>2</mn><mi>I</mi><mo>:</mo><mn>2</mn><mi>T</mi><mo stretchy="true" form="postfix">]</mo></mrow><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">[</mo><mn>2</mn><mi>T</mi><mo>:</mo><msub><mi>C</mi><mn>4</mn></msub><mo stretchy="true" form="postfix">]</mo></mrow><mspace width="0.167em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>C</mi><mn>4</mn></msub><mo stretchy="true" form="postfix">|</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+|2I|
+=
+[2I:2T]\,[2T:C_4]\,|C_4|.
+</annotation></semantics></math></p>
+<p>То есть:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>120</mn><mo>=</mo><mn>5</mn><mo>⋅</mo><mn>6</mn><mo>⋅</mo><mn>4</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+120=5\cdot6\cdot4.
+</annotation></semantics></math></p>
+<p>Координата состояния:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>4</mn><mo stretchy="false" form="postfix">}</mo><mo>×</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">}</mo><mo>×</mo><mi>ℤ</mi><mi>/</mi><mn>4</mn><mi>ℤ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(i,j,a)
+\in
+\{0,\ldots,4\}
+\times
+\{0,\ldots,5\}
+\times
+\mathbb Z/4\mathbb Z.
+</annotation></semantics></math></p>
+<p>Она означает:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+— один из пяти 24-ячейников;</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+— одна из шести масок внутри 24-ячейника;</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>
+— один из четырёх каналов.</li>
+</ul>
+<p>Номер маски:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mn>6</mn><mi>i</mi><mo>+</mo><mi>j</mi><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>≤</mo><mi>n</mi><mo>&lt;</mo><mn>30</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+n=6i+j,
+\qquad
+0\le n&lt;30.
+</annotation></semantics></math></p>
+<p>Числовой декодер:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>n</mi></msub><mo>=</mo><mn>10</mn><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>q</mi><mn>0</mn></msub><mo>+</mo><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>r</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+p_n=10(q_0+n)+r,
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><msub><mi>m</mi><mi>a</mi></msub><msub><mi>p</mi><mi>n</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+x_{n,a}=m_a p_n.
+</annotation></semantics></math></p>
+<p>Следовательно, один 600-ячейниковый макроблок кодирует:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>30</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> масок</mtext></mrow><mo>×</mo><mn>4</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> канала</mtext></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+30\text{ масок}\times4\text{ канала}
+.
+</annotation></semantics></math></p>
+<p>Пакетное сокращение числа независимых seed:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>30</mn><mo>×</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+30\times.
+</annotation></semantics></math></p>
+<p>Относительно 24-ячейникового пакета:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>×</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+5\times.
+</annotation></semantics></math></p>
+<h3 id="что-здесь-вычисляется">9.3. Что здесь вычисляется</h3>
+<p>Геометрический адрес состояния:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>i</mi></msub><msub><mi>t</mi><mi>j</mi></msub><msup><mi>c</mi><mi>a</mi></msup></mrow><annotation encoding="application/x-tex">
+g_i t_j c^a
+</annotation></semantics></math></p>
+<p>вычисляется из:</p>
+<ul>
+<li>фиксированного трансверсаля
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>g</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{g_i\}</annotation></semantics></math>
+группы
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>T</mi></mrow><annotation encoding="application/x-tex">2T</annotation></semantics></math>
+в
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>I</mi></mrow><annotation encoding="application/x-tex">2I</annotation></semantics></math>;</li>
+<li>фиксированного трансверсаля
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>t</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{t_j\}</annotation></semantics></math>
+группы
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>4</mn></msub><annotation encoding="application/x-tex">C_4</annotation></semantics></math>
+в
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>T</mi></mrow><annotation encoding="application/x-tex">2T</annotation></semantics></math>;</li>
+<li>канального генератора
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+порядка 4.</li>
+</ul>
+<p>Эти таблицы и генераторы являются общими для всех макроблоков и не
+дублируются для каждой маски.</p>
+<p><a id="e8"></a></p>
+<h2 id="e_8-и-политоп-гоше-4_21-пакет-из-шестидесяти-масок">10.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>
+и политоп Гоше
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mn>4</mn><mn>21</mn></msub><annotation encoding="application/x-tex">4_{21}</annotation></semantics></math>:
+пакет из шестидесяти масок</h2>
+<h3 id="два-h_4-слоя">10.1. Два
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>4</mn></msub><annotation encoding="application/x-tex">H_4</annotation></semantics></math>-слоя</h3>
+<p>Политоп Гоше
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mn>4</mn><mn>21</mn></msub><annotation encoding="application/x-tex">4_{21}</annotation></semantics></math>
+имеет 240 вершин, соответствующих 240 корням
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>.</p>
+<p>В статье <a href="https://arxiv.org/abs/1912.06156">The Geometry of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>4</mn></msub><annotation encoding="application/x-tex">H_4</annotation></semantics></math>
+Polytopes</a> описывается представление этих корней посредством двух
+600-ячейников:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mspace width="2.0em"></mspace><mtext mathvariant="normal">и</mtext><mspace width="2.0em"></mspace><mi>φ</mi><mi>H</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+H
+\qquad\text{и}\qquad
+\varphi H,
+</annotation></semantics></math></p>
+<p>где:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>φ</mi><mo>=</mo><mfrac><mrow><mn>1</mn><mo>+</mo><msqrt><mn>5</mn></msqrt></mrow><mn>2</mn></mfrac></mrow><annotation encoding="application/x-tex">
+\varphi=\frac{1+\sqrt5}{2}
+</annotation></semantics></math></p>
+<p>— золотое сечение.</p>
+<p>После редуцирования нормы две 120-элементные системы дают:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>120</mn><mo>+</mo><mn>120</mn><mo>=</mo><mn>240</mn></mrow><annotation encoding="application/x-tex">
+120+120=240
+</annotation></semantics></math></p>
+<p>корней
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>.</p>
+<p>Эта связь также рассматривается в работах <a
+href="https://arxiv.org/abs/1712.06436">From the Icosahedron to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math></a>
+и <a href="https://arxiv.org/abs/1602.05985">The Birth of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>
+out of the Spinors of the Icosahedron</a>.</p>
+<h3 id="иерархическая-координата">10.2. Иерархическая координата</h3>
+<p>Добавим номер золотого слоя:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\varepsilon\in\{0,1\}.
+</annotation></semantics></math></p>
+<p>Полная координата:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>ε</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+(\varepsilon,i,j,a),
+</annotation></semantics></math></p>
+<p>где:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>ε</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>i</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>4</mn><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>j</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>a</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>∈</mo><mi>ℤ</mi><mi>/</mi><mn>4</mn><mi>ℤ</mi><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">
+\begin{aligned}
+\varepsilon&amp;\in\{0,1\},\\
+i&amp;\in\{0,\ldots,4\},\\
+j&amp;\in\{0,\ldots,5\},\\
+a&amp;\in\mathbb Z/4\mathbb Z.
+\end{aligned}
+</annotation></semantics></math></p>
+<p>Число состояний:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>⋅</mo><mn>5</mn><mo>⋅</mo><mn>6</mn><mo>⋅</mo><mn>4</mn><mo>=</mo><mn>240</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+2\cdot5\cdot6\cdot4=240.
+</annotation></semantics></math></p>
+<p>Номер маски:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mn>30</mn><mi>ε</mi><mo>+</mo><mn>6</mn><mi>i</mi><mo>+</mo><mi>j</mi><mo>,</mo><mspace width="2.0em"></mspace><mn>0</mn><mo>≤</mo><mi>n</mi><mo>&lt;</mo><mn>60</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+n=30\varepsilon+6i+j,
+\qquad
+0\le n&lt;60.
+</annotation></semantics></math></p>
+<p>Арифметический декодер не меняется:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>n</mi></msub><mo>=</mo><mn>10</mn><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>q</mi><mn>0</mn></msub><mo>+</mo><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>r</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+p_n=10(q_0+n)+r,
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mi>n</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><msub><mi>m</mi><mi>a</mi></msub><msub><mi>p</mi><mi>n</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+x_{n,a}=m_a p_n,
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>k</mi><mrow><mi>n</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>d</mi><mrow><mi>n</mi><mo>,</mo><mi>a</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>divmod</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mi>n</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>,</mo><mn>10</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(k_{n,a},d_{n,a})
+=
+\operatorname{divmod}(x_{n,a},10).
+</annotation></semantics></math></p>
+<h3 id="результат">10.3. Результат</h3>
+<p>Один
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-макроблок
+содержит:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> масок</mtext></mrow><mo>×</mo><mn>4</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> канала</mtext></mrow><mo>=</mo><mn>240</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> состояний</mtext></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+60\text{ масок}\times4\text{ канала}
+=
+240\text{ состояний}
+.
+</annotation></semantics></math></p>
+<p>Пакетное сокращение относительно независимых seed масок:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mo>×</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+60\times.
+</annotation></semantics></math></p>
+<p>Дополнительное укрупнение относительно одного 600-ячейника:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+2\times.
+</annotation></semantics></math></p>
+<p>Дополнительное укрупнение относительно одного 24-ячейника:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mo>×</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+10\times.
+</annotation></semantics></math></p>
+<p>Относительно независимых канальных seed:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>240</mn><mo>×</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+240\times.
+</annotation></semantics></math></p>
+<p>Последнее число нельзя смешивать с
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">60\times</annotation></semantics></math>:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">60\times</annotation></semantics></math>
+сравнивает один seed на маску с одним seed на макроблок;</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>240</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">240\times</annotation></semantics></math>
+сравнивает четыре независимых канальных seed каждой маски с одним seed
+на макроблок.</li>
+</ul>
+<p><a id="hopf"></a></p>
+<h2 id="роль-золотого-сечения-дуальности-и-расслоения-хопфа">11. Роль
+золотого сечения, дуальности и расслоения Хопфа</h2>
+<h3 id="золотое-сечение">11.1. Золотое сечение</h3>
+<p>Золотое масштабирование создаёт второй
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>4</mn></msub><annotation encoding="application/x-tex">H_4</annotation></semantics></math>-слой:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>↔</mo><mi>φ</mi><mi>H</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+H\longleftrightarrow\varphi H.
+</annotation></semantics></math></p>
+<p>Именно это даёт переход:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>120</mn><mo>→</mo><mn>240</mn></mrow><annotation encoding="application/x-tex">
+120\longrightarrow240
+</annotation></semantics></math></p>
+<p>состояний и дополнительный пакетный множитель:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+2\times.
+</annotation></semantics></math></p>
+<h3 id="что-здесь-называется-дуалом">11.2. Что здесь называется
+дуалом</h3>
+<p>Нужно различать:</p>
+<ol type="1">
+<li>второй золотомасштабированный
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>4</mn></msub><annotation encoding="application/x-tex">H_4</annotation></semantics></math>-слой
+в конструкции
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>;</li>
+<li>геометрически двойственный 600-ячейнику 120-ячейник, имеющий 600
+вершин;</li>
+<li>антиподальную замену
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>↦</mo><mi>−</mi><mi>v</mi></mrow><annotation encoding="application/x-tex">v\mapsto-v</annotation></semantics></math>;</li>
+<li>дуальность коротких и длинных корней.</li>
+</ol>
+<p>Для 240 корней
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>
+используется разложение на две 120-элементные
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>4</mn></msub><annotation encoding="application/x-tex">H_4</annotation></semantics></math>-системы.
+Это не означает сложение 120 вершин 600-ячейника с 600 вершинами
+двойственного 120-ячейника.</p>
+<h3 id="расслоение-хопфа">11.3. Расслоение Хопфа</h3>
+<p>Расслоение Хопфа и кватернионная модель полезны как механизм:</p>
+<ul>
+<li>вычисления групповых состояний;</li>
+<li>перехода от единичных кватернионов к вращениям;</li>
+<li>организации слоёв и общих инвариантов;</li>
+<li>построения декодера без таблицы из 240 независимых записей.</li>
+</ul>
+<p>Однако само слово «расслоение» не создаёт ещё один коэффициент
+сжатия.</p>
+<p>Чтобы получить дополнительный множитель, волокна должны быть орбитами
+симметрии масок, а все их элементы должны однозначно вычисляться из
+одного представителя.</p>
+<p>В текущей схеме антиподальная инволюция уже связана с зеркалом:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><msup><mi>T</mi><mn>2</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+R=T^2.
+</annotation></semantics></math></p>
+<p>Поэтому фактор
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>±</mi><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{\pm1\}</annotation></semantics></math>
+нельзя второй раз считать как новое независимое
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">2\times</annotation></semantics></math>.</p>
+<p>Вывод:</p>
+<blockquote>
+<p>Расслоение Хопфа может сделать декодер красивее и дешевле, но
+подтверждённая ёмкость
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-макроблока
+остаётся равной 60 маскам, а не 120.</p>
+</blockquote>
+<p><a id="compression"></a></p>
+<h2 id="точные-коэффициенты-оптимизации">12. Точные коэффициенты
+оптимизации</h2>
+<h3 id="структурные-коэффициенты">12.1. Структурные коэффициенты</h3>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 40%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Переход</th>
+<th style="text-align: right;">Коэффициент</th>
+<th>Статус</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Четыре независимых канала
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo><msub><mi>C</mi><mn>4</mn></msub></mrow><annotation encoding="application/x-tex">\rightarrow C_4</annotation></semantics></math>-орбита</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">4\times</annotation></semantics></math></td>
+<td>доказано</td>
+</tr>
+<tr class="even">
+<td>Отдельное зеркало
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo><msup><mi>T</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\rightarrow T^2</annotation></semantics></math></td>
+<td style="text-align: right;">хранения не требует</td>
+<td>доказано</td>
+</tr>
+<tr class="odd">
+<td>Два seed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo><msub><mi>B</mi><mn>4</mn></msub></mrow><annotation encoding="application/x-tex">\rightarrow B_4</annotation></semantics></math>-пакет</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">2\times</annotation></semantics></math></td>
+<td>проверено</td>
+</tr>
+<tr class="even">
+<td>Шесть seed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math>
+24-ячейник</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">6\times</annotation></semantics></math></td>
+<td>проверено</td>
+</tr>
+<tr class="odd">
+<td>Пять 24-ячейников
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo><mn>600</mn></mrow><annotation encoding="application/x-tex">\rightarrow 600</annotation></semantics></math>-ячейник</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">5\times</annotation></semantics></math>
+сверх 24-ячейника</td>
+<td>точная групповая факторизация</td>
+</tr>
+<tr class="even">
+<td>Тридцать seed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo><mn>600</mn></mrow><annotation encoding="application/x-tex">\rightarrow 600</annotation></semantics></math>-ячейник</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>30</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">30\times</annotation></semantics></math></td>
+<td>точный аффинный пакет</td>
+</tr>
+<tr class="odd">
+<td>Два
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>4</mn></msub><annotation encoding="application/x-tex">H_4</annotation></semantics></math>-слоя
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo><msub><mi>E</mi><mn>8</mn></msub></mrow><annotation encoding="application/x-tex">\rightarrow E_8</annotation></semantics></math></td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">2\times</annotation></semantics></math>
+сверх 600-ячейника</td>
+<td>точное разложение корней</td>
+</tr>
+<tr class="even">
+<td>Шестьдесят seed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo><msub><mi>E</mi><mn>8</mn></msub></mrow><annotation encoding="application/x-tex">\rightarrow E_8</annotation></semantics></math>-макроблок</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">60\times</annotation></semantics></math></td>
+<td>точный аффинный пакет</td>
+</tr>
+<tr class="odd">
+<td>24-ячейник
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo><msub><mi>E</mi><mn>8</mn></msub></mrow><annotation encoding="application/x-tex">\rightarrow E_8</annotation></semantics></math>-макроблок</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">10\times</annotation></semantics></math>
+по ширине пакета</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>240</mn><mi>/</mi><mn>24</mn></mrow><annotation encoding="application/x-tex">240/24</annotation></semantics></math>,
+не автоматические
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">10\times</annotation></semantics></math>
+по байтам</td>
+</tr>
+</tbody>
+</table>
+<h3 id="почему-общий-результат-не-равен-4cdot2cdot6cdot30cdot60">12.2.
+Почему общий результат не равен
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>⋅</mo><mn>2</mn><mo>⋅</mo><mn>6</mn><mo>⋅</mo><mn>30</mn><mo>⋅</mo><mn>60</mn></mrow><annotation encoding="application/x-tex">4\cdot2\cdot6\cdot30\cdot60</annotation></semantics></math></h3>
+<p>Эти числа относятся к разным базовым представлениям и вложенным
+уровням.</p>
+<p>Правильная цепочка:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>→</mo><mn>24</mn><mo>→</mo><mn>120</mn><mo>→</mo><mn>240</mn></mrow><annotation encoding="application/x-tex">
+4
+\longrightarrow
+24
+\longrightarrow
+120
+\longrightarrow
+240
+</annotation></semantics></math></p>
+<p>состояний, или:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>→</mo><mn>6</mn><mo>→</mo><mn>30</mn><mo>→</mo><mn>60</mn></mrow><annotation encoding="application/x-tex">
+1
+\longrightarrow
+6
+\longrightarrow
+30
+\longrightarrow
+60
+</annotation></semantics></math></p>
+<p>масок.</p>
+<p>Поэтому:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mo>=</mo><mn>6</mn><mo>⋅</mo><mn>5</mn><mo>⋅</mo><mn>2</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+60=6\cdot5\cdot2,
+</annotation></semantics></math></p>
+<p>а не произведение всех коэффициентов таблицы.</p>
+<h3 id="сравнение-с-плотными-битовыми-половинами">12.3. Сравнение с
+плотными битовыми половинами</h3>
+<p>Для
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+периодов:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>n</mi></msub><mo>=</mo><mn>10</mn><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>q</mi><mn>0</mn></msub><mo>+</mo><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>r</mi></mrow><annotation encoding="application/x-tex">
+p_n=10(q_0+n)+r
+</annotation></semantics></math></p>
+<p>объём зеркальных половин равен:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">f</mi></mrow></msub><mo>=</mo><mn>2</mn><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></munderover><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>p</mi><mi>n</mi></msub><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+B_{\mathrm{half}}
+=
+2\sum_{n=0}^{N-1}(p_n-1).
+</annotation></semantics></math></p>
+<p>Если общий seed макроблока занимает
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi>N</mi></msub><annotation encoding="application/x-tex">S_N</annotation></semantics></math>
+бит, то:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">f</mi></mrow><mo>→</mo><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub><mo>=</mo><mfrac><mrow><mn>2</mn><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>N</mi><mo>−</mo><mn>1</mn></mrow></munderover><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>p</mi><mi>n</mi></msub><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><msub><mi>S</mi><mi>N</mi></msub></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+C_{\mathrm{half}\to\mathrm{seed}}
+=
+\frac{
+2\sum_{n=0}^{N-1}(p_n-1)
+}{
+S_N
+}.
+</annotation></semantics></math></p>
+<p>Для
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-блока:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>60</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+N=60.
+</annotation></semantics></math></p>
+<p>Точный численный коэффициент относительно плотных строк зависит от
+формата seed. Поэтому корректное универсальное утверждение —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">60\times</annotation></semantics></math>
+по числу независимых seed масок, а не фиксированный коэффициент по битам
+для всех значений
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>.</p>
+<h3 id="аффинный-автомат-не-ограничен-числом-60">12.4. Аффинный автомат
+не ограничен числом 60</h3>
+<p>Формула:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mrow><mi>q</mi><mo>+</mo><mi>n</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><msub><mi>k</mi><mrow><mi>q</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>+</mo><mi>n</mi><msub><mi>m</mi><mi>a</mi></msub></mrow><annotation encoding="application/x-tex">
+k_{q+n,r,a}=k_{q,r,a}+nm_a
+</annotation></semantics></math></p>
+<p>работает для любого
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>.</p>
+<p>Поэтому
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>
+не является информационно-теоретическим пределом. Это удобный конечный
+макроблок:</p>
+<ul>
+<li>на 60 масок;</li>
+<li>на 240 канальных состояний;</li>
+<li>с развитой группой симметрий;</li>
+<li>с естественной иерархией
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>→</mo><mn>24</mn><mo>→</mo><mn>120</mn><mo>→</mo><mn>240</mn></mrow><annotation encoding="application/x-tex">4\to24\to120\to240</annotation></semantics></math>.</li>
+</ul>
+<p>Если требуется обработать
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+последовательных масок, один глобальный аффинный seed и длина диапазона
+могут породить все
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+масок. Тогда пакетный коэффициент относительно
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+независимых seed равен:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>×</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+M\times.
+</annotation></semantics></math></p>
+<p>Многогранники определяют удобную ширину вычислительного блока, но не
+предел арифметической рекурсии.</p>
+<p><a id="storage"></a></p>
+<h2 id="что-именно-хранится">13. Что именно хранится</h2>
+<h3 id="глобальные-константы-формата">13.1. Глобальные константы
+формата</h3>
+<p>Один раз для всей программы задаются:</p>
+<ul>
+<li>множители:</li>
+</ul>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>9</mn><mo>,</mo><mn>7</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>;</mo></mrow><annotation encoding="application/x-tex">
+  (1,3,9,7);
+</annotation></semantics></math></p>
+<ul>
+<li>канальный генератор
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>4</mn></msub><annotation encoding="application/x-tex">C_4</annotation></semantics></math>;</li>
+<li>правило зеркала
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><msup><mi>T</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">R=T^2</annotation></semantics></math>;</li>
+<li>трансверсаль
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>C</mi><mn>4</mn></msub><annotation encoding="application/x-tex">C_4</annotation></semantics></math>
+в
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>T</mi></mrow><annotation encoding="application/x-tex">2T</annotation></semantics></math>;</li>
+<li>трансверсаль
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>T</mi></mrow><annotation encoding="application/x-tex">2T</annotation></semantics></math>
+в
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>I</mi></mrow><annotation encoding="application/x-tex">2I</annotation></semantics></math>;</li>
+<li>преобразование между слоями
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
+и
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>φ</mi><mi>H</mi></mrow><annotation encoding="application/x-tex">\varphi H</annotation></semantics></math>;</li>
+<li>выбранное разбиение 600-ячейника на пять 24-ячейников.</li>
+</ul>
+<p>Это код алгоритма или неизменяемая таблица, а не данные каждой
+маски.</p>
+<h3 id="seed-макроблока">13.2. Seed макроблока</h3>
+<p>Для блока последовательных периодов достаточно:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>q</mi><mn>0</mn></msub><mo>,</mo><mi>r</mi><mo>,</mo><mi>N</mi><mo>,</mo><mtext mathvariant="normal">тип маски</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+I=(q_0,r,N,\text{тип маски}).
+</annotation></semantics></math></p>
+<p>Здесь:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mn>0</mn></msub><annotation encoding="application/x-tex">q_0</annotation></semantics></math>
+— начало блока;</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>r</mi><annotation encoding="application/x-tex">r</annotation></semantics></math>
+— десятичный класс;</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+— число масок;</li>
+<li>тип определяет, строится
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+или применяется очистка
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>P</mi><mi>E</mi></msub><annotation encoding="application/x-tex">P_E</annotation></semantics></math>.</li>
+</ul>
+<p>Для фиксированного
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-блока:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>60</mn></mrow><annotation encoding="application/x-tex">
+N=60
+</annotation></semantics></math></p>
+<p>может быть частью формата и отдельно не храниться.</p>
+<h3 id="prime-only-режим">13.3. Prime-only режим</h3>
+<p>Аффинная орбита включает все:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>10</mn><mi>q</mi><mo>+</mo><mi>r</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+p=10q+r,
+</annotation></semantics></math></p>
+<p>а не только простые
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>.</p>
+<p>Если нужны исключительно простые периоды, требуется:</p>
+<ul>
+<li>селектор простых слоёв;</li>
+<li>либо применение составных периодов с последующей фильтрацией;</li>
+<li>либо внешний генератор допустимых периодов.</li>
+</ul>
+<p>Селектор влияет на реальный битовый коэффициент, но не меняет
+правильность групповой адресации.</p>
+<p><a id="implementations"></a></p>
+<h2 id="алгоритмы-и-проверочные-программы">14. Алгоритмы и проверочные
+программы</h2>
+<h3 id="арифметический-аффинный-автомат">14.1. Арифметический аффинный
+автомат</h3>
+<p>Файл:</p>
+<p><code>examples_py/07_verify_affine_polytope_mapping.py</code></p>
+<p>Проверяет:</p>
+<ul>
+<li>переход
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>↦</mo><mi>p</mi><mo>+</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">p\mapsto p+10</annotation></semantics></math>;</li>
+<li>сдвиги
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>9</mn><mo>,</mo><mn>7</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1,3,9,7)</annotation></semantics></math>;</li>
+<li>восстановление слоёв
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mn>2</mn></msub><mo>×</mo><msub><mi>C</mi><mn>3</mn></msub></mrow><annotation encoding="application/x-tex">C_2\times C_3</annotation></semantics></math>;</li>
+<li>24 состояния шестимасочного блока;</li>
+<li>иерархию
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>⋅</mo><mn>6</mn><mo>⋅</mo><mn>4</mn><mo>=</mo><mn>120</mn></mrow><annotation encoding="application/x-tex">5\cdot6\cdot4=120</annotation></semantics></math>
+для 600-ячейника;</li>
+<li>иерархию
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>⋅</mo><mn>5</mn><mo>⋅</mo><mn>6</mn><mo>⋅</mo><mn>4</mn><mo>=</mo><mn>240</mn></mrow><annotation encoding="application/x-tex">2\cdot5\cdot6\cdot4=240</annotation></semantics></math>
+для
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>.</li>
+</ul>
+<p>Проверено:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>39996</mn><annotation encoding="application/x-tex">
+39996
+</annotation></semantics></math></p>
+<p>допустимых периодов до 100 000 и:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>96000</mn><annotation encoding="application/x-tex">
+96000
+</annotation></semantics></math></p>
+<p>состояний шестимасочных макроблоков, а также:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>120000</mn><annotation encoding="application/x-tex">
+120000
+</annotation></semantics></math></p>
+<p>состояний 600-ячейниковых блоков и:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>240000</mn><annotation encoding="application/x-tex">
+240000
+</annotation></semantics></math></p>
+<p>состояний
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-блоков.</p>
+<h3 id="точная-групповая-проверка-b_4f_4">14.2. Точная групповая
+проверка
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mn>4</mn></msub><mi>/</mi><msub><mi>F</mi><mn>4</mn></msub></mrow><annotation encoding="application/x-tex">B_4/F_4</annotation></semantics></math></h3>
+<p>Файл:</p>
+<p><code>examples_py/08_verify_b4_f4_group_mapping.py</code></p>
+<p>В точной рациональной арифметике проверяет:</p>
+<ul>
+<li>подгруппу
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mn>4</mn></msub><mo>×</mo><msub><mi>C</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">C_4\times C_2</annotation></semantics></math>
+в
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mn>4</mn></msub><annotation encoding="application/x-tex">B_4</annotation></semantics></math>;</li>
+<li>порядок:</li>
+</ul>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>W</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>F</mi><mn>4</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>1152</mn><mo>;</mo></mrow><annotation encoding="application/x-tex">
+  |W(F_4)|=1152;
+</annotation></semantics></math></p>
+<ul>
+<li>порядок элемента Кокстера:</li>
+</ul>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>c</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mn>12</mn><mo>;</mo></mrow><annotation encoding="application/x-tex">
+  |c|=12;
+</annotation></semantics></math></p>
+<ul>
+<li>две 12-элементные орбиты на корнях;</li>
+<li>транзитивную скрученную группу порядка 24;</li>
+<li>точные дуальности коротких и длинных корней.</li>
+</ul>
+<h3 id="алгоритм-600-ячейникового-блока">14.3. Алгоритм 600-ячейникового
+блока</h3>
+<pre class="text"><code>input:
+    q0
+    r
+
+for i in 0 .. 4:          # пять 24-ячеек
+    for j in 0 .. 5:      # шесть масок в 24-ячейнике
+        n = 6*i + j
+        p = 10*(q0+n) + r
+
+        for a in 0 .. 3:  # четыре канала
+            x = multiplier[a] * p
+            emit(group_state=(i,j,a), value=x)</code></pre>
+<h3 id="алгоритм-e_8-блока">14.4. Алгоритм
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-блока</h3>
+<pre class="text"><code>input:
+    q0
+    r
+
+for epsilon in 0 .. 1:   # H и φH
+    for i in 0 .. 4:     # пять 24-ячеек
+        for j in 0 .. 5: # шесть масок
+            n = 30*epsilon + 6*i + j
+            p = 10*(q0+n) + r
+
+            for a in 0 .. 3:
+                x = multiplier[a] * p
+                emit(
+                    root_state=(epsilon,i,j,a),
+                    value=x
+                )</code></pre>
+<p>Геометрическая координата вычисляется из фиксированных представителей
+классов:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>ε</mi><mo>,</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>↦</mo><msub><mi>Φ</mi><mi>ε</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>g</mi><mi>i</mi></msub><msub><mi>t</mi><mi>j</mi></msub><msup><mi>c</mi><mi>a</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+(\varepsilon,i,j,a)
+\longmapsto
+\Phi_\varepsilon(g_i t_j c^a).
+</annotation></semantics></math></p>
+<p><a id="architecture"></a></p>
+<h2 id="рекомендуемая-архитектура">15. Рекомендуемая архитектура</h2>
+<h3 id="математическое-ядро">15.1. Математическое ядро</h3>
+<p>Использовать аффинный групповой автомат:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>q</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>↦</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>q</mi><mo>+</mo><mi>n</mi><mo>,</mo><mi>r</mi><mo>,</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+(q,r,a)
+\longmapsto
+(q+n,r,a)
+</annotation></semantics></math></p>
+<p>с кокциклом:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>↦</mo><mi>k</mi><mo>+</mo><mi>n</mi><msub><mi>m</mi><mi>a</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+k\longmapsto k+nm_a.
+</annotation></semantics></math></p>
+<h3 id="локальный-уровень">15.2. Локальный уровень</h3>
+<p>Использовать:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mn>4</mn></msub><mo>⊂</mo><mn>2</mn><mi>T</mi></mrow><annotation encoding="application/x-tex">
+C_4\subset2T
+</annotation></semantics></math></p>
+<p>для кодирования:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> масок</mtext></mrow><mo>×</mo><mn>4</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> канала</mtext></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+6\text{ масок}\times4\text{ канала}.
+</annotation></semantics></math></p>
+<h3 id="средний-уровень">15.3. Средний уровень</h3>
+<p>Использовать:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>T</mi><mo>⊂</mo><mn>2</mn><mi>I</mi></mrow><annotation encoding="application/x-tex">
+2T\subset2I
+</annotation></semantics></math></p>
+<p>и одно разбиение Шоуте для кодирования:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>⋅</mo><mn>6</mn><mo>=</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">
+5\cdot6=30
+</annotation></semantics></math></p>
+<p>масок.</p>
+<h3 id="верхний-уровень">15.4. Верхний уровень</h3>
+<p>Использовать два слоя:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>∪</mo><mi>φ</mi><mi>H</mi></mrow><annotation encoding="application/x-tex">
+H\cup\varphi H
+</annotation></semantics></math></p>
+<p>для кодирования:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>⋅</mo><mn>30</mn><mo>=</mo><mn>60</mn></mrow><annotation encoding="application/x-tex">
+2\cdot30=60
+</annotation></semantics></math></p>
+<p>масок и:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mo>⋅</mo><mn>4</mn><mo>=</mo><mn>240</mn></mrow><annotation encoding="application/x-tex">
+60\cdot4=240
+</annotation></semantics></math></p>
+<p>канальных состояний.</p>
+<h3 id="практическая-рекомендация">15.5. Практическая рекомендация</h3>
+<p>Для CPU/SIMD/GPU удобно выбрать:</p>
+<ul>
+<li>24 состояния как малый блок;</li>
+<li>120 состояний как средний блок;</li>
+<li>240 состояний как крупный
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-блок.</li>
+</ul>
+<p>Но хранить нужно не вершины и не рёбра, а:</p>
+<ul>
+<li>seed;</li>
+<li>номер внешнего блока;</li>
+<li>при необходимости prime-only селектор.</li>
+</ul>
+<p>Все геометрические состояния вычисляются.</p>
+<h3
+id="оптимальный-формат-исполнительного-слоя-хранить-как-e_8-исполнять-как-24-ячейники">15.6.
+Оптимальный формат исполнительного слоя: хранить как
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>,
+исполнять как 24-ячейники</h3>
+<p>Наиболее сбалансированный формат по памяти и скорости — один
+60-битный selector на десятичный класс:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> active_masks<span class="op">:</span> <span class="dt">u64</span><span class="op">;</span></span></code></pre></div>
+<p>Используются младшие 60 бит:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>bit</mo><mi>n</mi></msub><mo>=</mo><mn>1</mn><mo>⇔</mo><msub><mi>p</mi><mi>n</mi></msub><mo>=</mo><mn>10</mn><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>q</mi><mn>0</mn></msub><mo>+</mo><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>r</mi></mrow><annotation encoding="application/x-tex">
+\operatorname{bit}_n=1
+\iff
+p_n=10(q_0+n)+r
+</annotation></semantics></math></p>
+<p>включён в вычисление.</p>
+<p>Оставшиеся четыре старших бита можно:</p>
+<ul>
+<li>оставить нулевыми;</li>
+<li>зарезервировать под версию или режим блока;</li>
+<li>использовать для локальных флагов, если перед сканированием
+выполняется маскирование младших 60 бит.</li>
+</ul>
+<p>Для всех четырёх десятичных классов удобен блок:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>repr<span class="at">(</span>C<span class="op">,</span> align<span class="at">(</span><span class="dv">32</span><span class="at">))]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">struct</span> E8MaskBlock <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    selectors<span class="op">:</span> [<span class="dt">u64</span><span class="op">;</span> <span class="dv">4</span>]<span class="op">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Его размер:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>⋅</mo><mn>8</mn><mo>=</mo><mn>32</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> байта</mtext></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+4\cdot8=32\text{ байта}.
+</annotation></semantics></math></p>
+<p>Он описывает:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>⋅</mo><mn>60</mn><mo>=</mo><mn>240</mn></mrow><annotation encoding="application/x-tex">
+4\cdot60=240
+</annotation></semantics></math></p>
+<p>кандидатных периодов и порождает до:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>240</mn><mo>⋅</mo><mn>4</mn><mo>=</mo><mn>960</mn></mrow><annotation encoding="application/x-tex">
+240\cdot4=960
+</annotation></semantics></math></p>
+<p>канальных событий.</p>
+<p>Если блоки расположены последовательно, значение
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mn>0</mn></msub><annotation encoding="application/x-tex">q_0</annotation></semantics></math>
+не хранится в каждом блоке:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>q</mi><mn>0</mn></msub><mo>=</mo><msub><mi>q</mi><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">b</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi></mrow></msub><mo>+</mo><mn>60</mn><mspace width="0.167em"></mspace><mo>block_index</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+q_0=q_{\mathrm{global}}+60\,\operatorname{block\_index}.
+</annotation></semantics></math></p>
+<h4 id="сравнение-selector-форматов">Сравнение selector-форматов</h4>
+<p>Для 60 масок одного десятичного класса:</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 40%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Формат</th>
+<th style="text-align: right;">Память</th>
+<th>Особенность</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>десять byte-aligned 24-cell selector по 6 бит</td>
+<td style="text-align: right;">10 байт</td>
+<td>простой, но десять загрузок</td>
+</tr>
+<tr class="even">
+<td>плотно упакованные 24-cell selector</td>
+<td style="text-align: right;">7,5 байта в среднем</td>
+<td>минимум бит, неудобные границы и извлечение</td>
+</tr>
+<tr class="odd">
+<td>один
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-selector</td>
+<td style="text-align: right;">8 байт</td>
+<td>одна выровненная загрузка и четыре свободных бита</td>
+</tr>
+</tbody>
+</table>
+<p>Для четырёх десятичных классов:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Формат</th>
+<th style="text-align: right;">Память на 240 периодов</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>byte-aligned 24-cell</td>
+<td style="text-align: right;">40 байт</td>
+</tr>
+<tr class="even">
+<td>полностью bit-packed</td>
+<td style="text-align: right;">30 байт</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>,
+четыре <code>u64</code></td>
+<td style="text-align: right;">32 байта</td>
+</tr>
+</tbody>
+</table>
+<p>Следовательно,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-формат:</p>
+<ul>
+<li>экономит 20% памяти относительно простого byte-aligned 24-cell
+формата;</li>
+<li>уступает предельно плотному битовому потоку только 2 байта на 240
+периодов, то есть 6,25%;</li>
+<li>не требует невыровненных извлечений;</li>
+<li>целиком помещается в один 256-битный SIMD-регистр.</li>
+</ul>
+<h4 id="горячий-цикл">Горячий цикл</h4>
+<p>Для разреженного selector используется сканирование установленных
+битов:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="kw">mut</span> word <span class="op">=</span> active_masks <span class="op">&amp;</span> ACTIVE_BITS<span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> word <span class="op">!=</span> <span class="dv">0</span> <span class="op">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> n <span class="op">=</span> word<span class="op">.</span>trailing_zeros() <span class="kw">as</span> <span class="dt">u64</span><span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    word <span class="op">&amp;=</span> word <span class="op">-</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> p <span class="op">=</span> base_p <span class="op">+</span> <span class="dv">10</span> <span class="op">*</span> n<span class="op">;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    emit([p<span class="op">,</span> <span class="dv">3</span> <span class="op">*</span> p<span class="op">,</span> <span class="dv">9</span> <span class="op">*</span> p<span class="op">,</span> <span class="dv">7</span> <span class="op">*</span> p])<span class="op">;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Для полного или почти полного блока выгоднее последовательная
+рекурсия:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>p</mi><mi>n</mi></msub><mo>+</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">
+p_{n+1}=p_n+10
+</annotation></semantics></math></p>
+<p>и:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mrow><mi>n</mi><mo>+</mo><mn>1</mn><mo>,</mo><mi>a</mi></mrow></msub><mo>=</mo><msub><mi>k</mi><mrow><mi>n</mi><mo>,</mo><mi>a</mi></mrow></msub><mo>+</mo><msub><mi>m</mi><mi>a</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+k_{n+1,a}=k_{n,a}+m_a.
+</annotation></semantics></math></p>
+<p>Никакие матрицы
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>,
+кватернионы или координаты вершин в горячем цикле не вычисляются.</p>
+<h4 id="зачем-сохранять-24-ячейниковое-деление">Зачем сохранять
+24-ячейниковое деление</h4>
+<p>60 бит логически делятся на десять подблоков:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mo>=</mo><mn>10</mn><mo>⋅</mo><mn>6</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+60=10\cdot6.
+</annotation></semantics></math></p>
+<p>Подблок:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>chunk</mo><mi>j</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>word</mo><mo>≫</mo><mn>6</mn><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&amp;</mo><mn>63</mn></mrow><annotation encoding="application/x-tex">
+\operatorname{chunk}_j
+=
+(\operatorname{word}\gg6j)\mathbin{\&amp;}63
+</annotation></semantics></math></p>
+<p>является selector одного 24-ячейника.</p>
+<p>Поэтому один и тот же формат поддерживает:</p>
+<ul>
+<li>крупное последовательное сканирование всего
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-блока;</li>
+<li>обработку десяти локальных 24-ячейников;</li>
+<li>таблицу из 64 вариантов локального 6-битного состояния;</li>
+<li>параллельную выдачу подблоков разным вычислительным потокам.</li>
+</ul>
+<p>Практический выбор:</p>
+<blockquote>
+<p>В RAM хранить один <code>u64</code> на 60 масок каждого десятичного
+класса. Рассматривать его как
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-блок,
+но при необходимости делить на десять вычисляемых 24-ячейниковых
+подблоков.</p>
+</blockquote>
+<p>Это гибрид:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><msub><mi>E</mi><mn>8</mn></msub><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> для хранения</mtext></mrow></mrow><mspace width="1.0em"></mspace><mo>+</mo><mspace width="1.0em"></mspace><mtext mathvariant="normal">24-ячейник для локального исполнения</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\text{\(E_8\) для хранения}
+\quad+\quad
+\text{24-ячейник для локального исполнения}
+.
+</annotation></semantics></math></p>
+<p>Rust-реализация и воспроизводимый benchmark находятся в:</p>
+<p><code>rust/e8_mask_codec/</code>.</p>
+<p>На CPU проверены три режима:</p>
+<ol type="1">
+<li><code>Sparse</code> — <code>trailing_zeros</code> и сброс младшего
+установленного бита;</li>
+<li><code>Dense</code> — последовательный проход по 60 позициям;</li>
+<li><code>Cell24Lookup</code> — таблица 64 вариантов для 6-битного
+подблока.</li>
+</ol>
+<p>На текущем процессоре:</p>
+<ul>
+<li>sparse-путь выигрывает примерно до 50% заполнения;</li>
+<li>dense-путь имеет смысл только для очень плотных сегментов;</li>
+<li>24-cell LUT проигрывает прямому битовому сканированию на CPU.</li>
+</ul>
+<p>Режим выбирается один раз для целого сегмента, а не отдельно для
+каждого <code>u64</code>. Это устраняет диспетчеризацию из горячего
+цикла.</p>
+<p>Промежуточный <code>Vec</code> событий не создаётся: callback должен
+сразу изменять целевой битсет решета.</p>
+<h3 id="какие-предложения-из-optimizations.md-использованы">15.7. Какие
+предложения из <code>optimizations.md</code> использованы</h3>
+<p>Файл <code>docs/optimizations.md</code> является внешним пересказом
+этой же схемы, а не источником исходной конструкции. До данного
+сравнения он не использовался.</p>
+<p>После проверки на Rust:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Предложение</th>
+<th>Решение</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>один 60-битный selector</td>
+<td>используется</td>
+</tr>
+<tr class="even">
+<td>sparse scan через <code>trailing_zeros</code></td>
+<td>используется</td>
+</tr>
+<tr class="odd">
+<td>отдельный dense-путь</td>
+<td>используется для сегментов плотнее примерно 50%</td>
+</tr>
+<tr class="even">
+<td>LUT из 64 паттернов 24-cell</td>
+<td>отвергнута для CPU hot path; отдельно проверяется на GPU</td>
+</tr>
+<tr class="odd">
+<td>прямое наложение на битсет</td>
+<td>используется через callback без промежуточного массива</td>
+</tr>
+<tr class="even">
+<td>SIMD</td>
+<td>следующий уровень после появления конкретного layout целевого
+решета</td>
+</tr>
+</tbody>
+</table>
+<p>Утверждение, что <code>ctz</code> всегда выполняется за один такт, не
+является переносимой гарантией. Также <code>popcnt</code> считает биты,
+но сам по себе не устанавливает позиции в целевом решете.</p>
+<h3 id="параллельная-архитектура-cpu-gpu">15.8. Параллельная архитектура
+CPU + GPU</h3>
+<p>CUDA-часть реализована по архитектурному шаблону проекта:</p>
+<p><code>/media/ilja/DATA/soft/fastsearch</code>.</p>
+<p>Rust отвечает за:</p>
+<ul>
+<li>формат данных;</li>
+<li>разбиение диапазона;</li>
+<li>выбор CPU/GPU-режима;</li>
+<li>проверку результатов;</li>
+<li>benchmark и политику памяти.</li>
+</ul>
+<p>CUDA-ядро собирается <code>nvcc</code> через <code>build.rs</code>. В
+пользовательском API и документации используются Rust-типы.</p>
+<p>На GTX 1660 Ti проверены:</p>
+<ol type="1">
+<li><code>Sparse</code> — один поток CUDA на 60-битное слово;</li>
+<li><code>DenseWarp</code> — один warp на слово;</li>
+<li><code>Cell24Lookup</code> — constant-memory LUT для 6-битных
+чанков.</li>
+</ol>
+<p>Результаты decoder benchmark:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Плотность</th>
+<th>Лучший GPU-режим</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">5–95%</td>
+<td><code>Sparse</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">около 99–100%</td>
+<td><code>Cell24Lookup</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">все измеренные плотности</td>
+<td><code>DenseWarp</code> не победил</td>
+</tr>
+</tbody>
+</table>
+<p>Но полностью заполненный блок следует кодировать как:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="monospace">𝙸𝚖𝚙𝚕𝚒𝚌𝚒𝚝𝙵𝚞𝚕𝚕</mtext><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\texttt{ImplicitFull},
+</annotation></semantics></math></p>
+<p>то есть вообще без selector. Поэтому LUT остаётся специализированным
+экспериментальным режимом, а основной GPU-путь —
+<code>Sparse</code>.</p>
+<h4 id="конвейер">Конвейер</h4>
+<p>CPU и GPU не должны обрабатывать одни и те же блоки. Диапазон делится
+на непересекающиеся сегменты:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℬ</mi><mo>=</mo><msub><mi>ℬ</mi><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">P</mi><mi mathvariant="normal">U</mi></mrow></msub><mo>⊔</mo><msub><mi>ℬ</mi><mrow><mi mathvariant="normal">G</mi><mi mathvariant="normal">P</mi><mi mathvariant="normal">U</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathcal B
+=
+\mathcal B_{\mathrm{CPU}}
+\sqcup
+\mathcal B_{\mathrm{GPU}}.
+</annotation></semantics></math></p>
+<p>Одновременно:</p>
+<ol type="1">
+<li>GPU обрабатывает крупный текущий пакет;</li>
+<li>CPU обрабатывает свою долю и хвосты;</li>
+<li>CPU готовит следующий закреплённым буфером;</li>
+<li>следующий CUDA stream принимает пакет;</li>
+<li>ядро сразу изменяет device-bitset без выгрузки списка событий.</li>
+</ol>
+<p>CUDA context, streams и буферы должны быть постоянными. Холодная
+инициализация не входит в steady-state алгоритм.</p>
+<p>После перевода гибридного пути на постоянный пул CUDA и
+device-resident режим без обратной выгрузки массива событий steady-state
+benchmark на 4 194 304 selector-словах при плотности 25% и разбиении 30%
+CPU / 70% GPU дал ускорение порядка:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>,</mo><mn>8</mn><mtext mathvariant="normal">–</mtext><mn>3</mn><mo>,</mo><mn>2</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">
+2{,}8\text{–}3{,}2\times
+</annotation></semantics></math></p>
+<p>относительно только CPU на 8 потоках. Это уже не allocating-прототип:
+<code>cudaMalloc</code> и <code>cudaFree</code> убраны из горячего пути,
+pinned-буферы и device-буферы переиспользуются.</p>
+<h3 id="память-cpu-gpu">15.9. Память CPU + GPU</h3>
+<p>Для одного
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-блока
+из 240 периодов:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Формат</th>
+<th style="text-align: right;">Байт</th>
+<th style="text-align: right;">Бит на период</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ImplicitFull</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>ideal bit-packed</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td><code>E8Bitmap</code></td>
+<td style="text-align: right;">32</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>,</mo><mn>0667</mn></mrow><annotation encoding="application/x-tex">1{,}0667</annotation></semantics></math></td>
+</tr>
+<tr class="even">
+<td>byte-aligned 24-cell</td>
+<td style="text-align: right;">40</td>
+<td
+style="text-align: right;"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>,</mo><mn>3333</mn></mrow><annotation encoding="application/x-tex">1{,}3333</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+<p>Для очень разреженных данных используется CSR:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">R</mi></mrow></msub><mo>=</mo><mn>4</mn><mrow><mo stretchy="true" form="prefix">(</mo><mi>B</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>A</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+B_{\mathrm{CSR}}
+=
+4(B+1)+A,
+</annotation></semantics></math></p>
+<p>где:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+— число
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-блоков;</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+— число активных периодов;</li>
+<li>один индекс занимает один байт, потому что
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>n</mi><mo>&lt;</mo><mn>240</mn></mrow><annotation encoding="application/x-tex">0\le n&lt;240</annotation></semantics></math>.</li>
+</ul>
+<p>CSR выигрывает у <code>E8Bitmap</code> приблизительно при плотности
+ниже:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>28</mn><mn>240</mn></mfrac><mo>≈</mo><mn>11</mn><mo>,</mo><mn>7</mn><mi>%</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\frac{28}{240}
+\approx
+11{,}7\%.
+</annotation></semantics></math></p>
+<p>Итоговый выбор:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Плотность/тип</th>
+<th>Хранение</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>100%</td>
+<td><code>ImplicitFull</code></td>
+</tr>
+<tr class="even">
+<td>менее примерно 11,7%</td>
+<td><code>SparseCSR</code></td>
+</tr>
+<tr class="odd">
+<td>остальное</td>
+<td><code>E8Bitmap</code></td>
+</tr>
+</tbody>
+</table>
+<p>Для совместной работы CPU+GPU полный набор не нужно дублировать в RAM
+и VRAM. При постоянном разбиении:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mrow><mi mathvariant="normal">h</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">t</mi></mrow></msub><mo>+</mo><msub><mi>B</mi><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">v</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi></mrow></msub><mo>=</mo><msub><mi>B</mi><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+B_{\mathrm{host}}+B_{\mathrm{device}}=B_{\mathrm{all}}.
+</annotation></semantics></math></p>
+<p>Дополнительная память требуется только для небольшого двойного
+закреплённым буфером.</p>
+<p>Для миллиона
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-блоков:</p>
+<ul>
+<li><code>E8Bitmap</code>: 30,518 MiB;</li>
+<li>ideal bit-packed: 28,610 MiB;</li>
+<li>byte-aligned 24-cell: 38,147 MiB;</li>
+<li><code>SparseCSR</code> при 10%: 26,703 MiB;</li>
+<li><code>ImplicitFull</code>: 0 байт selector.</li>
+</ul>
+<p>Rust-калькулятор:</p>
+<p><code>rust/e8_mask_codec/src/bin/memory_report.rs</code>.</p>
+<p>Итоговая подтверждённая иерархия:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mn>4</mn></msub><mo>⊂</mo><mn>2</mn><mi>T</mi><mo>⊂</mo><mn>2</mn><mi>I</mi><mo>⊂</mo><msub><mi>E</mi><mn>8</mn></msub></mrow><annotation encoding="application/x-tex">
+C_4
+\subset
+2T
+\subset
+2I
+\subset
+E_8
+</annotation></semantics></math></p>
+<p>и:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>→</mo><mn>6</mn><mo>→</mo><mn>30</mn><mo>→</mo><mn>60</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> масок на seed</mtext></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+1
+\longrightarrow
+6
+\longrightarrow
+30
+\longrightarrow
+60
+\text{ масок на seed}
+.
+</annotation></semantics></math></p>
+<p><a id="measured-state"></a></p>
+<h2
+id="текущее-состояние-реализации-и-измеренные-тесты-производительности">16.
+Текущее состояние реализации и измеренные тесты производительности</h2>
+<p>Текущая рабочая инженерная база живёт в crate:</p>
+<p><code>rust/e8_mask_codec/</code>.</p>
+<p>Сейчас в репозитории уже есть не только математическая схема, но и
+измеряемые компоненты исполнительного слоя:</p>
+<ul>
+<li><code>bench_cpu_threads.rs</code> — базовый CPU-замер на 1/8/12
+потоках;</li>
+<li><code>bench_gpu.rs</code> — бенчмарк GPU-декодера для
+<code>Sparse</code>, <code>DenseWarp</code> и
+<code>Cell24Lookup</code>;</li>
+<li><code>bench_hybrid.rs</code> — совместная работа CPU+GPU после
+внедрения постоянного пула CUDA;</li>
+<li><code>memory_report.rs</code> — выбор между
+<code>ImplicitFull</code>, <code>SparseCSR</code> и
+<code>E8Bitmap</code>;</li>
+<li><code>count_first_n.rs</code> — новый исполнительный слой подсчёта с
+контрольными точками для первых
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+простых.</li>
+</ul>
+<h3 id="cpu">16.1. CPU</h3>
+<p>На текущей машине <code>bench_cpu_threads</code> показывает порядок
+величин:</p>
+<ul>
+<li>1 поток: около
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>38.8</mn><annotation encoding="application/x-tex">38.8</annotation></semantics></math>
+Mword/s;</li>
+<li>8 потоков: около
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>205</mn><annotation encoding="application/x-tex">205</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>211</mn><annotation encoding="application/x-tex">211</annotation></semantics></math>
+Mword/s;</li>
+<li>12 потоков: режим нестабилен и зависит от SMT/планировщика.</li>
+</ul>
+<p>Поэтому производственным ориентиром для текущего железа следует
+считать именно 8 потоков, а не 12.</p>
+<h3 id="gpu">16.2. GPU</h3>
+<p>На GTX 1660 Ti основной путь декодера — <code>Sparse</code>.</p>
+<p>По текущему <code>bench_gpu</code>:</p>
+<ul>
+<li>при плотности 5% <code>Sparse</code> даёт около
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10.1</mn><annotation encoding="application/x-tex">10.1</annotation></semantics></math>
+Gword/s;</li>
+<li>при плотности 25% — около
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3.55</mn><annotation encoding="application/x-tex">3.55</annotation></semantics></math>
+Gword/s;</li>
+<li>при плотности 50% — около
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2.40</mn><annotation encoding="application/x-tex">2.40</annotation></semantics></math>
+Gword/s.</li>
+</ul>
+<p><code>DenseWarp</code> не победил ни на одной из измеренных
+плотностей. <code>Cell24Lookup</code> становится выгодным только в почти
+полном режиме около 99–100%, но такие блоки в рабочем режиме логичнее
+кодировать как <code>ImplicitFull</code>.</p>
+<h3 id="устойчивый-гибридный-режим">16.3. Устойчивый гибридный
+режим</h3>
+<p>После внедрения постоянного пула CUDA и режима с резидентными данными
+на GPU <code>bench_hybrid</code> показывает ускорение порядка
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2.8</mn><mtext mathvariant="normal">–</mtext><mn>3.2</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">2.8\text{–}3.2\times</annotation></semantics></math>
+относительно режима только CPU на 8 потоках. Именно этот диапазон
+следует считать актуальным измеренным ориентиром, а не старые цифры
+прототипа с постоянными выделениями памяти.</p>
+<h3 id="память">16.4. Память</h3>
+<p><code>memory_report</code> подтверждает текущую политику выбора
+хранения:</p>
+<ul>
+<li>ниже примерно 11.7% плотности выигрывает
+<code>SparseCSR</code>;</li>
+<li>в средней зоне лучше <code>E8Bitmap</code>;</li>
+<li>при 100% плотности лучшим представлением становится
+<code>ImplicitFull</code>.</li>
+</ul>
+<p>Для 1 000 000
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>-блоков:</p>
+<ul>
+<li><code>E8Bitmap</code>: 30.518 MiB;</li>
+<li><code>SparseCSR</code> при 10%: 26.703 MiB;</li>
+<li><code>ImplicitFull</code> при 100%: 0 байт selector;</li>
+<li>разбиение CPU+GPU с двойным закреплённым буфером: 31.518 MiB
+суммарно.</li>
+</ul>
+<p><a id="first-trillion"></a></p>
+<h2 id="практический-рубеж-первые-1012-простых">17. Практический рубеж:
+первые
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>12</mn></msup><annotation encoding="application/x-tex">10^{12}</annotation></semantics></math>
+простых</h2>
+<p>Под фразой «вычислить триллион простых» здесь понимаются именно
+<strong>первые</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>12</mn></msup><annotation encoding="application/x-tex">10^{12}</annotation></semantics></math>
+простых чисел, а не все простые, не превосходящие
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>12</mn></msup><annotation encoding="application/x-tex">10^{12}</annotation></semantics></math>.</p>
+<p>Эти две задачи радикально различаются:</p>
+<ul>
+<li>все простые
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≤</mo><msup><mn>10</mn><mn>12</mn></msup></mrow><annotation encoding="application/x-tex">\le 10^{12}</annotation></semantics></math>
+— это сравнительно лёгкий диапазонный подсчёт;</li>
+<li>первые
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>12</mn></msup><annotation encoding="application/x-tex">10^{12}</annotation></semantics></math>
+простых доходят до числа порядка
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>⋅</mo><msup><mn>10</mn><mn>13</mn></msup></mrow><annotation encoding="application/x-tex">3\cdot10^{13}</annotation></semantics></math>.</li>
+</ul>
+<p>Контрольное целевое значение:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><msup><mn>10</mn><mn>12</mn></msup></msub><mo>=</mo><mn>29</mn><mspace width="0.167em"></mspace><mn>996</mn><mspace width="0.167em"></mspace><mn>224</mn><mspace width="0.167em"></mspace><mn>275</mn><mspace width="0.167em"></mspace><mn>833</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
+p_{10^{12}} = 29\,996\,224\,275\,833.
+</annotation></semantics></math></p>
+<p>Это хороший рубеж по трём причинам.</p>
+<h3 id="он-ещё-реалистичен-на-одной-машине">17.1. Он ещё реалистичен на
+одной машине</h3>
+<p>Для этой задачи верхняя оценка лежит в области
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>3</mn><mo>⋅</mo><msup><mn>10</mn><mn>13</mn></msup></mrow><annotation encoding="application/x-tex">\sim 3\cdot10^{13}</annotation></semantics></math>,
+поэтому достаточно базы делителей лишь до:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><msub><mi>p</mi><msup><mn>10</mn><mn>12</mn></msup></msub></msqrt><mo>≈</mo><mn>5.48</mn><mo>⋅</mo><msup><mn>10</mn><mn>6</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\sqrt{p_{10^{12}}}\approx 5.48\cdot10^6.
+</annotation></semantics></math></p>
+<p>Это на много порядков легче, чем сценарии вроде полного прохода до
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>20</mn></msup><annotation encoding="application/x-tex">10^{20}</annotation></semantics></math>
+или тем более до
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>30</mn></msup><annotation encoding="application/x-tex">10^{30}</annotation></semantics></math>.</p>
+<h3 id="он-проверяет-всю-инфраструктуру-а-не-только-одну-формулу">17.2.
+Он проверяет всю инфраструктуру, а не только одну формулу</h3>
+<p>Рубеж «первые
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>12</mn></msup><annotation encoding="application/x-tex">10^{12}</annotation></semantics></math>
+простых» проверяет одновременно:</p>
+<ul>
+<li>сегментацию;</li>
+<li>выбор формата хранения;</li>
+<li>контрольные точки и продолжение;</li>
+<li>CPU-путь исполнительного слоя;</li>
+<li>дальнейший переход к исполнительному слою CPU+GPU.</li>
+</ul>
+<h3 id="полная-выгрузка-не-нужна-как-первый-режим">17.3. Полная выгрузка
+не нужна как первый режим</h3>
+<p>По умолчанию вывод должен идти в потоковом режиме с контрольными
+точками:</p>
+<ul>
+<li><code>found_count</code>;</li>
+<li><code>last_prime</code>;</li>
+<li><code>processed_segments</code>;</li>
+<li>статистика хранения;</li>
+<li>файлы контрольных точек.</li>
+</ul>
+<p>Именно так сейчас устроен новый runner:</p>
+<p><code>rust/e8_mask_codec/src/bin/count_first_n.rs</code>.</p>
+<p>Текущие проверочные примеры уже подтверждены:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>1000</mn></msub><mo>=</mo><mn>7919</mn></mrow><annotation encoding="application/x-tex">p_{1000}=7919</annotation></semantics></math>;</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mn>100000</mn></msub><mo>=</mo><mn>1299709</mn></mrow><annotation encoding="application/x-tex">p_{100000}=1299709</annotation></semantics></math>;</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><msup><mn>10</mn><mn>6</mn></msup></msub><mo>=</mo><mn>15485863</mn></mrow><annotation encoding="application/x-tex">p_{10^6}=15485863</annotation></semantics></math>.</li>
+</ul>
+<h3
+id="сохраняемое-состояние-продолжение-и-зафиксированный-сегмент">17.4.
+Сохраняемое состояние, продолжение и зафиксированный сегмент</h3>
+<p>Текущий исполнительный слой уже умеет считать длинную префиксную
+задачу не «одним заходом», а в режиме сохраняемого состояния. Для этого
+поддерживаются:</p>
+<ul>
+<li>файл контрольной точки с атомарной записью через временный файл и
+<code>rename</code>;</li>
+<li>файл прогресса в человекочитаемом виде;</li>
+<li><code>--resume</code> и <code>--no-resume</code>;</li>
+<li>сохранение по числу сегментов и по таймеру одновременно;</li>
+<li>корректная остановка по <code>SIGINT</code> и
+<code>SIGTERM</code>.</li>
+</ul>
+<p>В контрольной точке сейчас сохраняются именно те поля, которые
+позволяют продолжить прогон не с нуля, а с последней зафиксированной
+границы:</p>
+<ul>
+<li><code>target_count</code>;</li>
+<li><code>found_count</code>;</li>
+<li><code>last_prime</code>;</li>
+<li><code>next_q</code>;</li>
+<li><code>processed_segments</code>;</li>
+<li><code>segment_blocks</code>;</li>
+<li><code>backend</code> как имя параметра режима исполнения;</li>
+<li><code>thread_count</code>;</li>
+<li><code>checkpoint_every_segments</code>;</li>
+<li><code>checkpoint_interval_sec</code>;</li>
+<li>накопленное <code>elapsed_millis</code>;</li>
+<li>счётчики хранилища по <code>ImplicitFull</code>,
+<code>SparseCSR</code>, <code>E8Bitmap</code>.</li>
+</ul>
+<p>Единицей надёжной фиксации сейчас является <strong>завершённый
+сегмент</strong>. Это и есть практический смысл зафиксированного
+сегмента в текущем CPU-исполнительном слое: сначала сегмент полностью
+досчитывается, затем его вклад мержится в глобальные счётчики, и только
+после этого контрольная точка может считаться зафиксированной.</p>
+<p>Если процесс завершается между двумя контрольными точками, теряется
+только последнее незакоммиченное окно, а не весь прогон.</p>
+<h3 id="практические-команды-для-фонового-прогона">17.5. Практические
+команды для фонового прогона</h3>
+<p>Типовой запуск нового длинного прогона:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> run <span class="at">--release</span> <span class="at">--bin</span> count_first_n <span class="at">--</span> <span class="dt">\</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--n</span> 100000000000 <span class="dt">\</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--backend</span> cpu <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--threads</span> 8 <span class="dt">\</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--segment-size</span> 4096 <span class="dt">\</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--checkpoint</span> data/count_1e11.checkpoint <span class="dt">\</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--progress</span> data/count_1e11.progress <span class="dt">\</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--checkpoint-every</span> 64 <span class="dt">\</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">--checkpoint-interval-sec</span> 60 <span class="dt">\</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">--progress-interval-sec</span> 15</span></code></pre></div>
+<p>Запуск в фоне через <code>nohup</code>:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nohup</span> cargo run <span class="at">--release</span> <span class="at">--bin</span> count_first_n <span class="at">--</span> <span class="dt">\</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--n</span> 100000000000 <span class="dt">\</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--backend</span> cpu <span class="dt">\</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--threads</span> 8 <span class="dt">\</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--checkpoint</span> data/count_1e11.checkpoint <span class="dt">\</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--progress</span> data/count_1e11.progress <span class="dt">\</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--resume</span> <span class="dt">\</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">&gt;</span> data/count_1e11.log <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">&amp;</span></span></code></pre></div>
+<p>Продолжение после остановки:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> run <span class="at">--release</span> <span class="at">--bin</span> count_first_n <span class="at">--</span> <span class="dt">\</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--n</span> 100000000000 <span class="dt">\</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--backend</span> cpu <span class="dt">\</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--threads</span> 8 <span class="dt">\</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--checkpoint</span> data/count_1e11.checkpoint <span class="dt">\</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">--progress</span> data/count_1e11.progress <span class="dt">\</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--resume</span></span></code></pre></div>
+<p>Смотреть текущее состояние можно без разбора бинарного формата:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> data/count_1e11.progress</span></code></pre></div>
+<p>На текущем этапе исполнительный слой уже умеет исполняться во всех
+трёх режимах <code>backend=cpu</code>, <code>backend=gpu</code> и
+<code>backend=hybrid</code>, то есть эти ветки больше не являются
+фиктивными флагами. Поток надёжного архива <code>--archive-dir</code>
+использует модуль записи chunk-файлов с delta-кодированием и учётом
+контрольных точек, <code>manifest.txt</code>, <code>index.tsv</code> и
+безопасное продолжение после остановки без пересоздания уже
+зафиксированных блоков на диске.</p>
+<p><a id="where-wins"></a></p>
+<h2 id="где-оптимизации-реально-дают-выигрыш">18. Где оптимизации
+реально дают выигрыш</h2>
+<h3 id="один-канал-вместо-четырёх">18.1. Один канал вместо четырёх</h3>
+<p>Это первое точное сокращение. Оно уменьшает материализованное
+состояние в четыре раза и одновременно упрощает адресацию. Остальные три
+канала восстанавливаются циклическим действием, а не хранятся
+независимо.</p>
+<h3 id="зеркало-без-отдельного-хранения">18.2. Зеркало без отдельного
+хранения</h3>
+<p>Зеркало уже сидит внутри канальной симметрии и поэтому не даёт
+отдельного множителя
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">2\times</annotation></semantics></math>
+сверху. Выигрыш возникает не как «ещё одно независимое сжатие», а как
+отказ от дублирования одной и той же структуры.</p>
+<h3 id="e8bitmap-sparsecsr-implicitfull">18.3. <code>E8Bitmap</code>,
+<code>SparseCSR</code>, <code>ImplicitFull</code></h3>
+<p>На практике это сейчас главный переключатель формата памяти:</p>
+<ul>
+<li><code>SparseCSR</code> — для реально разреженных сегментов;</li>
+<li><code>E8Bitmap</code> — базовый плотный формат;</li>
+<li><code>ImplicitFull</code> — для полностью заполненных блоков.</li>
+</ul>
+<p>Именно здесь возникают уже измеренные выигрыши по памяти, а не только
+геометрическая интерпретация.</p>
+<h3 id="cpu-gpu-и-гибридный-режим">18.4. CPU, GPU и гибридный режим</h3>
+<ul>
+<li>режим только CPU хорош как базовый ориентир и для
+небольших/нерегулярных задач;</li>
+<li>только GPU хорош для крупных однородных пакетов;</li>
+<li>гибридный режим выигрывает, когда диапазон разбит на
+непересекающиеся части и GPU не тратит время на обратную выгрузку списка
+событий.</li>
+</ul>
+<h3 id="почему-lut-не-нужен-в-горячем-пути-cpu">18.5. Почему LUT не
+нужен в горячем пути CPU</h3>
+<p>На CPU <code>Cell24Lookup</code> проигрывает
+<code>trailing_zeros</code> + <code>selector &amp;= selector - 1</code>.
+Поэтому LUT следует считать исследовательским режимом, а не основным
+рантаймом.</p>
+<h3 id="почему-постоянный-пул-cuda-обязателен">18.6. Почему постоянный
+пул CUDA обязателен</h3>
+<p>Как показали замеры, переход от прототипа с постоянными выделениями
+памяти к persistent pool меняет картину качественно. Без него бенчмарк
+измеряет не алгоритм, а накладные расходы
+<code>cudaMalloc</code>/<code>cudaFree</code>.</p>
+<p><a id="range-10e19-10e20"></a></p>
+<h2
+id="почему-диапазон-1019to1020-не-является-первой-практической-целью">19.
+Почему диапазон
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>10</mn><mn>19</mn></msup><mo>→</mo><msup><mn>10</mn><mn>20</mn></msup></mrow><annotation encoding="application/x-tex">10^{19}\to10^{20}</annotation></semantics></math>
+не является первой практической целью</h2>
+<p>Математически этот диапазон, конечно, достижим. Но как первый
+инженерный рубеж он плох.</p>
+<p>Между
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>19</mn></msup><annotation encoding="application/x-tex">10^{19}</annotation></semantics></math>
+и
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>20</mn></msup><annotation encoding="application/x-tex">10^{20}</annotation></semantics></math>
+находится:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>10</mn><mn>20</mn></msup><mo>−</mo><msup><mn>10</mn><mn>19</mn></msup><mo>=</mo><mn>9</mn><mo>⋅</mo><msup><mn>10</mn><mn>19</mn></msup></mrow><annotation encoding="application/x-tex">
+10^{20}-10^{19}=9\cdot10^{19}
+</annotation></semantics></math></p>
+<p>целых чисел. После исключения классов, кратных 2 и 5, остаётся:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.4</mn><mo>⋅</mo><mn>9</mn><mo>⋅</mo><msup><mn>10</mn><mn>19</mn></msup><mo>=</mo><mn>3.6</mn><mo>⋅</mo><msup><mn>10</mn><mn>19</mn></msup></mrow><annotation encoding="application/x-tex">
+0.4\cdot 9\cdot10^{19} = 3.6\cdot10^{19}
+</annotation></semantics></math></p>
+<p>кандидатов.</p>
+<p>Даже если предположить суммарную скорость уровня:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>10</mn></msup><annotation encoding="application/x-tex">10^{10}</annotation></semantics></math>
+кандидатов/с,</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>⋅</mo><msup><mn>10</mn><mn>10</mn></msup></mrow><annotation encoding="application/x-tex">3\cdot10^{10}</annotation></semantics></math>
+кандидатов/с,</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>11</mn></msup><annotation encoding="application/x-tex">10^{11}</annotation></semantics></math>
+кандидатов/с,</li>
+</ul>
+<p>то порядок времени остаётся таким:</p>
+<ul>
+<li>около 114 лет;</li>
+<li>около 38 лет;</li>
+<li>около 11.4 года.</li>
+</ul>
+<p>Поэтому диапазон
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>10</mn><mn>19</mn></msup><mo>→</mo><msup><mn>10</mn><mn>20</mn></msup></mrow><annotation encoding="application/x-tex">10^{19}\to10^{20}</annotation></semantics></math>
+полезен как <strong>теоретическая шкала масштаба</strong>, но не как
+первая задача, на которой стоит отлаживать исполнительный слой.</p>
+<p>Практически намного полезнее:</p>
+<ol type="1">
+<li>реализовать первые
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>12</mn></msup><annotation encoding="application/x-tex">10^{12}</annotation></semantics></math>
+простых;</li>
+<li>затем локальный поиск отдельных больших простых;</li>
+<li>и только потом думать о гигантских непрерывных диапазонах.</li>
+</ol>
+<p><a id="big-primes-api"></a></p>
+<h2 id="большие-отдельные-простые-isprimen-и-nextprimen">20. Большие
+отдельные простые: <code>isPrime(N)</code> и
+<code>nextPrime(N)</code></h2>
+<p>Этот раздел описывает текущий пользовательский слой для проверки и
+поиска больших отдельных простых чисел. Он дополняет префиксный счётчик
+первых
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+простых и работает как локальный запрос около заданного числа
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>.</p>
+<p>Главное разделение такое:</p>
+<ul>
+<li>быстрый режим даёт практический ответ через локальную маску и
+Miller–Rabin;</li>
+<li>уточнённый режим даёт доказательный ответ через
+ECPP-сертификат;</li>
+<li>архивный режим остаётся точным внутри уже покрытого
+<code>wheel210</code>-архива.</li>
+</ul>
+<h3 id="что-уже-измерено">20.1. Что уже измерено</h3>
+<p>Уже измерены и подтверждены базовые строительные блоки:</p>
+<ul>
+<li>кодек состояний;</li>
+<li>режимы сканирования CPU;</li>
+<li>разреженный GPU-декодер;</li>
+<li>устойчивый гибридный режим CPU+GPU;</li>
+<li>политика выбора формата хранения;</li>
+<li>префиксный исполнительный слой с контрольными точками для первых
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+простых.</li>
+</ul>
+<p>Эти компоненты ускоряют масочную и сегментную часть вычислений.
+Финальная проверка 1000-значного кандидата через Miller–Rabin или ECPP
+использует арифметику больших целых чисел.</p>
+<h3 id="текущая-поверхность-запросов">20.2. Текущая поверхность
+запросов</h3>
+<p>В исполнительном слое есть два связанных, но разных слоя
+запросов.</p>
+<p>Первый слой — архивные запросы:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> isPrime N=...</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> nextPrime N=...</span></code></pre></div>
+<p>Если число попадает в покрытый диапазон зафиксированного
+<code>wheel210</code>-архива, ответ берётся из архива и является точным
+для этого диапазона. Если запрос выходит за покрытый диапазон,
+исполнительный слой возвращает явную ошибку, а не скрывает отсутствие
+данных случайным обходным путём.</p>
+<p>Второй слой — запросы к большим целым числам до 1024 десятичных
+знаков. Этот слой работает без прохода от нуля к
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>:
+для заданного числа строится локальное масочное состояние, затем
+выполняется быстрая или доказательная проверка.</p>
+<h3
+id="чем-локальный-запрос-отличается-от-полного-префиксного-прохода">20.3.
+Чем локальный запрос отличается от полного префиксного прохода</h3>
+<p>Для числа порядка
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>1000</mn></msup><annotation encoding="application/x-tex">10^{1000}</annotation></semantics></math>
+интересна не генерация всех предыдущих простых, а локальный вход в
+область около
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>:</p>
+<ul>
+<li>входное число
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+переводится в wheel/channel/segment state;</li>
+<li>для малой ситовой базы вычисляются локальные offsets;</li>
+<li>строится масочное поле только для нужного локального сегмента;</li>
+<li>выжившие кандидаты проверяются Miller–Rabin;</li>
+<li>по запросу уточнения финальный кандидат получает
+ECPP-сертификат.</li>
+</ul>
+<p>Такой режим не строит историю масок и не проходит числовой ряд от
+нуля.</p>
+<h3 id="ограничение-версии-для-больших-целых">20.4. Ограничение версии
+для больших целых</h3>
+<p>Реализованный слой больших целых ограничен числами:</p>
+<pre class="text"><code>max_decimal_digits = 1024</code></pre>
+<p>Ограничение относится к:</p>
+<ul>
+<li><code>isPrime(N)</code>;</li>
+<li><code>nextPrime(N)</code>;</li>
+<li>уточнению результата через ECPP.</li>
+</ul>
+<p>Для входов больше 1024 десятичных знаков возвращается явная ошибка о
+превышении поддерживаемого размера. В этом документе раньше обсуждались
+масштабы
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>1000</mn></msup><annotation encoding="application/x-tex">10^{1000}</annotation></semantics></math>
+и
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>10000</mn></msup><annotation encoding="application/x-tex">10^{10000}</annotation></semantics></math>
+как архитектурная граница локального входа в дальний диапазон. Текущий
+рабочий слой намеренно зафиксирован на 1024 десятичных знаках, чтобы
+время, поведение и интерфейс оставались управляемыми.</p>
+<h3 id="маска-как-доказательство-и-маска-как-фильтр">20.5. Маска как
+доказательство и маска как фильтр</h3>
+<p>Маска является доказательством простоты только в полном решетном
+смысле:</p>
+<pre class="text"><code>если для кандидата x учтены все простые делители p &lt;= sqrt(x),
+и x выжило,
+то x простое.</code></pre>
+<p>Для 1000-значного числа такая полная база практически недоступна:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><msup><mn>10</mn><mn>1000</mn></msup></msqrt><mo>=</mo><msup><mn>10</mn><mn>500</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\sqrt{10^{1000}}=10^{500}.
+</annotation></semantics></math></p>
+<p>Поэтому в слое запросов к большим целым локальная маска работает как
+быстрый детерминированный фильтр. Она отбрасывает кандидатов, делящихся
+на малые простые из выбранной базы, но сама по себе не превращает
+выжившего кандидата в доказанное простое число.</p>
+<p>Итоговая логика:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Слой</th>
+<th>Что означает выживание кандидата</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>полная база до
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mi>x</mi></msqrt><annotation encoding="application/x-tex">\sqrt{x}</annotation></semantics></math></td>
+<td>доказательство простоты через решето</td>
+</tr>
+<tr class="even">
+<td>малая база</td>
+<td>кандидат не делится на малые простые</td>
+</tr>
+<tr class="odd">
+<td>малая база + Miller–Rabin</td>
+<td>практическое вероятно простое</td>
+</tr>
+<tr class="even">
+<td>малая база + Miller–Rabin + ECPP</td>
+<td>доказанное простое</td>
+</tr>
+</tbody>
+</table>
+<p>Ключевой принцип остаётся прежним:</p>
+<blockquote>
+<p>Маски локальны по позиции, но не бесплатны по базе.</p>
+</blockquote>
+<h3 id="быстрый-isprimen">20.6. Быстрый <code>isPrime(N)</code></h3>
+<p>Обычный пользовательский вызов <code>isPrime(N)</code> выполняет
+быстрый путь:</p>
+<ul>
+<li>wheel-210;</li>
+<li>маска по малым простым;</li>
+<li>Miller–Rabin, обычно 16–32 раунда;</li>
+<li>возврат результата.</li>
+</ul>
+<p>Возможные статусы:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Статус</th>
+<th>Смысл</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Составное</code></td>
+<td>найден малый делитель или свидетель составности Miller–Rabin; ответ
+точный</td>
+</tr>
+<tr class="even">
+<td><code>Вероятно простое</code></td>
+<td>число прошло маску и Miller–Rabin; это практический вероятностный
+ответ</td>
+</tr>
+</tbody>
+</table>
+<p>Если Miller–Rabin нашёл свидетель составности, ответ
+<code>Составное</code> является строгим. Если число прошло Miller–Rabin,
+быстрый ответ остаётся вероятностным, а не сертификатом простоты.</p>
+<p>В интерфейсе рядом с быстрым ответом доступно действие
+<code>Уточнить ответ</code>. Оно запускает доказательную проверку через
+ECPP.</p>
+<h3 id="уточнённый-isprimen">20.7. Уточнённый
+<code>isPrime(N)</code></h3>
+<p>Уточнение использует быстрый ответ как предварительный фильтр:</p>
+<ul>
+<li>если быстрый режим уже нашёл составность, результат остаётся
+<code>Составное</code>;</li>
+<li>если быстрый режим вернул <code>Вероятно простое</code>, запускается
+ECPP;</li>
+<li>сгенерированный ECPP-сертификат проверяется перед показом
+результата;</li>
+<li>успешное уточнение даёт статус <code>Доказано простое</code>.</li>
+</ul>
+<p>Такой режим отделяет быстрый практический ответ от строгого
+математического подтверждения.</p>
+<h3 id="быстрый-nextprimen">20.8. Быстрый <code>nextPrime(N)</code></h3>
+<p>Обычный <code>nextPrime(N)</code> ищет первое практическое вероятно
+простое после
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+через локальные сегменты:</p>
+<ul>
+<li>старт нормализуется к ближайшему допустимому wheel-кандидату;</li>
+<li>вокруг старта создаётся локальный сегмент;</li>
+<li>wheel-210 и малые маски удаляют очевидные составные;</li>
+<li>выжившие кандидаты сканируются в порядке возрастания;</li>
+<li>Miller–Rabin применяется только к выжившим кандидатам;</li>
+<li>первый кандидат, прошедший Miller–Rabin, возвращается как быстро
+найденное вероятно простое число.</li>
+</ul>
+<p>Если текущий сегмент не содержит подходящего кандидата,
+исполнительный слой расширяет поиск следующим локальным сегментом.</p>
+<h3 id="уточнённый-nextprimen">20.9. Уточнённый
+<code>nextPrime(N)</code></h3>
+<p>Уточнение для <code>nextPrime(N)</code> применяется только к
+финальному кандидату, найденному быстрым режимом.</p>
+<p>Рабочая схема:</p>
+<ol type="1">
+<li>локальная маска находит выживших кандидатов;</li>
+<li>Miller–Rabin выбирает первый вероятно простой кандидат
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>;</li>
+<li>действие <code>Уточнить ответ</code> запускает ECPP только для этого
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>;</li>
+<li>после успешной проверки сертификата результат получает статус
+<code>Доказано простое</code>.</li>
+</ol>
+<p>ECPP на каждый выживший кандидат не используется: это слишком дорогой
+путь и он не нужен для текущей пользовательской семантики.</p>
+<h3 id="оценка-времени-для-1000-значных-чисел">20.10. Оценка времени для
+1000-значных чисел</h3>
+<p>Оценка относится к следующей конфигурации:</p>
+<ul>
+<li>CPU: i7, 6 ядер / 12 потоков;</li>
+<li>RAM: 64 GB;</li>
+<li>GPU: Nvidia GeForce GTX 1660 Ti;</li>
+<li>механизм больших целых: Rust + GMP;</li>
+<li>размер
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>:
+около 1000 десятичных знаков;</li>
+<li>ограничение версии: не более 1024 десятичных знаков.</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Задача</th>
+<th>Метод</th>
+<th style="text-align: right;">Примерное время на 1000 знаков</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>isPrime(N)</code></td>
+<td>маска + Miller–Rabin 16–32</td>
+<td style="text-align: right;"><strong>0.05 – 1 сек</strong></td>
+</tr>
+<tr class="even">
+<td><code>isPrime(N)</code></td>
+<td>маска + Miller–Rabin 64</td>
+<td style="text-align: right;"><strong>0.2 – 3 сек</strong></td>
+</tr>
+<tr class="odd">
+<td><code>isPrime(N)</code></td>
+<td>маска + ECPP</td>
+<td style="text-align: right;"><strong>10 сек – 10 мин</strong></td>
+</tr>
+<tr class="even">
+<td><code>nextPrime(N)</code></td>
+<td>маска + Miller–Rabin</td>
+<td style="text-align: right;"><strong>1 – 30 сек</strong></td>
+</tr>
+<tr class="odd">
+<td><code>nextPrime(N)</code></td>
+<td>маска + MR + ECPP финального кандидата</td>
+<td style="text-align: right;"><strong>20 сек – 10+ мин</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Это инженерные оценки, а не SLA. Реальное время зависит от числа
+раундов Miller–Rabin, глубины маски малых простых, размера сегмента для
+<code>nextPrime</code>, числа выживших кандидатов и удачности генерации
+ECPP-сертификата.</p>
+<h3 id="роль-cpugpu-оптимизаций">20.11. Роль CPU/GPU оптимизаций</h3>
+<p>CPU/GPU оптимизации проекта ускоряют главным образом массовую
+масочную часть:</p>
+<ul>
+<li>разметку кратных;</li>
+<li>работу по wheel residue-классам;</li>
+<li>сканирование <code>E8Bitmap</code>, <code>SparseCSR</code> и
+<code>ImplicitFull</code>;</li>
+<li>обработку непересекающихся сегментов;</li>
+<li>гибридный режим для больших сегментных задач.</li>
+</ul>
+<p>Для одного конкретного <code>isPrime(N)</code> на 1000 знаков GPU
+почти не ускоряет финальную проверку: основная стоимость находится в GMP
+<code>pow_mod</code> и в арифметике больших целых, используемой
+ECPP.</p>
+<p>Практическое разделение такое:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Операция</th>
+<th>Где основной выигрыш</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>isPrime(N)</code></td>
+<td>CPU + GMP; малая маска как быстрый отсев</td>
+</tr>
+<tr class="even">
+<td><code>nextPrime(N)</code></td>
+<td>сегментная маска; CPU/GPU/гибрид при достаточно большом
+сегменте</td>
+</tr>
+<tr class="odd">
+<td>ECPP</td>
+<td>арифметика больших целых и доказательство на эллиптических кривых;
+E8/CUDA-декодер его не заменяет</td>
+</tr>
+</tbody>
+</table>
+<h3 id="прогресс-вычислений">20.12. Прогресс вычислений</h3>
+<p>В интерфейсе прогресс появляется, когда операция длится дольше 3
+секунд.</p>
+<p>Для Miller–Rabin прогресс точный:</p>
+<pre class="text"><code>completed_rounds / total_rounds</code></pre>
+<p>Для сегментной маски прогресс точный внутри текущего сегмента:</p>
+<pre class="text"><code>processed_blocks / total_blocks</code></pre>
+<p>Для <code>nextPrime(N)</code> общий процент до найденного простого
+заранее неизвестен, поэтому отображается стадийный прогресс текущего
+сегмента: построение маски, сканирование выживших кандидатов,
+Miller–Rabin для текущего кандидата и переход к следующему сегменту.</p>
+<p>Для ECPP общий процент может быть только стадийным или оценочным.
+Вместо фиктивной точности интерфейс показывает текущую стадию, прошедшее
+время, число попыток и размер текущей подзадачи. Если процент оценочный,
+он помечается как оценочный.</p>
+<h3 id="ecpp-не-является-mlтригонометрическим-вычислением">20.13. ECPP
+не является ML/тригонометрическим вычислением</h3>
+<p>ECPP не использует sigmoid и не является нейросетевым
+вычислением.</p>
+<p>Основная нагрузка находится здесь:</p>
+<ul>
+<li>арифметика больших целых;</li>
+<li>модульное умножение;</li>
+<li>модульное возведение в степень;</li>
+<li>НОД;</li>
+<li>арифметика эллиптических кривых по модулю
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>;</li>
+<li>умножение точки на число;</li>
+<li>частичная факторизация порядков групп;</li>
+<li>генерация сертификата;</li>
+<li>проверка сертификата.</li>
+</ul>
+<p>Некоторые реализации Atkin–Morain/CM могут использовать
+вспомогательные высокоточные комплексные вычисления при построении
+данных, но пользовательский исполнительный слой этого слоя в основном
+нагружает целочисленную и модульную арифметику.</p>
+<h3 id="команды-и-статусы">20.14. Команды и статусы</h3>
+<p>Основные команды слоя запросов:</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> isPrime N=...</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> nextPrime N=...</span></code></pre></div>
+<p>В интерфейс эти команды соответствуют быстрым действиям. Рядом с
+быстрым результатом доступно уточнение через ECPP.</p>
+<p>Типовые статусы:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Статус</th>
+<th>Где появляется</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Составное</code></td>
+<td><code>isPrime</code>, если найден делитель или свидетель
+составности</td>
+</tr>
+<tr class="even">
+<td><code>Вероятно простое</code></td>
+<td>быстрый <code>isPrime</code> или быстрый <code>nextPrime</code>
+после Miller–Rabin</td>
+</tr>
+<tr class="odd">
+<td><code>Доказано простое</code></td>
+<td>после успешного ECPP-уточнения</td>
+</tr>
+<tr class="even">
+<td><code>Уточнение недоступно</code></td>
+<td>если модуль ECPP не собран или не подключён</td>
+</tr>
+</tbody>
+</table>
+<p>Если модуль ECPP недоступен, результат не подделывается: быстрый
+ответ остаётся вероятностным, а интерфейс сообщает, что доказательное
+уточнение недоступно.</p>
+<h3 id="итоговая-семантика-слоя-больших-целых">20.15. Итоговая семантика
+слоя больших целых</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Вызов</th>
+<th>Быстрый режим</th>
+<th>Уточнённый режим</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>isPrime(N)</code></td>
+<td><code>Составное</code> или <code>Вероятно простое</code></td>
+<td><code>Составное</code> или <code>Доказано простое</code></td>
+</tr>
+<tr class="even">
+<td><code>nextPrime(N)</code></td>
+<td>первый вероятно простой кандидат после
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math></td>
+<td>тот же кандидат после ECPP-сертификата</td>
+</tr>
+</tbody>
+</table>
+<p>Ключевая инженерная позиция:</p>
+<pre class="text"><code>Не считать предыдущие маски.
+Не идти от 0 до N.
+Использовать локальные offsets и сегментные маски.
+Быстрый ответ давать через Miller–Rabin.
+Доказательный ответ давать через ECPP только по запросу уточнения.</code></pre>
+<p><a id="practical-scenarios"></a></p>
+<h2 id="практические-сценарии-применения">21. Практические сценарии
+применения</h2>
+<h3 id="последовательный-префиксный-поиск">21.1. Последовательный
+префиксный поиск</h3>
+<p>Цель: получить первые
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+простых.</p>
+<p>Режим:</p>
+<ul>
+<li><code>count_first_n --n ...</code>;</li>
+<li>потоковое выполнение с контрольными точками;</li>
+<li>при необходимости <code>--archive-dir ...</code> для chunk-архива с
+delta-кодированием на диске;</li>
+<li>контроль по <code>found_count</code>, <code>last_prime</code>,
+<code>archive_committed_primes</code>.</li>
+</ul>
+<p>Это лучший первый производственный рубеж.</p>
+<h3 id="проверка-конкретного-большого-числа">21.2. Проверка конкретного
+большого числа</h3>
+<p>Цель: проверить <code>isPrime(N)</code> для одного большого
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>.</p>
+<p>Режим:</p>
+<ul>
+<li>не полный проход от нуля;</li>
+<li>локальная инициализация масочного состояния;</li>
+<li>быстрый ответ через маску и Miller–Rabin;</li>
+<li>доказательное уточнение через ECPP.</li>
+</ul>
+<h3 id="поиск-первого-простого-после-n">21.3. Поиск первого простого
+после
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math></h3>
+<p>Цель: <code>nextPrime(N)</code>.</p>
+<p>Режим:</p>
+<ul>
+<li>локальные сегменты вокруг
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>;</li>
+<li>повторная инициализация фаз;</li>
+<li>возврат первого выжившего кандидата, прошедшего Miller–Rabin;</li>
+<li>ECPP-сертификат только по запросу уточнения.</li>
+</ul>
+<h3 id="гибридный-путь">21.4. Гибридный путь</h3>
+<p>Гибридный режим полезен, когда:</p>
+<ul>
+<li>задача велика;</li>
+<li>сегменты можно развести между CPU и GPU без пересечения;</li>
+<li>результат не нужно возвращать как длинный список событий через
+PCIe.</li>
+</ul>
+<h3 id="кластер-и-удалённые-диапазоны">21.5. Кластер и удалённые
+диапазоны</h3>
+<p>Кластерный режим имеет смысл для очень длинных префиксных задач или
+для большого пула независимых запросов <code>nextPrime(N)</code>. Но как
+первая практическая цель он сложнее, чем исполнительный слой на одной
+машине на одной машине.</p>
+<p><a id="sources"></a></p>
+<h2 id="источники">22. Источники</h2>
+<h3 id="внутренние-ссылки-на-текущие-расчёты">22.1. Внутренние ссылки на
+текущие расчёты</h3>
+<ol type="1">
+<li><code>rust/e8_mask_codec/src/bin/bench_cpu_threads.rs</code> —
+базовый замер по потокам CPU.</li>
+<li><code>rust/e8_mask_codec/src/bin/bench_gpu.rs</code> — GPU
+sparse/dense/LUT.</li>
+<li><code>rust/e8_mask_codec/src/bin/bench_hybrid.rs</code> — устойчивый
+режим CPU+GPU с постоянным pool.</li>
+<li><code>rust/e8_mask_codec/src/bin/memory_report.rs</code> — политика
+памяти.</li>
+<li><code>rust/e8_mask_codec/src/bin/count_first_n.rs</code> —
+исполнительный слой с контрольными точками для первых
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+простых.</li>
+<li><code>rust/e8_mask_codec/src/runtime.rs</code> — сегментированный
+исполнительный слой подсчёта и состояние контрольной точки.</li>
+</ol>
+<h3 id="внешние-математические-источники">22.2. Внешние математические
+источники</h3>
+<ol type="1">
+<li>T. Denney et al., <a href="https://arxiv.org/abs/1912.06156">The
+Geometry of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>4</mn></msub><annotation encoding="application/x-tex">H_4</annotation></semantics></math>
+Polytopes</a>. Разбиения 600-ячейника на пять непересекающихся
+24-ячейников и связь с
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>.</li>
+<li>J. C. Baez, <a href="https://arxiv.org/abs/1712.06436">From the
+Icosahedron to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math></a>.
+Икосианы, золотое сечение, 600-ячейник и решётка
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>.</li>
+<li>P.-P. Dechant, <a href="https://arxiv.org/abs/1602.05985">The Birth
+of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>
+out of the Spinors of the Icosahedron</a>. Спинорная конструкция
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mn>4</mn></msub><annotation encoding="application/x-tex">H_4</annotation></semantics></math>
+и
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>.</li>
+<li>M. Koca, M. Al-Ajmi, N. O. Koca, <a
+href="https://arxiv.org/abs/0906.2109">Quaternionic Representation of
+Snub 24-Cell and its Dual Polytope Derived From
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>8</mn></msub><annotation encoding="application/x-tex">E_8</annotation></semantics></math>
+Root System</a>. Кватернионные представления 24-ячейника, 600-ячейника и
+их орбит.</li>
+</ol>
+<p><a id="makefile-long-run"></a></p>
+<h2 id="практический-запуск-длинного-прогона-через-makefile">23.
+Практический запуск длинного прогона через Makefile</h2>
+<p>Для длинного прогона используется корневой <code>Makefile</code>.</p>
+<p>Основные команды:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> prime-build</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> count-start</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> count-status</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> count-stop</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> count-log</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> count-wheel210-rebuild</span></code></pre></div>
+<p><code>make count-start</code> — универсальная команда старта и
+продолжения. Она работает даже без заранее созданного файла контрольной
+точки:</p>
+<ul>
+<li>если существует надёжный архив, состояние берётся из архивной
+истины;</li>
+<li>иначе, если есть контрольная точка, состояние продолжается из
+неё;</li>
+<li>иначе создаётся свежее начальное состояние.</li>
+</ul>
+<p><code>make count-status</code> показывает:</p>
+<ul>
+<li>утверждение текущего прогона из <code>count.progress</code>;</li>
+<li>зафиксированное состояние архива;</li>
+<li>буферизированное состояние в RAM;</li>
+<li><code>ETA</code> и скорость, рассчитанные по модели «архив +
+буфер»;</li>
+<li>текущий размер <code>wheel210</code> на диске.</li>
+</ul>
+<p>Таким образом, длинный прогон управляется как нормальный фоновый
+вычислительный процесс, а не как одноразовый интерактивный запуск.</p>
+<h3 id="wheel210-only-режим-хранения">23.1. Wheel210-only режим
+хранения</h3>
+<p>Текущий производственный режим архива использует
+<code>--archive-mode wheel210</code>, чтобы не держать на диске
+одновременно точный архив с delta-кодированием и побочный
+<code>wheel210</code>-архив.</p>
+<p>Именно <code>wheel210-only</code> соответствует целевой оценке
+порядка <code>20–40 GiB</code> на <code>10^11</code> простых. Режим
+<code>both</code> сохраняется только как переходный или отладочный.</p>
+<p><a id="runtime-update-appendix"></a></p>
+<h2 id="приложение-текущий-исполнительный-и-операционный-слой">24.
+Приложение: текущий исполнительный и операционный слой</h2>
+<p>Это приложение фиксирует текущий исполнительный слой и слой
+эксплуатации, не меняя математическую часть документа.</p>
+<p>В реализации сейчас есть:</p>
+<ul>
+<li>универсальный интерфейс Makefile для длинного префиксного
+поиска;</li>
+<li>архивные запросы к простым числам;</li>
+<li>честная трёхслойная модель статуса;</li>
+<li>локальное состояние сборки и кэша проекта внутри
+<code>data/</code>;</li>
+<li><code>wheel210-only</code> как основной производственный режим
+архивного хранения.</li>
+</ul>
+<p><a id="universal-makefile-operations"></a></p>
+<h2 id="универсальные-операции-makefile">25. Универсальные операции
+Makefile</h2>
+<p>Публичный операционный интерфейс — параметризованный корневой
+<code>Makefile</code>.</p>
+<p>Основные команды:</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> prime-build</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> test</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> count-start</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> count-stop</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> count-status</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> count-progress</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> count-log</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> isPrime N=2760727302517</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> nextPrime N=2760727302510</span></code></pre></div>
+<p>Те же команды используются для альтернативных прогонов через
+переопределение переменных:</p>
+<ul>
+<li><code>RUN_DIR</code>;</li>
+<li><code>TARGET_N</code>;</li>
+<li><code>ARCHIVE_DIR</code>;</li>
+<li><code>CHECKPOINT_FILE</code>;</li>
+<li><code>PROGRESS_FILE</code>;</li>
+<li><code>PID_FILE</code>;</li>
+<li><code>LOG_FILE</code>.</li>
+</ul>
+<p>Отдельные специализированные псевдокоманды для
+<code>start</code>/<code>stop</code>/<code>status</code> в рабочем
+режиме не требуются.</p>
+<p><a id="truth-model-long-runs"></a></p>
+<h2 id="модель-истины-для-длинных-прогонов">26. Модель истины для
+длинных прогонов</h2>
+<p><code>make count-status</code> разделяет три слоя истины. Слой
+запросов также доступен через локальный HTTP-интерфейс.</p>
+<h3 id="утверждение-текущего-прогона">26.1. Утверждение текущего
+прогона</h3>
+<p>Это то, что сообщает текущий файл <code>count.progress</code>:</p>
+<ul>
+<li>запрошенная цель;</li>
+<li>последнее заявленное значение <code>found_count</code>;</li>
+<li>последнее заявленное значение <code>last_prime</code>;</li>
+<li>текущий режим исполнения и телеметрия исполнительного слоя.</li>
+</ul>
+<h3 id="зафиксированная-истина-архива">26.2. Зафиксированная истина
+архива</h3>
+<p>Это авторитетное зафиксированное состояние на диске:</p>
+<ul>
+<li>итоговые значения из manifest <code>wheel210</code>;</li>
+<li>число зафиксированных chunk-файлов;</li>
+<li>диапазон архива, доступный для запросов;</li>
+<li>текущий размер архива на диске.</li>
+</ul>
+<h3 id="буферизированная-истина-в-ram">26.3. Буферизированная истина в
+RAM</h3>
+<p>Это работа, которая уже найдена, но ещё не зафиксирована надёжной
+записью:</p>
+<ul>
+<li>простые, находящиеся в RAM-буфере;</li>
+<li>оценочный размер RAM-буфера;</li>
+<li>состояние очереди записи/сжатия.</li>
+</ul>
+<p>Такое разделение не смешивает устаревшие утверждения процесса с
+зафиксированным состоянием архива.</p>
+<p><a id="archive-backed-prime-queries"></a></p>
+<h2 id="архивные-запросы-к-простым-числам">27. Архивные запросы к
+простым числам</h2>
+<p>Проект предоставляет архивный поиск простых через существующие
+CLI-команды:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> isPrime N=...</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> nextPrime N=...</span></code></pre></div>
+<p>Поведение:</p>
+<ul>
+<li>если <code>N</code> покрыто <code>wheel210</code>-архивом, ответ
+точный;</li>
+<li><code>nextPrime(N)</code> возвращает первое архивное простое строго
+больше <code>N</code>;</li>
+<li>пропуски архива или запросы за пределами диапазона возвращают явные
+ошибки;</li>
+<li>пользовательский вывод чистый и ориентирован на результат.</li>
+</ul>
+<p>Это уже не будущая цель API: архивный слой запросов существует и
+входит в текущую поверхность исполнительного слоя.</p>
+<p><a id="current-production-runtime-shape"></a></p>
+<h2 id="текущая-рабочая-форма-исполнительного-слоя">28. Текущая рабочая
+форма исполнительного слоя</h2>
+<p>Текущий исполнительный слой использует следующие константы и
+политики:</p>
+<ul>
+<li>базовый CPU-режим: 8 потоков;</li>
+<li>целевой устойчивый GPU-режим: примерно 131072 активных потоков;</li>
+<li>рабочие потоки архивной записи: 3;</li>
+<li>RAM-буферизированный архивный конвейер с обратным давлением;</li>
+<li><code>wheel210-only</code> как производственный режим архива;</li>
+<li>локальная среда сборки и кэша проекта внутри
+<code>data/</code>.</li>
+</ul>
+<p>Операционно это означает:</p>
+<ul>
+<li>новое состояние проекта не пишется в <code>$HOME</code>;</li>
+<li>кэш сборки живёт в <code>data/cargo-home</code> и
+<code>data/cargo-target</code>;</li>
+<li>вспомогательные файлы исполнительного слоя живут внутри выбранного
+<code>RUN_DIR</code>;</li>
+<li>продолжение из архива предпочтительно, если существует
+зафиксированное состояние архива.</li>
+</ul>
+<p><a id="targets-and-neutral-roadmap"></a></p>
+<h2 id="цели-и-нейтральная-дорожная-карта">29. Цели и нейтральная
+дорожная карта</h2>
+<p>Активные цели исполнительного слоя и хранилища:</p>
+<ul>
+<li>сжатый архив меньше <code>40 GiB</code>;</li>
+<li>гибридная производительность выше только CPU на прогонах с архивом,
+приближённых к рабочему режиму;</li>
+<li>продолжение использования <code>wheel210-only</code> для надёжный
+архива;</li>
+<li>будущая полная переупаковка/пересжатие архива как следующий крупный
+шаг по хранилищу.</li>
+</ul>
+<p>Эти цели зафиксированы как активные инженерные ориентиры без
+превращения приложения в отчёт о регрессиях.</p>
+<p><a id="local-ui-prime-queries"></a></p>
+<h2 id="локальный-интерфейс-для-isprimen-и-nextprimen">30. Локальный
+интерфейс для <code>isPrime(N)</code> и <code>nextPrime(N)</code></h2>
+<p>Для архивных запросов к простым числам доступен локальный
+одностраничный интерфейс. Первая версия намеренно локальная и привязана
+к <code>127.0.0.1</code>.</p>
+<h3 id="что-показывает-интерфейс">30.1. Что показывает интерфейс</h3>
+<p>Интерфейс открывает две операции:</p>
+<ul>
+<li><code>isPrime(N)</code>;</li>
+<li><code>nextPrime(N)</code>.</li>
+</ul>
+<p>Обе операции вызывают исполнительный слой Rust напрямую. Если
+запрошенное число покрыто зафиксированным <code>wheel210</code>-архивом,
+ответ возвращается из архивного пути запросов. Если архив не настроен,
+исполнительный слой может использовать прямую оценку через
+<code>E8</code>-маску.</p>
+<h3 id="локальная-http-поверхность">30.2. Локальная
+HTTP-поверхность</h3>
+<p>Локальный сервер предоставляет:</p>
+<ul>
+<li><code>GET /</code> — встроенный одностраничный интерфейс;</li>
+<li><code>GET /healthz</code> — локальная проверка состояния и путь к
+архиву;</li>
+<li><code>POST /api/is-prime</code> — JSON-запрос с <code>n</code> в
+виде строки;</li>
+<li><code>POST /api/next-prime</code> — JSON-запрос с <code>n</code> в
+виде строки.</li>
+</ul>
+<p>Большие целые передаются строками и в запросах, и в ответах, чтобы
+браузерный код не зависел от точности целых чисел JavaScript с плавающей
+точкой.</p>
+<h3 id="почему-интерфейс-выглядит-именно-так">30.3. Почему интерфейс
+выглядит именно так</h3>
+<p>Визуальный язык следует двум ограничениям:</p>
+<ol type="1">
+<li>сдержанный инфраструктурный неоновый стиль вместо тяжёлого
+Web3-оформления;</li>
+<li>геометрические мотивы из иерархии E8 / 24-cell / тессеракт, развитой
+выше в документе.</li>
+</ol>
+<p>Поэтому интерфейс использует тёмное поле, тонкие решётчатые наложения
+и многослойные геометрические каркасные элементы, но остаётся
+практическим локальным инструментом, а не промо-страницей.</p>
+<h3 id="связь-интерфейса-с-архивом">30.4. Связь интерфейса с
+архивом</h3>
+<p>Интерфейс сам не выполняет подсчёт. Это тонкая локальная поверхность
+запросов поверх существующего исполнительного слоя и архива:</p>
+<ul>
+<li>архив остаётся источником истины;</li>
+<li>интерфейс выполняет только запросы на чтение;</li>
+<li>тот же путь на базе <code>wheel210</code> используется CLI и
+HTTP-слоем.</li>
+</ul>
+<h3 id="локальный-запуск">30.5. Локальный запуск</h3>
+<p>Канонический запуск:</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> ui-start ARCHIVE_DIR=data/runs/count_1e11/archive</span></code></pre></div>
+<p>После этого открыть:</p>
+<pre class="text"><code>http://127.0.0.1:4173</code></pre>
+<p>Команды жизненного цикла:</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> ui-status</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> ui-stop</span></code></pre></div>
+<p>Все артефакты интерфейса остаются внутри <code>data/</code>, и
+интерфейс соблюдает ту же дисциплину без записи в <code>$HOME</code>,
+что и остальные точки входа проекта.</p>
+</main>
+</body>
+</html>

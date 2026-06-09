@@ -1,0 +1,2265 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Быстрое вычисление простых чисел</title>
+  <style>
+:root {
+  --bg: #081426;
+  --panel: #0d1b2e;
+  --panel-2: #07101f;
+  --text: #e7eefc;
+  --muted: #aab6c9;
+  --line: rgba(148, 163, 184, .18);
+  --accent: #86b7ff;
+  --code-bg: #050d19;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: radial-gradient(circle at top left, rgba(68, 101, 160, .18), transparent 32rem), var(--bg);
+  color: var(--text);
+  font: 16px/1.72 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.page-header {
+  border-bottom: 1px solid var(--line);
+  background: rgba(7, 16, 31, .86);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(12px);
+}
+.header-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1rem 1.4rem;
+}
+.site-title {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.6vw, 2.2rem);
+  line-height: 1.2;
+  letter-spacing: .01em;
+}
+.site-subtitle { margin: .25rem 0 0; color: var(--muted); font-size: .96rem; }
+.wrapper {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1.6rem 1.4rem 4rem;
+}
+.toc {
+  background: rgba(13, 27, 46, .72);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.2rem 1.35rem;
+  margin: 0 0 1.6rem;
+}
+.toc h2 { margin: 0 0 .75rem; font-size: 1.15rem; }
+.toc-list {
+  display: flex;
+  flex-direction: column;
+  gap: .16rem;
+}
+.toc-link {
+  display: block;
+  color: var(--muted);
+  text-decoration: none;
+  padding: .32rem .45rem;
+  border-radius: 8px;
+  border-bottom: 1px solid rgba(148, 163, 184, .08);
+}
+.toc-link:hover { color: var(--text); background: rgba(134, 183, 255, .09); }
+.toc-link.l3 { padding-left: 1.45rem; font-size: .94rem; }
+.toc-link.l4 { padding-left: 2.25rem; font-size: .9rem; opacity: .92; }
+.content {
+  background: rgba(13, 27, 46, .66);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: clamp(1.35rem, 3vw, 2.4rem);
+  overflow: hidden;
+}
+h1, h2, h3, h4 { line-height: 1.3; scroll-margin-top: 6rem; color: var(--text); }
+h1 { font-size: clamp(1.7rem, 3vw, 2.5rem); margin: .2rem 0 1rem; }
+h2 { font-size: 1.45rem; margin: 2.2rem 0 .85rem; padding-top: .6rem; border-top: 1px solid var(--line); }
+h3 { font-size: 1.18rem; margin: 1.55rem 0 .65rem; }
+h4 { font-size: 1.02rem; margin: 1.2rem 0 .5rem; }
+p { margin: .75rem 0; }
+ul, ol { padding-left: 1.45rem; }
+li { margin: .25rem 0; }
+a { color: var(--accent); }
+blockquote { margin: 1rem 0; padding: .75rem 1rem; border-left: 4px solid var(--accent); background: rgba(134, 183, 255, .08); border-radius: 0 10px 10px 0; }
+code {
+  background: rgba(156, 174, 205, .15);
+  border-radius: 6px;
+  padding: .12rem .28rem;
+  color: #f2f7ff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: .92em;
+}
+pre {
+  margin: 1rem 0;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+pre code { background: transparent; padding: 0; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.3rem; overflow: hidden; border-radius: 12px; }
+th, td { border: 1px solid var(--line); padding: .62rem .75rem; vertical-align: top; }
+th { background: rgba(134, 183, 255, .10); text-align: left; }
+.math-display {
+  display: block;
+  margin: 1.05rem 0;
+  padding: .1rem 0;
+  text-align: center;
+  overflow-x: auto;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.math-inline { white-space: nowrap; }
+.math-display mjx-container[jax="CHTML"][display="true"] {
+  margin: .15em auto !important;
+}
+.math-display mjx-container { outline: none !important; border: 0 !important; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+@media (max-width: 760px) {
+  body { font-size: 15px; }
+  .wrapper { padding: 1rem .75rem 3rem; }
+  .content, .toc { border-radius: 14px; padding: 1rem; }
+}
+</style>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']],
+        processEscapes: true,
+        packages: {'[+]': ['ams']}
+      },
+      loader: {load: ['[tex]/ams']},
+      options: {skipHtmlTags: ['script','noscript','style','textarea','pre','code']}
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <header class="page-header">
+    <div class="header-inner">
+      <h1 class="site-title">Быстрое вычисление простых чисел</h1>
+      <p class="site-subtitle">Групповое кодирование циклических масок, локальные запросы и архивный runtime</p>
+    </div>
+  </header>
+  <main class="wrapper">
+    <nav class="toc" aria-label="Оглавление">
+      <h2>Оглавление</h2>
+      <div class="toc-list"><a class="toc-link l2" href="#оглавление">Оглавление</a>
+<a class="toc-link l2" href="#goal">1. Цель и главный результат</a>
+<a class="toc-link l2" href="#mask-model">2. Математическая модель маски</a>
+<a class="toc-link l2" href="#channel-cycle">3. Оптимизация № 1: один канал вместо четырёх</a>
+<a class="toc-link l2" href="#mirror">4. Оптимизация № 2: зеркало без отдельного хранения</a>
+<a class="toc-link l2" href="#affine">5. Оптимизация № 3: аффинный переход между периодами</a>
+<a class="toc-link l3" href="#5-1-универсальный-декодер">5.1. Универсальный декодер</a>
+<a class="toc-link l3" href="#5-2-псевдокод">5.2. Псевдокод</a>
+<a class="toc-link l2" href="#mask-algorithm">6. Алгоритм генерации полной и очищенной масок</a>
+<a class="toc-link l3" href="#6-1-полная-маска-g-p">6.1. Полная маска <span class="math-inline">\(G_p\)</span></a>
+<a class="toc-link l3" href="#6-2-очищенная-маска-e-p">6.2. Очищенная маска <span class="math-inline">\(E_p\)</span></a>
+<a class="toc-link l3" href="#6-3-генерация-чисел-напрямую">6.3. Генерация чисел напрямую</a>
+<a class="toc-link l2" href="#b4">7. Тессеракт и группа <span class="math-inline">\(B_4\)</span>: пакет из двух масок</a>
+<a class="toc-link l2" href="#f4">8. 24-ячейник и группа <span class="math-inline">\(F_4\)</span>: пакет из шести масок</a>
+<a class="toc-link l3" href="#8-1-три-слоя-f-4">8.1. Три слоя <span class="math-inline">\(F_4\)</span></a>
+<a class="toc-link l3" href="#8-2-добавление-двоичного-слоя">8.2. Добавление двоичного слоя</a>
+<a class="toc-link l3" href="#8-3-один-24-ячейник">8.3. Один 24-ячейник</a>
+<a class="toc-link l2" href="#h4">9. 600-ячейник: пакет из тридцати масок</a>
+<a class="toc-link l3" href="#9-1-точная-групповая-цепочка">9.1. Точная групповая цепочка</a>
+<a class="toc-link l3" href="#9-2-иерархия-состояний">9.2. Иерархия состояний</a>
+<a class="toc-link l3" href="#9-3-что-здесь-вычисляется">9.3. Что здесь вычисляется</a>
+<a class="toc-link l2" href="#e8">10. <span class="math-inline">\(E_8\)</span> и политоп Гоше <span class="math-inline">\(4_{21}\)</span>: пакет из шестидесяти масок</a>
+<a class="toc-link l3" href="#10-1-два-h-4-слоя">10.1. Два <span class="math-inline">\(H_4\)</span>-слоя</a>
+<a class="toc-link l3" href="#10-2-иерархическая-координата">10.2. Иерархическая координата</a>
+<a class="toc-link l3" href="#10-3-результат">10.3. Результат</a>
+<a class="toc-link l2" href="#hopf">11. Роль золотого сечения, дуальности и расслоения Хопфа</a>
+<a class="toc-link l3" href="#11-1-золотое-сечение">11.1. Золотое сечение</a>
+<a class="toc-link l3" href="#11-2-что-здесь-называется-дуалом">11.2. Что здесь называется дуалом</a>
+<a class="toc-link l3" href="#11-3-расслоение-хопфа">11.3. Расслоение Хопфа</a>
+<a class="toc-link l2" href="#compression">12. Точные коэффициенты оптимизации</a>
+<a class="toc-link l3" href="#12-1-структурные-коэффициенты">12.1. Структурные коэффициенты</a>
+<a class="toc-link l3" href="#12-2-почему-общий-результат-не-равен-4-cdot2-cdot6-cdot30-cdot60">12.2. Почему общий результат не равен <span class="math-inline">\(4\cdot2\cdot6\cdot30\cdot60\)</span></a>
+<a class="toc-link l3" href="#12-3-сравнение-с-плотными-битовыми-половинами">12.3. Сравнение с плотными битовыми половинами</a>
+<a class="toc-link l3" href="#12-4-аффинный-автомат-не-ограничен-числом-60">12.4. Аффинный автомат не ограничен числом 60</a>
+<a class="toc-link l2" href="#storage">13. Что именно хранится</a>
+<a class="toc-link l3" href="#13-1-глобальные-константы-формата">13.1. Глобальные константы формата</a>
+<a class="toc-link l3" href="#13-2-seed-макроблока">13.2. Seed макроблока</a>
+<a class="toc-link l3" href="#13-3-prime-only-режим">13.3. Prime-only режим</a>
+<a class="toc-link l2" href="#implementations">14. Алгоритмы и проверочные программы</a>
+<a class="toc-link l3" href="#14-1-арифметический-аффинный-автомат">14.1. Арифметический аффинный автомат</a>
+<a class="toc-link l3" href="#14-2-точная-групповая-проверка-b-4-f-4">14.2. Точная групповая проверка <span class="math-inline">\(B_4/F_4\)</span></a>
+<a class="toc-link l3" href="#14-3-алгоритм-600-ячейникового-блока">14.3. Алгоритм 600-ячейникового блока</a>
+<a class="toc-link l3" href="#14-4-алгоритм-e-8-блока">14.4. Алгоритм <span class="math-inline">\(E_8\)</span>-блока</a>
+<a class="toc-link l2" href="#architecture">15. Рекомендуемая архитектура</a>
+<a class="toc-link l3" href="#15-1-математическое-ядро">15.1. Математическое ядро</a>
+<a class="toc-link l3" href="#15-2-локальный-уровень">15.2. Локальный уровень</a>
+<a class="toc-link l3" href="#15-3-средний-уровень">15.3. Средний уровень</a>
+<a class="toc-link l3" href="#15-4-верхний-уровень">15.4. Верхний уровень</a>
+<a class="toc-link l3" href="#15-5-практическая-рекомендация">15.5. Практическая рекомендация</a>
+<a class="toc-link l3" href="#15-6-оптимальный-формат-исполнительного-слоя-хранить-как-e-8-исполнять-как-24-ячейники">15.6. Оптимальный формат исполнительного слоя: хранить как <span class="math-inline">\(E_8\)</span>, исполнять как 24-ячейники</a>
+<a class="toc-link l4" href="#сравнение-selector-форматов">Сравнение selector-форматов</a>
+<a class="toc-link l4" href="#горячий-цикл">Горячий цикл</a>
+<a class="toc-link l4" href="#зачем-сохранять-24-ячейниковое-деление">Зачем сохранять 24-ячейниковое деление</a>
+<a class="toc-link l3" href="#15-7-какие-предложения-из-optimizations-md-использованы">15.7. Какие предложения из <code>optimizations.md</code> использованы</a>
+<a class="toc-link l3" href="#15-8-параллельная-архитектура-cpu-gpu">15.8. Параллельная архитектура CPU + GPU</a>
+<a class="toc-link l4" href="#конвейер">Конвейер</a>
+<a class="toc-link l3" href="#15-9-память-cpu-gpu">15.9. Память CPU + GPU</a>
+<a class="toc-link l2" href="#measured-state">16. Текущее состояние реализации и измеренные тесты производительности</a>
+<a class="toc-link l3" href="#16-1-cpu">16.1. CPU</a>
+<a class="toc-link l3" href="#16-2-gpu">16.2. GPU</a>
+<a class="toc-link l3" href="#16-3-устойчивый-гибридный-режим">16.3. Устойчивый гибридный режим</a>
+<a class="toc-link l3" href="#16-4-память">16.4. Память</a>
+<a class="toc-link l2" href="#first-trillion">17. Практический рубеж: первые <span class="math-inline">\(10^{12}\)</span> простых</a>
+<a class="toc-link l3" href="#17-1-он-ещё-реалистичен-на-одной-машине">17.1. Он ещё реалистичен на одной машине</a>
+<a class="toc-link l3" href="#17-2-он-проверяет-всю-инфраструктуру-а-не-только-одну-формулу">17.2. Он проверяет всю инфраструктуру, а не только одну формулу</a>
+<a class="toc-link l3" href="#17-3-полная-выгрузка-не-нужна-как-первый-режим">17.3. Полная выгрузка не нужна как первый режим</a>
+<a class="toc-link l3" href="#17-4-сохраняемое-состояние-продолжение-и-зафиксированный-сегмент">17.4. Сохраняемое состояние, продолжение и зафиксированный сегмент</a>
+<a class="toc-link l3" href="#17-5-практические-команды-для-фонового-прогона">17.5. Практические команды для фонового прогона</a>
+<a class="toc-link l2" href="#where-wins">18. Где оптимизации реально дают выигрыш</a>
+<a class="toc-link l3" href="#18-1-один-канал-вместо-четырёх">18.1. Один канал вместо четырёх</a>
+<a class="toc-link l3" href="#18-2-зеркало-без-отдельного-хранения">18.2. Зеркало без отдельного хранения</a>
+<a class="toc-link l3" href="#18-3-e8bitmap-sparsecsr-implicitfull">18.3. <code>E8Bitmap</code>, <code>SparseCSR</code>, <code>ImplicitFull</code></a>
+<a class="toc-link l3" href="#18-4-cpu-gpu-и-гибридный-режим">18.4. CPU, GPU и гибридный режим</a>
+<a class="toc-link l3" href="#18-5-почему-lut-не-нужен-в-горячем-пути-cpu">18.5. Почему LUT не нужен в горячем пути CPU</a>
+<a class="toc-link l3" href="#18-6-почему-постоянный-пул-cuda-обязателен">18.6. Почему постоянный пул CUDA обязателен</a>
+<a class="toc-link l2" href="#range-10e19-10e20">19. Почему диапазон <span class="math-inline">\(10^{19}\to10^{20}\)</span> не является первой практической целью</a>
+<a class="toc-link l2" href="#big-primes-api">20. Большие отдельные простые: <code>isPrime(N)</code> и <code>nextPrime(N)</code></a>
+<a class="toc-link l3" href="#20-1-что-уже-измерено">20.1. Что уже измерено</a>
+<a class="toc-link l3" href="#20-2-текущая-поверхность-запросов">20.2. Текущая поверхность запросов</a>
+<a class="toc-link l3" href="#20-3-чем-локальный-запрос-отличается-от-полного-префиксного-прохода">20.3. Чем локальный запрос отличается от полного префиксного прохода</a>
+<a class="toc-link l3" href="#20-4-ограничение-версии-для-больших-целых">20.4. Ограничение версии для больших целых</a>
+<a class="toc-link l3" href="#20-5-маска-как-доказательство-и-маска-как-фильтр">20.5. Маска как доказательство и маска как фильтр</a>
+<a class="toc-link l3" href="#20-6-быстрый-isprime-n">20.6. Быстрый <code>isPrime(N)</code></a>
+<a class="toc-link l3" href="#20-7-уточнённый-isprime-n">20.7. Уточнённый <code>isPrime(N)</code></a>
+<a class="toc-link l3" href="#20-8-быстрый-nextprime-n">20.8. Быстрый <code>nextPrime(N)</code></a>
+<a class="toc-link l3" href="#20-9-уточнённый-nextprime-n">20.9. Уточнённый <code>nextPrime(N)</code></a>
+<a class="toc-link l3" href="#20-10-оценка-времени-для-1000-значных-чисел">20.10. Оценка времени для 1000-значных чисел</a>
+<a class="toc-link l3" href="#20-11-роль-cpu-gpu-оптимизаций">20.11. Роль CPU/GPU оптимизаций</a>
+<a class="toc-link l3" href="#20-12-прогресс-вычислений">20.12. Прогресс вычислений</a>
+<a class="toc-link l3" href="#20-13-ecpp-не-является-ml-тригонометрическим-вычислением">20.13. ECPP не является ML/тригонометрическим вычислением</a>
+<a class="toc-link l3" href="#20-14-команды-и-статусы">20.14. Команды и статусы</a>
+<a class="toc-link l3" href="#20-15-итоговая-семантика-слоя-больших-целых">20.15. Итоговая семантика слоя больших целых</a>
+<a class="toc-link l2" href="#practical-scenarios">21. Практические сценарии применения</a>
+<a class="toc-link l3" href="#21-1-последовательный-префиксный-поиск">21.1. Последовательный префиксный поиск</a>
+<a class="toc-link l3" href="#21-2-проверка-конкретного-большого-числа">21.2. Проверка конкретного большого числа</a>
+<a class="toc-link l3" href="#21-3-поиск-первого-простого-после-n">21.3. Поиск первого простого после <span class="math-inline">\(N\)</span></a>
+<a class="toc-link l3" href="#21-4-гибридный-путь">21.4. Гибридный путь</a>
+<a class="toc-link l3" href="#21-5-кластер-и-удалённые-диапазоны">21.5. Кластер и удалённые диапазоны</a>
+<a class="toc-link l2" href="#sources">22. Источники</a>
+<a class="toc-link l3" href="#22-1-внутренние-ссылки-на-текущие-расчёты">22.1. Внутренние ссылки на текущие расчёты</a>
+<a class="toc-link l3" href="#22-2-внешние-математические-источники">22.2. Внешние математические источники</a>
+<a class="toc-link l2" href="#makefile-long-run">23. Практический запуск длинного прогона через Makefile</a>
+<a class="toc-link l3" href="#23-1-wheel210-only-режим-хранения">23.1. Wheel210-only режим хранения</a>
+<a class="toc-link l2" href="#runtime-update-appendix">24. Приложение: текущий исполнительный и операционный слой</a>
+<a class="toc-link l2" href="#universal-makefile-operations">25. Универсальные операции Makefile</a>
+<a class="toc-link l2" href="#truth-model-long-runs">26. Модель истины для длинных прогонов</a>
+<a class="toc-link l3" href="#26-1-утверждение-текущего-прогона">26.1. Утверждение текущего прогона</a>
+<a class="toc-link l3" href="#26-2-зафиксированная-истина-архива">26.2. Зафиксированная истина архива</a>
+<a class="toc-link l3" href="#26-3-буферизированная-истина-в-ram">26.3. Буферизированная истина в RAM</a>
+<a class="toc-link l2" href="#archive-backed-prime-queries">27. Архивные запросы к простым числам</a>
+<a class="toc-link l2" href="#current-production-runtime-shape">28. Текущая рабочая форма исполнительного слоя</a>
+<a class="toc-link l2" href="#targets-and-neutral-roadmap">29. Цели и нейтральная дорожная карта</a>
+<a class="toc-link l2" href="#local-ui-prime-queries">30. Локальный интерфейс для <code>isPrime(N)</code> и <code>nextPrime(N)</code></a>
+<a class="toc-link l3" href="#30-1-что-показывает-интерфейс">30.1. Что показывает интерфейс</a>
+<a class="toc-link l3" href="#30-2-локальная-http-поверхность">30.2. Локальная HTTP-поверхность</a>
+<a class="toc-link l3" href="#30-3-почему-интерфейс-выглядит-именно-так">30.3. Почему интерфейс выглядит именно так</a>
+<a class="toc-link l3" href="#30-4-связь-интерфейса-с-архивом">30.4. Связь интерфейса с архивом</a>
+<a class="toc-link l3" href="#30-5-локальный-запуск">30.5. Локальный запуск</a></div>
+    </nav>
+    <article class="content">
+<h1 id="быстрое-вычисление-простых-чисел">Быстрое вычисление простых чисел</h1>
+<p><em>Групповое кодирование циклических масок, исполнительный слой E8/24-cell и запросы к большим целым числам.</em></p>
+<h2 id="оглавление">Оглавление</h2>
+<ol>
+<li><a href="#goal">Цель и главный результат</a></li>
+<li><a href="#mask-model">Математическая модель маски</a></li>
+<li><a href="#channel-cycle">Оптимизация № 1: один канал вместо четырёх</a></li>
+<li><a href="#mirror">Оптимизация № 2: зеркало без отдельного хранения</a></li>
+<li><a href="#affine">Оптимизация № 3: аффинный переход между периодами</a></li>
+<li><a href="#mask-algorithm">Алгоритм генерации полной и очищенной масок</a></li>
+<li><a href="#b4">Тессеракт и группа <span class="math-inline">\(B_4\)</span>: пакет из двух масок</a></li>
+<li><a href="#f4">24-ячейник и группа <span class="math-inline">\(F_4\)</span>: пакет из шести масок</a></li>
+<li><a href="#h4">600-ячейник: пакет из тридцати масок</a></li>
+<li><a href="#e8"><span class="math-inline">\(E_8\)</span> и политоп Гоше <span class="math-inline">\(4_{21}\)</span>: пакет из шестидесяти масок</a></li>
+<li><a href="#hopf">Роль золотого сечения, дуальности и расслоения Хопфа</a></li>
+<li><a href="#compression">Точные коэффициенты оптимизации</a></li>
+<li><a href="#storage">Что именно хранится</a></li>
+<li><a href="#implementations">Алгоритмы и проверочные программы</a></li>
+<li><a href="#architecture">Рекомендуемая архитектура</a></li>
+<li><a href="#measured-state">Текущее состояние реализации и измеренные тесты производительности</a></li>
+<li><a href="#first-trillion">Практический рубеж: первые <span class="math-inline">\(10^{12}\)</span> простых</a></li>
+<li><a href="#where-wins">Где оптимизации реально дают выигрыш</a></li>
+<li><a href="#range-10e19-10e20">Почему диапазон <span class="math-inline">\(10^{19}\to10^{20}\)</span> не является первой практической целью</a></li>
+<li><a href="#big-primes-api">Большие отдельные простые: <code>isPrime(N)</code> и <code>nextPrime(N)</code></a></li>
+<li><a href="#practical-scenarios">Практические сценарии применения</a></li>
+<li><a href="#sources">Источники</a></li>
+<li><a href="#makefile-long-run">Практический запуск длинного прогона через Makefile</a></li>
+<li><a href="#runtime-update-appendix">Приложение: текущий исполнительный и операционный слой</a></li>
+<li><a href="#universal-makefile-operations">Универсальные операции Makefile</a></li>
+<li><a href="#truth-model-long-runs">Модель истины для длинных прогонов</a></li>
+<li><a href="#archive-backed-prime-queries">Архивные запросы к простым числам</a></li>
+<li><a href="#current-production-runtime-shape">Текущая рабочая форма исполнительного слоя</a></li>
+<li><a href="#targets-and-neutral-roadmap">Цели и нейтральная дорожная карта</a></li>
+<li><a href="#local-ui-prime-queries">Локальный интерфейс для <code>isPrime(N)</code> и <code>nextPrime(N)</code></a></li>
+</ol>
+
+<h2 id="goal">1. Цель и главный результат</h2>
+<p>Маска рассматривается как первичный циклический объект, из которого
+порождаются числа. Плотная строка битов не является обязательным форматом
+хранения.</p>
+<p>Для каждого периода требуется знать:</p>
+<ul>
+<li>начальное условие;</li>
+<li>общий канальный генератор;</li>
+<li>правило перехода между соседними периодами;</li>
+<li>длину вычисляемого диапазона.</li>
+</ul>
+<p>Найдена следующая иерархия точных пакетных представлений:</p>
+<table>
+<thead>
+<tr>
+<th>Геометрия</th>
+<th style="text-align:right">Число состояний</th>
+<th style="text-align:right">Каналов</th>
+<th style="text-align:right">Масок в пакете</th>
+<th style="text-align:right">Пакетное сокращение seed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Канальный цикл <span class="math-inline">\(C_4\)</span></td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right"><span class="math-inline">\(1\times\)</span></td>
+</tr>
+<tr>
+<td>Тессерактный слой <span class="math-inline">\(B_4\)</span></td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right"><span class="math-inline">\(2\times\)</span></td>
+</tr>
+<tr>
+<td>Один 24-ячейник</td>
+<td style="text-align:right">24</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">6</td>
+<td style="text-align:right"><span class="math-inline">\(6\times\)</span></td>
+</tr>
+<tr>
+<td>Один 600-ячейник</td>
+<td style="text-align:right">120</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">30</td>
+<td style="text-align:right"><span class="math-inline">\(30\times\)</span></td>
+</tr>
+<tr>
+<td>Корни <span class="math-inline">\(E_8\)</span>, политоп <span class="math-inline">\(4_{21}\)</span></td>
+<td style="text-align:right">240</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">60</td>
+<td style="text-align:right"><span class="math-inline">\(60\times\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Последняя строка означает:</p>
+<blockquote>
+<p>Одно начальное условие <span class="math-inline">\(E_8\)</span>-макроблока вместе с общими операторами
+порождает 60 последовательных масок и все четыре канала каждой маски.</p>
+</blockquote>
+<p>Относительно уже построенного 24-ячейникового пакета это даёт потенциальное
+укрупнение:</p>
+<div class="math-display">\[\frac{60}{6}=10\times.\]</div>
+<p>Относительно независимого хранения четырёх канальных seed каждой маски один
+<span class="math-inline">\(E_8\)</span>-макроблок охватывает:</p>
+<div class="math-display">\[60\cdot4=240\]</div>
+<p>канальных состояний.</p>
+<p>При этом число вершин многогранника само по себе ничего не сжимает. Сжатие
+возникает только потому, что состояния вычисляются из:</p>
+<ol>
+<li>общего seed;</li>
+<li>фиксированных групповых генераторов;</li>
+<li>точного аффинного кокцикла.</li>
+</ol>
+
+<h2 id="mask-model">2. Математическая модель маски</h2>
+<p>Пусть:</p>
+<div class="math-display">\[p=10q+r,
+\qquad
+r\in\{1,3,7,9\}.\]</div>
+<p>Четыре канала задаются множителями:</p>
+<div class="math-display">\[m_a\in(1,3,9,7),
+\qquad
+a\in\mathbb Z/4\mathbb Z.\]</div>
+<p>Событие канала <span class="math-inline">\(a\)</span> имеет числовое значение:</p>
+<div class="math-display">\[x_{q,r,a}=m_a p.\]</div>
+<p>Разложим его по основанию 10:</p>
+<div class="math-display">\[x_{q,r,a}=10k_{q,r,a}+d_{q,r,a}.\]</div>
+<p>Тогда:</p>
+<ul>
+<li><span class="math-inline">\(k_{q,r,a}\)</span> — позиция в маске;</li>
+<li><span class="math-inline">\(d_{q,r,a}\in\{1,3,7,9\}\)</span> — десятичный канал;</li>
+<li>четыре значения <span class="math-inline">\(a\)</span> задают четыре специальные позиции периода.</li>
+</ul>
+<p>Полная маска <span class="math-inline">\(G_p\)</span> содержит все четыре события:</p>
+<div class="math-display">\[p,\quad3p,\quad9p,\quad7p.\]</div>
+<p>Очищенная маска <span class="math-inline">\(E_p\)</span> отличается удалением самопопадания:</p>
+<div class="math-display">\[p.\]</div>
+
+<h2 id="channel-cycle">3. Оптимизация № 1: один канал вместо четырёх</h2>
+<p>Определим канальный оператор:</p>
+<div class="math-display">\[T_p(x)=3x\bmod 10p.\]</div>
+<p>Он создаёт цикл:</p>
+<div class="math-display">\[1\longrightarrow3\longrightarrow9\longrightarrow7\longrightarrow1.\]</div>
+<p>Следовательно:</p>
+<div class="math-display">\[\langle T_p\rangle\cong C_4.\]</div>
+<p>Из одного события <span class="math-inline">\(x=p\)</span> вычисляются:</p>
+<div class="math-display">\[\begin{aligned}
+T_p^0(p)&amp;=p,\\
+T_p^1(p)&amp;=3p,\\
+T_p^2(p)&amp;=9p,\\
+T_p^3(p)&amp;=7p.
+\end{aligned}\]</div>
+<p>Поэтому четыре канала не должны храниться независимо.</p>
+<p>Если плотное четырёхканальное представление одного периода занимает:</p>
+<div class="math-display">\[B_{\mathrm{full}}(p)=4p\]</div>
+<p>бит, то один материализованный базовый канал занимает:</p>
+<div class="math-display">\[B_{\mathrm{channel}}(p)=p\]</div>
+<p>бит.</p>
+<p>Первое точное сокращение:</p>
+<div class="math-display">\[4\times.\]</div>
+<p>На практике полный базовый канал также не требуется материализовать: его
+события вычисляются непосредственно из seed.</p>
+
+<h2 id="mirror">4. Оптимизация № 2: зеркало без отдельного хранения</h2>
+<p>Зеркальное преобразование действует так:</p>
+<div class="math-display">\[R_p(k,d)=(p-1-k,\;10-d).\]</div>
+<p>Оно меняет пары:</p>
+<div class="math-display">\[1\leftrightarrow9,
+\qquad
+3\leftrightarrow7.\]</div>
+<p>На событиях маски выполняется:</p>
+<div class="math-display">\[R_p=T_p^2.\]</div>
+<p>Действительно:</p>
+<div class="math-display">\[T_p^2(x)=9x\equiv-x\pmod{10p},\]</div>
+<p>поскольку <span class="math-inline">\(p\mid x\)</span>.</p>
+<p>Зеркало уже находится внутри канальной группы:</p>
+<div class="math-display">\[\langle R_p\rangle
+=
+\langle T_p^2\rangle
+\subset C_4.\]</div>
+<p>Поэтому зеркало не требует:</p>
+<ul>
+<li>второй половины маски;</li>
+<li>отдельного генератора;</li>
+<li>отдельного бита направления;</li>
+<li>отдельного множителя <span class="math-inline">\(2\times\)</span> поверх канального <span class="math-inline">\(4\times\)</span>.</li>
+</ul>
+<p>Иначе одно и то же преобразование было бы учтено дважды.</p>
+
+<h2 id="affine">5. Оптимизация № 3: аффинный переход между периодами</h2>
+<p>Рассмотрим соседний период того же десятичного класса:</p>
+<div class="math-display">\[p(q+1,r)=p(q,r)+10.\]</div>
+<p>Для канала <span class="math-inline">\(a\)</span>:</p>
+<div class="math-display">\[x_{q+1,r,a}
+=
+m_a(p+10)
+=
+x_{q,r,a}+10m_a.\]</div>
+<p>Следовательно:</p>
+<div class="math-display">\[k_{q+1,r,a}=k_{q,r,a}+m_a\]</div>
+<p>и:</p>
+<div class="math-display">\[d_{q+1,r,a}=d_{q,r,a}.\]</div>
+<p>Позиции четырёх каналов сдвигаются на:</p>
+<div class="math-display">\[(1,3,9,7).\]</div>
+<p>Через <span class="math-inline">\(n\)</span> периодов:</p>
+<div class="math-display">\[k_{q+n,r,a}=k_{q,r,a}+nm_a.\]</div>
+<p>Это основной межмасочный алгоритм.</p>
+<p>Он справедлив для любого:</p>
+<div class="math-display">\[n\ge0.\]</div>
+<p>Следовательно, пакеты из 2, 3, 6, 30 и 60 масок — не разные арифметические
+алгоритмы. Это разные геометрические размеры блока одного универсального
+аффинного автомата.</p>
+<h3 id="5-1-универсальный-декодер">5.1. Универсальный декодер</h3>
+<p>Для базового индекса <span class="math-inline">\(q_0\)</span>, номера маски <span class="math-inline">\(n\)</span> и канала <span class="math-inline">\(a\)</span>:</p>
+<div class="math-display">\[p_n=10(q_0+n)+r,\]</div>
+<div class="math-display">\[x_{n,a}=m_a p_n,\]</div>
+<div class="math-display">\[(k_{n,a},d_{n,a})
+=
+\operatorname{divmod}(x_{n,a},10).\]</div>
+<p>Эквивалентная рекуррентная форма:</p>
+<div class="math-display">\[k_{n+1,a}=k_{n,a}+m_a.\]</div>
+<h3 id="5-2-псевдокод">5.2. Псевдокод</h3>
+<pre><code class="language-text">input:
+    q0        начальный индекс
+    r         один из 1, 3, 7, 9
+    count     число масок
+
+multipliers = [1, 3, 9, 7]
+
+for n in 0 .. count-1:
+    p = 10 * (q0 + n) + r
+
+    for a in 0 .. 3:
+        x = multipliers[a] * p
+        k, d = divmod(x, 10)
+        emit(period=p, channel=a, position=k, digit=d)
+</code></pre>
+<p>Плотная маска при этом не строится.</p>
+
+<h2 id="mask-algorithm">6. Алгоритм генерации полной и очищенной масок</h2>
+<h3 id="6-1-полная-маска-g-p">6.1. Полная маска <span class="math-inline">\(G_p\)</span></h3>
+<p>Для каждого периода <span class="math-inline">\(p\)</span> создаются четыре события:</p>
+<div class="math-display">\[\mathcal G_p
+=
+\{p,3p,9p,7p\}.\]</div>
+<p>Каждое событие преобразуется в координату:</p>
+<div class="math-display">\[(k,d)=\operatorname{divmod}(x,10).\]</div>
+<p>Если требуется строка длины <span class="math-inline">\(p\)</span>, все позиции сначала получают символ
+<code>f</code>, после чего в четырёх вычисленных позициях очищается соответствующий бит.</p>
+<h3 id="6-2-очищенная-маска-e-p">6.2. Очищенная маска <span class="math-inline">\(E_p\)</span></h3>
+<p>Для маски <span class="math-inline">\(E_p\)</span> не создаётся событие:</p>
+<div class="math-display">\[x=p.\]</div>
+<p>То есть используется проектор:</p>
+<div class="math-display">\[P_E:
+\mathcal G_p
+\longmapsto
+\mathcal G_p\setminus\{p\}.\]</div>
+<p>Правило очистки одинаково для всех периодов и не является индивидуальными
+данными маски.</p>
+<h3 id="6-3-генерация-чисел-напрямую">6.3. Генерация чисел напрямую</h3>
+<p>Если конечная задача состоит в генерации или вычёркивании чисел, строковое
+представление <code>E/G</code> не требуется вообще.</p>
+<p>Автомат выдаёт непосредственно:</p>
+<div class="math-display">\[x_{n,a}+10p_nt,
+\qquad
+t=0,1,2,\ldots\]</div>
+<p>для нужных каналов и периодов.</p>
+
+<h2 id="b4">7. Тессеракт и группа <span class="math-inline">\(B_4\)</span>: пакет из двух масок</h2>
+<p>В группе симметрий тессеракта <span class="math-inline">\(W(B_4)\)</span> используется подгруппа:</p>
+<div class="math-display">\[H_2\cong C_4\times C_2.\]</div>
+<p>Здесь:</p>
+<ul>
+<li><span class="math-inline">\(C_4\)</span> — четыре канала;</li>
+<li><span class="math-inline">\(C_2\)</span> — два последовательных значения <span class="math-inline">\(q\bmod2\)</span>.</li>
+</ul>
+<p>Состояние:</p>
+<div class="math-display">\[(a,b)\in C_4\times C_2\]</div>
+<p>задаёт:</p>
+<div class="math-display">\[2\text{ маски}\times4\text{ канала}=8\]</div>
+<p>событий.</p>
+<p>Позиционный переход между масками:</p>
+<div class="math-display">\[k\longmapsto k+m_a.\]</div>
+<p>Точное пакетное сокращение числа независимых seed:</p>
+<div class="math-display">\[2\times.\]</div>
+<p>Вершины и ориентированные рёбра тессеракта не хранятся. Они вычисляются как
+состояния действия группы.</p>
+
+<h2 id="f4">8. 24-ячейник и группа <span class="math-inline">\(F_4\)</span>: пакет из шести масок</h2>
+<h3 id="8-1-три-слоя-f-4">8.1. Три слоя <span class="math-inline">\(F_4\)</span></h3>
+<p>Пусть <span class="math-inline">\(c\in W(F_4)\)</span> — элемент Кокстера порядка 12:</p>
+<div class="math-display">\[c^{12}=1.\]</div>
+<p>Определим:</p>
+<div class="math-display">\[A=c^3,
+\qquad
+L=c^4.\]</div>
+<p>Тогда:</p>
+<div class="math-display">\[|A|=4,
+\qquad
+|L|=3,
+\qquad
+AL=LA.\]</div>
+<p>Поэтому:</p>
+<div class="math-display">\[\langle A,L\rangle
+\cong
+C_4\times C_3
+\cong
+C_{12}.\]</div>
+<p>Это кодирует:</p>
+<div class="math-display">\[3\text{ маски}\times4\text{ канала}=12\]</div>
+<p>состояний.</p>
+<h3 id="8-2-добавление-двоичного-слоя">8.2. Добавление двоичного слоя</h3>
+<p>Совместная структура:</p>
+<div class="math-display">\[H_6\cong C_4\times C_2\times C_3\]</div>
+<p>имеет порядок:</p>
+<div class="math-display">\[|H_6|=24.\]</div>
+<p>Номер маски:</p>
+<div class="math-display">\[n\in\mathbb Z/6\mathbb Z\]</div>
+<p>восстанавливается из:</p>
+<div class="math-display">\[b=n\bmod2,
+\qquad
+\ell=n\bmod3\]</div>
+<p>по китайской теореме об остатках:</p>
+<div class="math-display">\[n\equiv3b+4\ell\pmod6.\]</div>
+<p>Состояние:</p>
+<div class="math-display">\[(a,b,\ell)
+\in
+C_4\times C_2\times C_3\]</div>
+<p>кодирует:</p>
+<div class="math-display">\[6\text{ масок}\times4\text{ канала}=24\]</div>
+<p>события.</p>
+<h3 id="8-3-один-24-ячейник">8.3. Один 24-ячейник</h3>
+<p>На 24 вершинах реализуется транзитивное скрученное действие порядка 24.</p>
+<p>Эквивалентный групповой язык использует бинарную тетраэдральную группу:</p>
+<div class="math-display">\[2T,
+\qquad
+|2T|=24.\]</div>
+<p>В ней выбирается канальная подгруппа:</p>
+<div class="math-display">\[C_4\subset2T.\]</div>
+<p>Число её левых классов:</p>
+<div class="math-display">\[[2T:C_4]=\frac{24}{4}=6.\]</div>
+<p>Поэтому множество состояний имеет точную факторизацию:</p>
+<div class="math-display">\[2T
+=
+\bigsqcup_{j=0}^{5}t_jC_4.\]</div>
+<p>Здесь:</p>
+<ul>
+<li>номер класса <span class="math-inline">\(j\)</span> — номер одной из шести масок;</li>
+<li>элемент <span class="math-inline">\(C_4\)</span> — номер канала.</li>
+</ul>
+<p>Точное пакетное сокращение seed:</p>
+<div class="math-display">\[6\times.\]</div>
+<p>Относительно независимых канальных seed пакет содержит:</p>
+<div class="math-display">\[6\cdot4=24\]</div>
+<p>вычисляемых состояний.</p>
+
+<h2 id="h4">9. 600-ячейник: пакет из тридцати масок</h2>
+<h3 id="9-1-точная-групповая-цепочка">9.1. Точная групповая цепочка</h3>
+<p>120 вершин 600-ячейника образуют бинарную икосаэдральную группу:</p>
+<div class="math-display">\[2I,
+\qquad
+|2I|=120.\]</div>
+<p>В неё входит бинарная тетраэдральная группа:</p>
+<div class="math-display">\[2T\subset2I.\]</div>
+<p>Индекс:</p>
+<div class="math-display">\[[2I:2T]
+=
+\frac{120}{24}
+=
+5.\]</div>
+<p>Следовательно:</p>
+<div class="math-display">\[2I
+=
+\bigsqcup_{i=0}^{4}g_i2T.\]</div>
+<p>Каждый класс <span class="math-inline">\(g_i2T\)</span> является 24-ячейником.</p>
+<p>В статье
+<a href="https://arxiv.org/abs/1912.06156">The Geometry of <span class="math-inline">\(H_4\)</span> Polytopes</a>
+доказано:</p>
+<ul>
+<li>в 600-ячейнике находятся 25 различных 24-ячейников;</li>
+<li>существует ровно 10 разбиений 120 вершин;</li>
+<li>каждое такое разбиение состоит из пяти непересекающихся 24-ячейников.</li>
+</ul>
+<p>Для кодирования достаточно выбрать одно из этих разбиений как глобальный
+инвариант формата.</p>
+<h3 id="9-2-иерархия-состояний">9.2. Иерархия состояний</h3>
+<p>Используем цепочку:</p>
+<div class="math-display">\[C_4\subset2T\subset2I.\]</div>
+<p>Тогда:</p>
+<div class="math-display">\[|2I|
+=
+[2I:2T]\,[2T:C_4]\,|C_4|.\]</div>
+<p>То есть:</p>
+<div class="math-display">\[120=5\cdot6\cdot4.\]</div>
+<p>Координата состояния:</p>
+<div class="math-display">\[(i,j,a)
+\in
+\{0,\ldots,4\}
+\times
+\{0,\ldots,5\}
+\times
+\mathbb Z/4\mathbb Z.\]</div>
+<p>Она означает:</p>
+<ul>
+<li><span class="math-inline">\(i\)</span> — один из пяти 24-ячейников;</li>
+<li><span class="math-inline">\(j\)</span> — одна из шести масок внутри 24-ячейника;</li>
+<li><span class="math-inline">\(a\)</span> — один из четырёх каналов.</li>
+</ul>
+<p>Номер маски:</p>
+<div class="math-display">\[n=6i+j,
+\qquad
+0\le n&lt;30.\]</div>
+<p>Числовой декодер:</p>
+<div class="math-display">\[p_n=10(q_0+n)+r,\]</div>
+<div class="math-display">\[x_{n,a}=m_a p_n.\]</div>
+<p>Следовательно, один 600-ячейниковый макроблок кодирует:</p>
+<div class="math-display">\[30\text{ масок}\times4\text{ канала}
+.\]</div>
+<p>Пакетное сокращение числа независимых seed:</p>
+<div class="math-display">\[30\times.\]</div>
+<p>Относительно 24-ячейникового пакета:</p>
+<div class="math-display">\[5\times.\]</div>
+<h3 id="9-3-что-здесь-вычисляется">9.3. Что здесь вычисляется</h3>
+<p>Геометрический адрес состояния:</p>
+<div class="math-display">\[g_i t_j c^a\]</div>
+<p>вычисляется из:</p>
+<ul>
+<li>фиксированного трансверсаля <span class="math-inline">\(\{g_i\}\)</span> группы <span class="math-inline">\(2T\)</span> в <span class="math-inline">\(2I\)</span>;</li>
+<li>фиксированного трансверсаля <span class="math-inline">\(\{t_j\}\)</span> группы <span class="math-inline">\(C_4\)</span> в <span class="math-inline">\(2T\)</span>;</li>
+<li>канального генератора <span class="math-inline">\(c\)</span> порядка 4.</li>
+</ul>
+<p>Эти таблицы и генераторы являются общими для всех макроблоков и не
+дублируются для каждой маски.</p>
+
+<h2 id="e8">10. <span class="math-inline">\(E_8\)</span> и политоп Гоше <span class="math-inline">\(4_{21}\)</span>: пакет из шестидесяти масок</h2>
+<h3 id="10-1-два-h-4-слоя">10.1. Два <span class="math-inline">\(H_4\)</span>-слоя</h3>
+<p>Политоп Гоше <span class="math-inline">\(4_{21}\)</span> имеет 240 вершин, соответствующих 240 корням
+<span class="math-inline">\(E_8\)</span>.</p>
+<p>В статье
+<a href="https://arxiv.org/abs/1912.06156">The Geometry of <span class="math-inline">\(H_4\)</span> Polytopes</a>
+описывается представление этих корней посредством двух 600-ячейников:</p>
+<div class="math-display">\[H
+\qquad\text{и}\qquad
+\varphi H,\]</div>
+<p>где:</p>
+<div class="math-display">\[\varphi=\frac{1+\sqrt5}{2}\]</div>
+<p>— золотое сечение.</p>
+<p>После редуцирования нормы две 120-элементные системы дают:</p>
+<div class="math-display">\[120+120=240\]</div>
+<p>корней <span class="math-inline">\(E_8\)</span>.</p>
+<p>Эта связь также рассматривается в работах
+<a href="https://arxiv.org/abs/1712.06436">From the Icosahedron to <span class="math-inline">\(E_8\)</span></a>
+и
+<a href="https://arxiv.org/abs/1602.05985">The Birth of <span class="math-inline">\(E_8\)</span> out of the Spinors of the Icosahedron</a>.</p>
+<h3 id="10-2-иерархическая-координата">10.2. Иерархическая координата</h3>
+<p>Добавим номер золотого слоя:</p>
+<div class="math-display">\[\varepsilon\in\{0,1\}.\]</div>
+<p>Полная координата:</p>
+<div class="math-display">\[(\varepsilon,i,j,a),\]</div>
+<p>где:</p>
+<div class="math-display">\[\begin{aligned}
+\varepsilon&amp;\in\{0,1\},\\
+i&amp;\in\{0,\ldots,4\},\\
+j&amp;\in\{0,\ldots,5\},\\
+a&amp;\in\mathbb Z/4\mathbb Z.
+\end{aligned}\]</div>
+<p>Число состояний:</p>
+<div class="math-display">\[2\cdot5\cdot6\cdot4=240.\]</div>
+<p>Номер маски:</p>
+<div class="math-display">\[n=30\varepsilon+6i+j,
+\qquad
+0\le n&lt;60.\]</div>
+<p>Арифметический декодер не меняется:</p>
+<div class="math-display">\[p_n=10(q_0+n)+r,\]</div>
+<div class="math-display">\[x_{n,a}=m_a p_n,\]</div>
+<div class="math-display">\[(k_{n,a},d_{n,a})
+=
+\operatorname{divmod}(x_{n,a},10).\]</div>
+<h3 id="10-3-результат">10.3. Результат</h3>
+<p>Один <span class="math-inline">\(E_8\)</span>-макроблок содержит:</p>
+<div class="math-display">\[60\text{ масок}\times4\text{ канала}
+=
+240\text{ состояний}
+.\]</div>
+<p>Пакетное сокращение относительно независимых seed масок:</p>
+<div class="math-display">\[60\times.\]</div>
+<p>Дополнительное укрупнение относительно одного 600-ячейника:</p>
+<div class="math-display">\[2\times.\]</div>
+<p>Дополнительное укрупнение относительно одного 24-ячейника:</p>
+<div class="math-display">\[10\times.\]</div>
+<p>Относительно независимых канальных seed:</p>
+<div class="math-display">\[240\times.\]</div>
+<p>Последнее число нельзя смешивать с <span class="math-inline">\(60\times\)</span>:</p>
+<ul>
+<li><span class="math-inline">\(60\times\)</span> сравнивает один seed на маску с одним seed на макроблок;</li>
+<li><span class="math-inline">\(240\times\)</span> сравнивает четыре независимых канальных seed каждой маски с
+одним seed на макроблок.</li>
+</ul>
+
+<h2 id="hopf">11. Роль золотого сечения, дуальности и расслоения Хопфа</h2>
+<h3 id="11-1-золотое-сечение">11.1. Золотое сечение</h3>
+<p>Золотое масштабирование создаёт второй <span class="math-inline">\(H_4\)</span>-слой:</p>
+<div class="math-display">\[H\longleftrightarrow\varphi H.\]</div>
+<p>Именно это даёт переход:</p>
+<div class="math-display">\[120\longrightarrow240\]</div>
+<p>состояний и дополнительный пакетный множитель:</p>
+<div class="math-display">\[2\times.\]</div>
+<h3 id="11-2-что-здесь-называется-дуалом">11.2. Что здесь называется дуалом</h3>
+<p>Нужно различать:</p>
+<ol>
+<li>второй золотомасштабированный <span class="math-inline">\(H_4\)</span>-слой в конструкции <span class="math-inline">\(E_8\)</span>;</li>
+<li>геометрически двойственный 600-ячейнику 120-ячейник, имеющий 600 вершин;</li>
+<li>антиподальную замену <span class="math-inline">\(v\mapsto-v\)</span>;</li>
+<li>дуальность коротких и длинных корней.</li>
+</ol>
+<p>Для 240 корней <span class="math-inline">\(E_8\)</span> используется разложение на две 120-элементные
+<span class="math-inline">\(H_4\)</span>-системы. Это не означает сложение 120 вершин 600-ячейника с 600
+вершинами двойственного 120-ячейника.</p>
+<h3 id="11-3-расслоение-хопфа">11.3. Расслоение Хопфа</h3>
+<p>Расслоение Хопфа и кватернионная модель полезны как механизм:</p>
+<ul>
+<li>вычисления групповых состояний;</li>
+<li>перехода от единичных кватернионов к вращениям;</li>
+<li>организации слоёв и общих инвариантов;</li>
+<li>построения декодера без таблицы из 240 независимых записей.</li>
+</ul>
+<p>Однако само слово «расслоение» не создаёт ещё один коэффициент сжатия.</p>
+<p>Чтобы получить дополнительный множитель, волокна должны быть орбитами
+симметрии масок, а все их элементы должны однозначно вычисляться из одного
+представителя.</p>
+<p>В текущей схеме антиподальная инволюция уже связана с зеркалом:</p>
+<div class="math-display">\[R=T^2.\]</div>
+<p>Поэтому фактор <span class="math-inline">\(\{\pm1\}\)</span> нельзя второй раз считать как новое независимое
+<span class="math-inline">\(2\times\)</span>.</p>
+<p>Вывод:</p>
+<blockquote>
+<p>Расслоение Хопфа может сделать декодер красивее и дешевле, но подтверждённая
+ёмкость <span class="math-inline">\(E_8\)</span>-макроблока остаётся равной 60 маскам, а не 120.</p>
+</blockquote>
+
+<h2 id="compression">12. Точные коэффициенты оптимизации</h2>
+<h3 id="12-1-структурные-коэффициенты">12.1. Структурные коэффициенты</h3>
+<table>
+<thead>
+<tr>
+<th>Переход</th>
+<th style="text-align:right">Коэффициент</th>
+<th>Статус</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Четыре независимых канала <span class="math-inline">\(\rightarrow C_4\)</span>-орбита</td>
+<td style="text-align:right"><span class="math-inline">\(4\times\)</span></td>
+<td>доказано</td>
+</tr>
+<tr>
+<td>Отдельное зеркало <span class="math-inline">\(\rightarrow T^2\)</span></td>
+<td style="text-align:right">хранения не требует</td>
+<td>доказано</td>
+</tr>
+<tr>
+<td>Два seed <span class="math-inline">\(\rightarrow B_4\)</span>-пакет</td>
+<td style="text-align:right"><span class="math-inline">\(2\times\)</span></td>
+<td>проверено</td>
+</tr>
+<tr>
+<td>Шесть seed <span class="math-inline">\(\rightarrow\)</span> 24-ячейник</td>
+<td style="text-align:right"><span class="math-inline">\(6\times\)</span></td>
+<td>проверено</td>
+</tr>
+<tr>
+<td>Пять 24-ячейников <span class="math-inline">\(\rightarrow 600\)</span>-ячейник</td>
+<td style="text-align:right"><span class="math-inline">\(5\times\)</span> сверх 24-ячейника</td>
+<td>точная групповая факторизация</td>
+</tr>
+<tr>
+<td>Тридцать seed <span class="math-inline">\(\rightarrow 600\)</span>-ячейник</td>
+<td style="text-align:right"><span class="math-inline">\(30\times\)</span></td>
+<td>точный аффинный пакет</td>
+</tr>
+<tr>
+<td>Два <span class="math-inline">\(H_4\)</span>-слоя <span class="math-inline">\(\rightarrow E_8\)</span></td>
+<td style="text-align:right"><span class="math-inline">\(2\times\)</span> сверх 600-ячейника</td>
+<td>точное разложение корней</td>
+</tr>
+<tr>
+<td>Шестьдесят seed <span class="math-inline">\(\rightarrow E_8\)</span>-макроблок</td>
+<td style="text-align:right"><span class="math-inline">\(60\times\)</span></td>
+<td>точный аффинный пакет</td>
+</tr>
+<tr>
+<td>24-ячейник <span class="math-inline">\(\rightarrow E_8\)</span>-макроблок</td>
+<td style="text-align:right"><span class="math-inline">\(10\times\)</span> по ширине пакета</td>
+<td><span class="math-inline">\(240/24\)</span>, не автоматические <span class="math-inline">\(10\times\)</span> по байтам</td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-2-почему-общий-результат-не-равен-4-cdot2-cdot6-cdot30-cdot60">12.2. Почему общий результат не равен <span class="math-inline">\(4\cdot2\cdot6\cdot30\cdot60\)</span></h3>
+<p>Эти числа относятся к разным базовым представлениям и вложенным уровням.</p>
+<p>Правильная цепочка:</p>
+<div class="math-display">\[4
+\longrightarrow
+24
+\longrightarrow
+120
+\longrightarrow
+240\]</div>
+<p>состояний, или:</p>
+<div class="math-display">\[1
+\longrightarrow
+6
+\longrightarrow
+30
+\longrightarrow
+60\]</div>
+<p>масок.</p>
+<p>Поэтому:</p>
+<div class="math-display">\[60=6\cdot5\cdot2,\]</div>
+<p>а не произведение всех коэффициентов таблицы.</p>
+<h3 id="12-3-сравнение-с-плотными-битовыми-половинами">12.3. Сравнение с плотными битовыми половинами</h3>
+<p>Для <span class="math-inline">\(N\)</span> периодов:</p>
+<div class="math-display">\[p_n=10(q_0+n)+r\]</div>
+<p>объём зеркальных половин равен:</p>
+<div class="math-display">\[B_{\mathrm{half}}
+=
+2\sum_{n=0}^{N-1}(p_n-1).\]</div>
+<p>Если общий seed макроблока занимает <span class="math-inline">\(S_N\)</span> бит, то:</p>
+<div class="math-display">\[C_{\mathrm{half}\to\mathrm{seed}}
+=
+\frac{
+2\sum_{n=0}^{N-1}(p_n-1)
+}{
+S_N
+}.\]</div>
+<p>Для <span class="math-inline">\(E_8\)</span>-блока:</p>
+<div class="math-display">\[N=60.\]</div>
+<p>Точный численный коэффициент относительно плотных строк зависит от формата
+seed. Поэтому корректное универсальное утверждение — <span class="math-inline">\(60\times\)</span> по числу
+независимых seed масок, а не фиксированный коэффициент по битам для всех
+значений <span class="math-inline">\(p\)</span>.</p>
+<h3 id="12-4-аффинный-автомат-не-ограничен-числом-60">12.4. Аффинный автомат не ограничен числом 60</h3>
+<p>Формула:</p>
+<div class="math-display">\[k_{q+n,r,a}=k_{q,r,a}+nm_a\]</div>
+<p>работает для любого <span class="math-inline">\(n\)</span>.</p>
+<p>Поэтому <span class="math-inline">\(E_8\)</span> не является информационно-теоретическим пределом. Это удобный
+конечный макроблок:</p>
+<ul>
+<li>на 60 масок;</li>
+<li>на 240 канальных состояний;</li>
+<li>с развитой группой симметрий;</li>
+<li>с естественной иерархией <span class="math-inline">\(4\to24\to120\to240\)</span>.</li>
+</ul>
+<p>Если требуется обработать <span class="math-inline">\(M\)</span> последовательных масок, один глобальный
+аффинный seed и длина диапазона могут породить все <span class="math-inline">\(M\)</span> масок. Тогда
+пакетный коэффициент относительно <span class="math-inline">\(M\)</span> независимых seed равен:</p>
+<div class="math-display">\[M\times.\]</div>
+<p>Многогранники определяют удобную ширину вычислительного блока, но не предел
+арифметической рекурсии.</p>
+
+<h2 id="storage">13. Что именно хранится</h2>
+<h3 id="13-1-глобальные-константы-формата">13.1. Глобальные константы формата</h3>
+<p>Один раз для всей программы задаются:</p>
+<ul>
+<li>множители:</li>
+</ul>
+<div class="math-display">\[(1,3,9,7);\]</div>
+<ul>
+<li>канальный генератор <span class="math-inline">\(C_4\)</span>;</li>
+<li>правило зеркала <span class="math-inline">\(R=T^2\)</span>;</li>
+<li>трансверсаль <span class="math-inline">\(C_4\)</span> в <span class="math-inline">\(2T\)</span>;</li>
+<li>трансверсаль <span class="math-inline">\(2T\)</span> в <span class="math-inline">\(2I\)</span>;</li>
+<li>преобразование между слоями <span class="math-inline">\(H\)</span> и <span class="math-inline">\(\varphi H\)</span>;</li>
+<li>выбранное разбиение 600-ячейника на пять 24-ячейников.</li>
+</ul>
+<p>Это код алгоритма или неизменяемая таблица, а не данные каждой маски.</p>
+<h3 id="13-2-seed-макроблока">13.2. Seed макроблока</h3>
+<p>Для блока последовательных периодов достаточно:</p>
+<div class="math-display">\[I=(q_0,r,N,\text{тип маски}).\]</div>
+<p>Здесь:</p>
+<ul>
+<li><span class="math-inline">\(q_0\)</span> — начало блока;</li>
+<li><span class="math-inline">\(r\)</span> — десятичный класс;</li>
+<li><span class="math-inline">\(N\)</span> — число масок;</li>
+<li>тип определяет, строится <span class="math-inline">\(G\)</span> или применяется очистка <span class="math-inline">\(P_E\)</span>.</li>
+</ul>
+<p>Для фиксированного <span class="math-inline">\(E_8\)</span>-блока:</p>
+<div class="math-display">\[N=60\]</div>
+<p>может быть частью формата и отдельно не храниться.</p>
+<h3 id="13-3-prime-only-режим">13.3. Prime-only режим</h3>
+<p>Аффинная орбита включает все:</p>
+<div class="math-display">\[p=10q+r,\]</div>
+<p>а не только простые <span class="math-inline">\(p\)</span>.</p>
+<p>Если нужны исключительно простые периоды, требуется:</p>
+<ul>
+<li>селектор простых слоёв;</li>
+<li>либо применение составных периодов с последующей фильтрацией;</li>
+<li>либо внешний генератор допустимых периодов.</li>
+</ul>
+<p>Селектор влияет на реальный битовый коэффициент, но не меняет правильность
+групповой адресации.</p>
+
+<h2 id="implementations">14. Алгоритмы и проверочные программы</h2>
+<h3 id="14-1-арифметический-аффинный-автомат">14.1. Арифметический аффинный автомат</h3>
+<p>Файл:</p>
+<p><code>examples_py/07_verify_affine_polytope_mapping.py</code></p>
+<p>Проверяет:</p>
+<ul>
+<li>переход <span class="math-inline">\(p\mapsto p+10\)</span>;</li>
+<li>сдвиги <span class="math-inline">\((1,3,9,7)\)</span>;</li>
+<li>восстановление слоёв <span class="math-inline">\(C_2\times C_3\)</span>;</li>
+<li>24 состояния шестимасочного блока;</li>
+<li>иерархию <span class="math-inline">\(5\cdot6\cdot4=120\)</span> для 600-ячейника;</li>
+<li>иерархию <span class="math-inline">\(2\cdot5\cdot6\cdot4=240\)</span> для <span class="math-inline">\(E_8\)</span>.</li>
+</ul>
+<p>Проверено:</p>
+<div class="math-display">\[39996\]</div>
+<p>допустимых периодов до 100 000 и:</p>
+<div class="math-display">\[96000\]</div>
+<p>состояний шестимасочных макроблоков, а также:</p>
+<div class="math-display">\[120000\]</div>
+<p>состояний 600-ячейниковых блоков и:</p>
+<div class="math-display">\[240000\]</div>
+<p>состояний <span class="math-inline">\(E_8\)</span>-блоков.</p>
+<h3 id="14-2-точная-групповая-проверка-b-4-f-4">14.2. Точная групповая проверка <span class="math-inline">\(B_4/F_4\)</span></h3>
+<p>Файл:</p>
+<p><code>examples_py/08_verify_b4_f4_group_mapping.py</code></p>
+<p>В точной рациональной арифметике проверяет:</p>
+<ul>
+<li>подгруппу <span class="math-inline">\(C_4\times C_2\)</span> в <span class="math-inline">\(B_4\)</span>;</li>
+<li>порядок:</li>
+</ul>
+<div class="math-display">\[|W(F_4)|=1152;\]</div>
+<ul>
+<li>порядок элемента Кокстера:</li>
+</ul>
+<div class="math-display">\[|c|=12;\]</div>
+<ul>
+<li>две 12-элементные орбиты на корнях;</li>
+<li>транзитивную скрученную группу порядка 24;</li>
+<li>точные дуальности коротких и длинных корней.</li>
+</ul>
+<h3 id="14-3-алгоритм-600-ячейникового-блока">14.3. Алгоритм 600-ячейникового блока</h3>
+<pre><code class="language-text">input:
+    q0
+    r
+
+for i in 0 .. 4:          # пять 24-ячеек
+    for j in 0 .. 5:      # шесть масок в 24-ячейнике
+        n = 6*i + j
+        p = 10*(q0+n) + r
+
+        for a in 0 .. 3:  # четыре канала
+            x = multiplier[a] * p
+            emit(group_state=(i,j,a), value=x)
+</code></pre>
+<h3 id="14-4-алгоритм-e-8-блока">14.4. Алгоритм <span class="math-inline">\(E_8\)</span>-блока</h3>
+<pre><code class="language-text">input:
+    q0
+    r
+
+for epsilon in 0 .. 1:   # H и φH
+    for i in 0 .. 4:     # пять 24-ячеек
+        for j in 0 .. 5: # шесть масок
+            n = 30*epsilon + 6*i + j
+            p = 10*(q0+n) + r
+
+            for a in 0 .. 3:
+                x = multiplier[a] * p
+                emit(
+                    root_state=(epsilon,i,j,a),
+                    value=x
+                )
+</code></pre>
+<p>Геометрическая координата вычисляется из фиксированных представителей классов:</p>
+<div class="math-display">\[(\varepsilon,i,j,a)
+\longmapsto
+\Phi_\varepsilon(g_i t_j c^a).\]</div>
+
+<h2 id="architecture">15. Рекомендуемая архитектура</h2>
+<h3 id="15-1-математическое-ядро">15.1. Математическое ядро</h3>
+<p>Использовать аффинный групповой автомат:</p>
+<div class="math-display">\[(q,r,a)
+\longmapsto
+(q+n,r,a)\]</div>
+<p>с кокциклом:</p>
+<div class="math-display">\[k\longmapsto k+nm_a.\]</div>
+<h3 id="15-2-локальный-уровень">15.2. Локальный уровень</h3>
+<p>Использовать:</p>
+<div class="math-display">\[C_4\subset2T\]</div>
+<p>для кодирования:</p>
+<div class="math-display">\[6\text{ масок}\times4\text{ канала}.\]</div>
+<h3 id="15-3-средний-уровень">15.3. Средний уровень</h3>
+<p>Использовать:</p>
+<div class="math-display">\[2T\subset2I\]</div>
+<p>и одно разбиение Шоуте для кодирования:</p>
+<div class="math-display">\[5\cdot6=30\]</div>
+<p>масок.</p>
+<h3 id="15-4-верхний-уровень">15.4. Верхний уровень</h3>
+<p>Использовать два слоя:</p>
+<div class="math-display">\[H\cup\varphi H\]</div>
+<p>для кодирования:</p>
+<div class="math-display">\[2\cdot30=60\]</div>
+<p>масок и:</p>
+<div class="math-display">\[60\cdot4=240\]</div>
+<p>канальных состояний.</p>
+<h3 id="15-5-практическая-рекомендация">15.5. Практическая рекомендация</h3>
+<p>Для CPU/SIMD/GPU удобно выбрать:</p>
+<ul>
+<li>24 состояния как малый блок;</li>
+<li>120 состояний как средний блок;</li>
+<li>240 состояний как крупный <span class="math-inline">\(E_8\)</span>-блок.</li>
+</ul>
+<p>Но хранить нужно не вершины и не рёбра, а:</p>
+<ul>
+<li>seed;</li>
+<li>номер внешнего блока;</li>
+<li>при необходимости prime-only селектор.</li>
+</ul>
+<p>Все геометрические состояния вычисляются.</p>
+<h3 id="15-6-оптимальный-формат-исполнительного-слоя-хранить-как-e-8-исполнять-как-24-ячейники">15.6. Оптимальный формат исполнительного слоя: хранить как <span class="math-inline">\(E_8\)</span>, исполнять как 24-ячейники</h3>
+<p>Наиболее сбалансированный формат по памяти и скорости — один 60-битный
+selector на десятичный класс:</p>
+<pre><code class="language-rust">let active_masks: u64;
+</code></pre>
+<p>Используются младшие 60 бит:</p>
+<div class="math-display">\[\operatorname{bit}_n=1
+\iff
+p_n=10(q_0+n)+r\]</div>
+<p>включён в вычисление.</p>
+<p>Оставшиеся четыре старших бита можно:</p>
+<ul>
+<li>оставить нулевыми;</li>
+<li>зарезервировать под версию или режим блока;</li>
+<li>использовать для локальных флагов, если перед сканированием выполняется
+маскирование младших 60 бит.</li>
+</ul>
+<p>Для всех четырёх десятичных классов удобен блок:</p>
+<pre><code class="language-rust">#[repr(C, align(32))]
+pub struct E8MaskBlock {
+    selectors: [u64; 4],
+}
+</code></pre>
+<p>Его размер:</p>
+<div class="math-display">\[4\cdot8=32\text{ байта}.\]</div>
+<p>Он описывает:</p>
+<div class="math-display">\[4\cdot60=240\]</div>
+<p>кандидатных периодов и порождает до:</p>
+<div class="math-display">\[240\cdot4=960\]</div>
+<p>канальных событий.</p>
+<p>Если блоки расположены последовательно, значение <span class="math-inline">\(q_0\)</span> не хранится в каждом
+блоке:</p>
+<div class="math-display">\[q_0=q_{\mathrm{global}}+60\,\operatorname{block\_index}.\]</div>
+<h4 id="сравнение-selector-форматов">Сравнение selector-форматов</h4>
+<p>Для 60 масок одного десятичного класса:</p>
+<table>
+<thead>
+<tr>
+<th>Формат</th>
+<th style="text-align:right">Память</th>
+<th>Особенность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>десять byte-aligned 24-cell selector по 6 бит</td>
+<td style="text-align:right">10 байт</td>
+<td>простой, но десять загрузок</td>
+</tr>
+<tr>
+<td>плотно упакованные 24-cell selector</td>
+<td style="text-align:right">7,5 байта в среднем</td>
+<td>минимум бит, неудобные границы и извлечение</td>
+</tr>
+<tr>
+<td>один <span class="math-inline">\(E_8\)</span>-selector</td>
+<td style="text-align:right">8 байт</td>
+<td>одна выровненная загрузка и четыре свободных бита</td>
+</tr>
+</tbody>
+</table>
+<p>Для четырёх десятичных классов:</p>
+<table>
+<thead>
+<tr>
+<th>Формат</th>
+<th style="text-align:right">Память на 240 периодов</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>byte-aligned 24-cell</td>
+<td style="text-align:right">40 байт</td>
+</tr>
+<tr>
+<td>полностью bit-packed</td>
+<td style="text-align:right">30 байт</td>
+</tr>
+<tr>
+<td><span class="math-inline">\(E_8\)</span>, четыре <code>u64</code></td>
+<td style="text-align:right">32 байта</td>
+</tr>
+</tbody>
+</table>
+<p>Следовательно, <span class="math-inline">\(E_8\)</span>-формат:</p>
+<ul>
+<li>экономит 20% памяти относительно простого byte-aligned 24-cell формата;</li>
+<li>уступает предельно плотному битовому потоку только 2 байта на 240 периодов,
+то есть 6,25%;</li>
+<li>не требует невыровненных извлечений;</li>
+<li>целиком помещается в один 256-битный SIMD-регистр.</li>
+</ul>
+<h4 id="горячий-цикл">Горячий цикл</h4>
+<p>Для разреженного selector используется сканирование установленных битов:</p>
+<pre><code class="language-rust">let mut word = active_masks &amp; ACTIVE_BITS;
+
+while word != 0 {
+    let n = word.trailing_zeros() as u64;
+    word &amp;= word - 1;
+
+    let p = base_p + 10 * n;
+    emit([p, 3 * p, 9 * p, 7 * p]);
+}
+</code></pre>
+<p>Для полного или почти полного блока выгоднее последовательная рекурсия:</p>
+<div class="math-display">\[p_{n+1}=p_n+10\]</div>
+<p>и:</p>
+<div class="math-display">\[k_{n+1,a}=k_{n,a}+m_a.\]</div>
+<p>Никакие матрицы <span class="math-inline">\(E_8\)</span>, кватернионы или координаты вершин в горячем цикле не
+вычисляются.</p>
+<h4 id="зачем-сохранять-24-ячейниковое-деление">Зачем сохранять 24-ячейниковое деление</h4>
+<p>60 бит логически делятся на десять подблоков:</p>
+<div class="math-display">\[60=10\cdot6.\]</div>
+<p>Подблок:</p>
+<div class="math-display">\[\operatorname{chunk}_j
+=
+(\operatorname{word}\gg6j)\mathbin{\&amp;}63\]</div>
+<p>является selector одного 24-ячейника.</p>
+<p>Поэтому один и тот же формат поддерживает:</p>
+<ul>
+<li>крупное последовательное сканирование всего <span class="math-inline">\(E_8\)</span>-блока;</li>
+<li>обработку десяти локальных 24-ячейников;</li>
+<li>таблицу из 64 вариантов локального 6-битного состояния;</li>
+<li>параллельную выдачу подблоков разным вычислительным потокам.</li>
+</ul>
+<p>Практический выбор:</p>
+<blockquote>
+<p>В RAM хранить один <code>u64</code> на 60 масок каждого десятичного класса.
+Рассматривать его как <span class="math-inline">\(E_8\)</span>-блок, но при необходимости делить на десять
+вычисляемых 24-ячейниковых подблоков.</p>
+</blockquote>
+<p>Это гибрид:</p>
+<div class="math-display">\[\text{\(E_8\) для хранения}
+\quad+\quad
+\text{24-ячейник для локального исполнения}
+.\]</div>
+<p>Rust-реализация и воспроизводимый benchmark находятся в:</p>
+<p><code>rust/e8_mask_codec/</code>.</p>
+<p>На CPU проверены три режима:</p>
+<ol>
+<li><code>Sparse</code> — <code>trailing_zeros</code> и сброс младшего установленного бита;</li>
+<li><code>Dense</code> — последовательный проход по 60 позициям;</li>
+<li><code>Cell24Lookup</code> — таблица 64 вариантов для 6-битного подблока.</li>
+</ol>
+<p>На текущем процессоре:</p>
+<ul>
+<li>sparse-путь выигрывает примерно до 50% заполнения;</li>
+<li>dense-путь имеет смысл только для очень плотных сегментов;</li>
+<li>24-cell LUT проигрывает прямому битовому сканированию на CPU.</li>
+</ul>
+<p>Режим выбирается один раз для целого сегмента, а не отдельно для каждого
+<code>u64</code>. Это устраняет диспетчеризацию из горячего цикла.</p>
+<p>Промежуточный <code>Vec</code> событий не создаётся: callback должен сразу изменять
+целевой битсет решета.</p>
+<h3 id="15-7-какие-предложения-из-optimizations-md-использованы">15.7. Какие предложения из <code>optimizations.md</code> использованы</h3>
+<p>Файл <code>docs/optimizations.md</code> является внешним пересказом этой же схемы, а не
+источником исходной конструкции. До данного сравнения он не использовался.</p>
+<p>После проверки на Rust:</p>
+<table>
+<thead>
+<tr>
+<th>Предложение</th>
+<th>Решение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>один 60-битный selector</td>
+<td>используется</td>
+</tr>
+<tr>
+<td>sparse scan через <code>trailing_zeros</code></td>
+<td>используется</td>
+</tr>
+<tr>
+<td>отдельный dense-путь</td>
+<td>используется для сегментов плотнее примерно 50%</td>
+</tr>
+<tr>
+<td>LUT из 64 паттернов 24-cell</td>
+<td>отвергнута для CPU hot path; отдельно проверяется на GPU</td>
+</tr>
+<tr>
+<td>прямое наложение на битсет</td>
+<td>используется через callback без промежуточного массива</td>
+</tr>
+<tr>
+<td>SIMD</td>
+<td>следующий уровень после появления конкретного layout целевого решета</td>
+</tr>
+</tbody>
+</table>
+<p>Утверждение, что <code>ctz</code> всегда выполняется за один такт, не является
+переносимой гарантией. Также <code>popcnt</code> считает биты, но сам по себе не
+устанавливает позиции в целевом решете.</p>
+<h3 id="15-8-параллельная-архитектура-cpu-gpu">15.8. Параллельная архитектура CPU + GPU</h3>
+<p>CUDA-часть реализована по архитектурному шаблону проекта:</p>
+<p><code>/media/ilja/DATA/soft/fastsearch</code>.</p>
+<p>Rust отвечает за:</p>
+<ul>
+<li>формат данных;</li>
+<li>разбиение диапазона;</li>
+<li>выбор CPU/GPU-режима;</li>
+<li>проверку результатов;</li>
+<li>benchmark и политику памяти.</li>
+</ul>
+<p>CUDA-ядро собирается <code>nvcc</code> через <code>build.rs</code>. В пользовательском API и
+документации используются Rust-типы.</p>
+<p>На GTX 1660 Ti проверены:</p>
+<ol>
+<li><code>Sparse</code> — один поток CUDA на 60-битное слово;</li>
+<li><code>DenseWarp</code> — один warp на слово;</li>
+<li><code>Cell24Lookup</code> — constant-memory LUT для 6-битных чанков.</li>
+</ol>
+<p>Результаты decoder benchmark:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Плотность</th>
+<th>Лучший GPU-режим</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">5–95%</td>
+<td><code>Sparse</code></td>
+</tr>
+<tr>
+<td style="text-align:right">около 99–100%</td>
+<td><code>Cell24Lookup</code></td>
+</tr>
+<tr>
+<td style="text-align:right">все измеренные плотности</td>
+<td><code>DenseWarp</code> не победил</td>
+</tr>
+</tbody>
+</table>
+<p>Но полностью заполненный блок следует кодировать как:</p>
+<div class="math-display">\[\texttt{ImplicitFull},\]</div>
+<p>то есть вообще без selector. Поэтому LUT остаётся специализированным
+экспериментальным режимом, а основной GPU-путь — <code>Sparse</code>.</p>
+<h4 id="конвейер">Конвейер</h4>
+<p>CPU и GPU не должны обрабатывать одни и те же блоки. Диапазон делится на
+непересекающиеся сегменты:</p>
+<div class="math-display">\[\mathcal B
+=
+\mathcal B_{\mathrm{CPU}}
+\sqcup
+\mathcal B_{\mathrm{GPU}}.\]</div>
+<p>Одновременно:</p>
+<ol>
+<li>GPU обрабатывает крупный текущий пакет;</li>
+<li>CPU обрабатывает свою долю и хвосты;</li>
+<li>CPU готовит следующий закреплённым буфером;</li>
+<li>следующий CUDA stream принимает пакет;</li>
+<li>ядро сразу изменяет device-bitset без выгрузки списка событий.</li>
+</ol>
+<p>CUDA context, streams и буферы должны быть постоянными. Холодная инициализация
+не входит в steady-state алгоритм.</p>
+<p>После перевода гибридного пути на постоянный пул CUDA и device-resident
+режим без обратной выгрузки массива событий steady-state benchmark на 4 194 304
+selector-словах при плотности 25% и разбиении 30% CPU / 70% GPU дал ускорение
+порядка:</p>
+<div class="math-display">\[2{,}8\text{–}3{,}2\times\]</div>
+<p>относительно только CPU на 8 потоках. Это уже не allocating-прототип: <code>cudaMalloc</code>
+и <code>cudaFree</code> убраны из горячего пути, pinned-буферы и device-буферы
+переиспользуются.</p>
+<h3 id="15-9-память-cpu-gpu">15.9. Память CPU + GPU</h3>
+<p>Для одного <span class="math-inline">\(E_8\)</span>-блока из 240 периодов:</p>
+<table>
+<thead>
+<tr>
+<th>Формат</th>
+<th style="text-align:right">Байт</th>
+<th style="text-align:right">Бит на период</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ImplicitFull</code></td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td>ideal bit-packed</td>
+<td style="text-align:right">30</td>
+<td style="text-align:right">1</td>
+</tr>
+<tr>
+<td><code>E8Bitmap</code></td>
+<td style="text-align:right">32</td>
+<td style="text-align:right"><span class="math-inline">\(1{,}0667\)</span></td>
+</tr>
+<tr>
+<td>byte-aligned 24-cell</td>
+<td style="text-align:right">40</td>
+<td style="text-align:right"><span class="math-inline">\(1{,}3333\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Для очень разреженных данных используется CSR:</p>
+<div class="math-display">\[B_{\mathrm{CSR}}
+=
+4(B+1)+A,\]</div>
+<p>где:</p>
+<ul>
+<li><span class="math-inline">\(B\)</span> — число <span class="math-inline">\(E_8\)</span>-блоков;</li>
+<li><span class="math-inline">\(A\)</span> — число активных периодов;</li>
+<li>один индекс занимает один байт, потому что <span class="math-inline">\(0\le n&lt;240\)</span>.</li>
+</ul>
+<p>CSR выигрывает у <code>E8Bitmap</code> приблизительно при плотности ниже:</p>
+<div class="math-display">\[\frac{28}{240}
+\approx
+11{,}7\%.\]</div>
+<p>Итоговый выбор:</p>
+<table>
+<thead>
+<tr>
+<th>Плотность/тип</th>
+<th>Хранение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100%</td>
+<td><code>ImplicitFull</code></td>
+</tr>
+<tr>
+<td>менее примерно 11,7%</td>
+<td><code>SparseCSR</code></td>
+</tr>
+<tr>
+<td>остальное</td>
+<td><code>E8Bitmap</code></td>
+</tr>
+</tbody>
+</table>
+<p>Для совместной работы CPU+GPU полный набор не нужно дублировать в RAM и VRAM.
+При постоянном разбиении:</p>
+<div class="math-display">\[B_{\mathrm{host}}+B_{\mathrm{device}}=B_{\mathrm{all}}.\]</div>
+<p>Дополнительная память требуется только для небольшого двойного закреплённым буфером.</p>
+<p>Для миллиона <span class="math-inline">\(E_8\)</span>-блоков:</p>
+<ul>
+<li><code>E8Bitmap</code>: 30,518 MiB;</li>
+<li>ideal bit-packed: 28,610 MiB;</li>
+<li>byte-aligned 24-cell: 38,147 MiB;</li>
+<li><code>SparseCSR</code> при 10%: 26,703 MiB;</li>
+<li><code>ImplicitFull</code>: 0 байт selector.</li>
+</ul>
+<p>Rust-калькулятор:</p>
+<p><code>rust/e8_mask_codec/src/bin/memory_report.rs</code>.</p>
+<p>Итоговая подтверждённая иерархия:</p>
+<div class="math-display">\[C_4
+\subset
+2T
+\subset
+2I
+\subset
+E_8\]</div>
+<p>и:</p>
+<div class="math-display">\[1
+\longrightarrow
+6
+\longrightarrow
+30
+\longrightarrow
+60
+\text{ масок на seed}
+.\]</div>
+
+<h2 id="measured-state">16. Текущее состояние реализации и измеренные тесты производительности</h2>
+<p>Текущая рабочая инженерная база живёт в crate:</p>
+<p><code>rust/e8_mask_codec/</code>.</p>
+<p>Сейчас в репозитории уже есть не только математическая схема, но и измеряемые
+компоненты исполнительного слоя:</p>
+<ul>
+<li><code>bench_cpu_threads.rs</code> — базовый CPU-замер на 1/8/12 потоках;</li>
+<li><code>bench_gpu.rs</code> — бенчмарк GPU-декодера для <code>Sparse</code>, <code>DenseWarp</code> и <code>Cell24Lookup</code>;</li>
+<li><code>bench_hybrid.rs</code> — совместная работа CPU+GPU после внедрения постоянного пула CUDA;</li>
+<li><code>memory_report.rs</code> — выбор между <code>ImplicitFull</code>, <code>SparseCSR</code> и <code>E8Bitmap</code>;</li>
+<li><code>count_first_n.rs</code> — новый исполнительный слой подсчёта с контрольными точками для первых <span class="math-inline">\(n\)</span> простых.</li>
+</ul>
+<h3 id="16-1-cpu">16.1. CPU</h3>
+<p>На текущей машине <code>bench_cpu_threads</code> показывает порядок величин:</p>
+<ul>
+<li>1 поток: около <span class="math-inline">\(38.8\)</span> Mword/s;</li>
+<li>8 потоков: около <span class="math-inline">\(205\)</span>–<span class="math-inline">\(211\)</span> Mword/s;</li>
+<li>12 потоков: режим нестабилен и зависит от SMT/планировщика.</li>
+</ul>
+<p>Поэтому производственным ориентиром для текущего железа следует считать именно 8 потоков,
+а не 12.</p>
+<h3 id="16-2-gpu">16.2. GPU</h3>
+<p>На GTX 1660 Ti основной путь декодера — <code>Sparse</code>.</p>
+<p>По текущему <code>bench_gpu</code>:</p>
+<ul>
+<li>при плотности 5% <code>Sparse</code> даёт около <span class="math-inline">\(10.1\)</span> Gword/s;</li>
+<li>при плотности 25% — около <span class="math-inline">\(3.55\)</span> Gword/s;</li>
+<li>при плотности 50% — около <span class="math-inline">\(2.40\)</span> Gword/s.</li>
+</ul>
+<p><code>DenseWarp</code> не победил ни на одной из измеренных плотностей. <code>Cell24Lookup</code>
+становится выгодным только в почти полном режиме около 99–100%, но такие блоки
+в рабочем режиме логичнее кодировать как <code>ImplicitFull</code>.</p>
+<h3 id="16-3-устойчивый-гибридный-режим">16.3. Устойчивый гибридный режим</h3>
+<p>После внедрения постоянного пула CUDA и режима с резидентными данными на GPU <code>bench_hybrid</code>
+показывает ускорение порядка <span class="math-inline">\(2.8\text{–}3.2\times\)</span> относительно режима только CPU на
+8 потоках. Именно этот диапазон следует считать актуальным измеренным ориентиром,
+а не старые цифры прототипа с постоянными выделениями памяти.</p>
+<h3 id="16-4-память">16.4. Память</h3>
+<p><code>memory_report</code> подтверждает текущую политику выбора хранения:</p>
+<ul>
+<li>ниже примерно 11.7% плотности выигрывает <code>SparseCSR</code>;</li>
+<li>в средней зоне лучше <code>E8Bitmap</code>;</li>
+<li>при 100% плотности лучшим представлением становится <code>ImplicitFull</code>.</li>
+</ul>
+<p>Для 1 000 000 <span class="math-inline">\(E_8\)</span>-блоков:</p>
+<ul>
+<li><code>E8Bitmap</code>: 30.518 MiB;</li>
+<li><code>SparseCSR</code> при 10%: 26.703 MiB;</li>
+<li><code>ImplicitFull</code> при 100%: 0 байт selector;</li>
+<li>разбиение CPU+GPU с двойным закреплённым буфером: 31.518 MiB суммарно.</li>
+</ul>
+
+<h2 id="first-trillion">17. Практический рубеж: первые <span class="math-inline">\(10^{12}\)</span> простых</h2>
+<p>Под фразой «вычислить триллион простых» здесь понимаются именно <strong>первые</strong>
+<span class="math-inline">\(10^{12}\)</span> простых чисел, а не все простые, не превосходящие <span class="math-inline">\(10^{12}\)</span>.</p>
+<p>Эти две задачи радикально различаются:</p>
+<ul>
+<li>все простые <span class="math-inline">\(\le 10^{12}\)</span> — это сравнительно лёгкий диапазонный подсчёт;</li>
+<li>первые <span class="math-inline">\(10^{12}\)</span> простых доходят до числа порядка <span class="math-inline">\(3\cdot10^{13}\)</span>.</li>
+</ul>
+<p>Контрольное целевое значение:</p>
+<div class="math-display">\[p_{10^{12}} = 29\,996\,224\,275\,833.\]</div>
+<p>Это хороший рубеж по трём причинам.</p>
+<h3 id="17-1-он-ещё-реалистичен-на-одной-машине">17.1. Он ещё реалистичен на одной машине</h3>
+<p>Для этой задачи верхняя оценка лежит в области <span class="math-inline">\(\sim 3\cdot10^{13}\)</span>, поэтому
+достаточно базы делителей лишь до:</p>
+<div class="math-display">\[\sqrt{p_{10^{12}}}\approx 5.48\cdot10^6.\]</div>
+<p>Это на много порядков легче, чем сценарии вроде полного прохода до <span class="math-inline">\(10^{20}\)</span>
+или тем более до <span class="math-inline">\(10^{30}\)</span>.</p>
+<h3 id="17-2-он-проверяет-всю-инфраструктуру-а-не-только-одну-формулу">17.2. Он проверяет всю инфраструктуру, а не только одну формулу</h3>
+<p>Рубеж «первые <span class="math-inline">\(10^{12}\)</span> простых» проверяет одновременно:</p>
+<ul>
+<li>сегментацию;</li>
+<li>выбор формата хранения;</li>
+<li>контрольные точки и продолжение;</li>
+<li>CPU-путь исполнительного слоя;</li>
+<li>дальнейший переход к исполнительному слою CPU+GPU.</li>
+</ul>
+<h3 id="17-3-полная-выгрузка-не-нужна-как-первый-режим">17.3. Полная выгрузка не нужна как первый режим</h3>
+<p>По умолчанию вывод должен идти в потоковом режиме с контрольными точками:</p>
+<ul>
+<li><code>found_count</code>;</li>
+<li><code>last_prime</code>;</li>
+<li><code>processed_segments</code>;</li>
+<li>статистика хранения;</li>
+<li>файлы контрольных точек.</li>
+</ul>
+<p>Именно так сейчас устроен новый runner:</p>
+<p><code>rust/e8_mask_codec/src/bin/count_first_n.rs</code>.</p>
+<p>Текущие проверочные примеры уже подтверждены:</p>
+<ul>
+<li><span class="math-inline">\(p_{1000}=7919\)</span>;</li>
+<li><span class="math-inline">\(p_{100000}=1299709\)</span>;</li>
+<li><span class="math-inline">\(p_{10^6}=15485863\)</span>.</li>
+</ul>
+<h3 id="17-4-сохраняемое-состояние-продолжение-и-зафиксированный-сегмент">17.4. Сохраняемое состояние, продолжение и зафиксированный сегмент</h3>
+<p>Текущий исполнительный слой уже умеет считать длинную префиксную задачу не «одним заходом», а в
+режиме сохраняемого состояния. Для этого поддерживаются:</p>
+<ul>
+<li>файл контрольной точки с атомарной записью через временный файл и <code>rename</code>;</li>
+<li>файл прогресса в человекочитаемом виде;</li>
+<li><code>--resume</code> и <code>--no-resume</code>;</li>
+<li>сохранение по числу сегментов и по таймеру одновременно;</li>
+<li>корректная остановка по <code>SIGINT</code> и <code>SIGTERM</code>.</li>
+</ul>
+<p>В контрольной точке сейчас сохраняются именно те поля, которые позволяют продолжить прогон
+не с нуля, а с последней зафиксированной границы:</p>
+<ul>
+<li><code>target_count</code>;</li>
+<li><code>found_count</code>;</li>
+<li><code>last_prime</code>;</li>
+<li><code>next_q</code>;</li>
+<li><code>processed_segments</code>;</li>
+<li><code>segment_blocks</code>;</li>
+<li><code>backend</code> как имя параметра режима исполнения;</li>
+<li><code>thread_count</code>;</li>
+<li><code>checkpoint_every_segments</code>;</li>
+<li><code>checkpoint_interval_sec</code>;</li>
+<li>накопленное <code>elapsed_millis</code>;</li>
+<li>счётчики хранилища по <code>ImplicitFull</code>, <code>SparseCSR</code>, <code>E8Bitmap</code>.</li>
+</ul>
+<p>Единицей надёжной фиксации сейчас является <strong>завершённый сегмент</strong>. Это и есть
+практический смысл зафиксированного сегмента в текущем CPU-исполнительном слое: сначала сегмент
+полностью досчитывается, затем его вклад мержится в глобальные счётчики, и только
+после этого контрольная точка может считаться зафиксированной.</p>
+<p>Если процесс завершается между двумя контрольными точками, теряется только последнее
+незакоммиченное окно, а не весь прогон.</p>
+<h3 id="17-5-практические-команды-для-фонового-прогона">17.5. Практические команды для фонового прогона</h3>
+<p>Типовой запуск нового длинного прогона:</p>
+<pre><code class="language-bash">cargo run --release --bin count_first_n -- \
+  --n 100000000000 \
+  --backend cpu \
+  --threads 8 \
+  --segment-size 4096 \
+  --checkpoint data/count_1e11.checkpoint \
+  --progress data/count_1e11.progress \
+  --checkpoint-every 64 \
+  --checkpoint-interval-sec 60 \
+  --progress-interval-sec 15
+</code></pre>
+<p>Запуск в фоне через <code>nohup</code>:</p>
+<pre><code class="language-bash">nohup cargo run --release --bin count_first_n -- \
+  --n 100000000000 \
+  --backend cpu \
+  --threads 8 \
+  --checkpoint data/count_1e11.checkpoint \
+  --progress data/count_1e11.progress \
+  --resume \
+  &gt; data/count_1e11.log 2&gt;&amp;1 &amp;
+</code></pre>
+<p>Продолжение после остановки:</p>
+<pre><code class="language-bash">cargo run --release --bin count_first_n -- \
+  --n 100000000000 \
+  --backend cpu \
+  --threads 8 \
+  --checkpoint data/count_1e11.checkpoint \
+  --progress data/count_1e11.progress \
+  --resume
+</code></pre>
+<p>Смотреть текущее состояние можно без разбора бинарного формата:</p>
+<pre><code class="language-bash">cat data/count_1e11.progress
+</code></pre>
+<p>На текущем этапе исполнительный слой уже умеет исполняться во всех трёх режимах
+<code>backend=cpu</code>, <code>backend=gpu</code> и <code>backend=hybrid</code>, то есть эти ветки больше не
+являются фиктивными флагами. Поток надёжного архива <code>--archive-dir</code> использует
+модуль записи chunk-файлов с delta-кодированием и учётом контрольных точек, <code>manifest.txt</code>, <code>index.tsv</code> и
+безопасное продолжение после остановки без пересоздания уже зафиксированных блоков
+на диске.</p>
+
+<h2 id="where-wins">18. Где оптимизации реально дают выигрыш</h2>
+<h3 id="18-1-один-канал-вместо-четырёх">18.1. Один канал вместо четырёх</h3>
+<p>Это первое точное сокращение. Оно уменьшает материализованное состояние в четыре раза и
+одновременно упрощает адресацию. Остальные три канала восстанавливаются
+циклическим действием, а не хранятся независимо.</p>
+<h3 id="18-2-зеркало-без-отдельного-хранения">18.2. Зеркало без отдельного хранения</h3>
+<p>Зеркало уже сидит внутри канальной симметрии и поэтому не даёт отдельного
+множителя <span class="math-inline">\(2\times\)</span> сверху. Выигрыш возникает не как «ещё одно независимое
+сжатие», а как отказ от дублирования одной и той же структуры.</p>
+<h3 id="18-3-e8bitmap-sparsecsr-implicitfull">18.3. <code>E8Bitmap</code>, <code>SparseCSR</code>, <code>ImplicitFull</code></h3>
+<p>На практике это сейчас главный переключатель формата памяти:</p>
+<ul>
+<li><code>SparseCSR</code> — для реально разреженных сегментов;</li>
+<li><code>E8Bitmap</code> — базовый плотный формат;</li>
+<li><code>ImplicitFull</code> — для полностью заполненных блоков.</li>
+</ul>
+<p>Именно здесь возникают уже измеренные выигрыши по памяти, а не только
+геометрическая интерпретация.</p>
+<h3 id="18-4-cpu-gpu-и-гибридный-режим">18.4. CPU, GPU и гибридный режим</h3>
+<ul>
+<li>режим только CPU хорош как базовый ориентир и для небольших/нерегулярных задач;</li>
+<li>только GPU хорош для крупных однородных пакетов;</li>
+<li>гибридный режим выигрывает, когда диапазон разбит на непересекающиеся части и GPU не
+тратит время на обратную выгрузку списка событий.</li>
+</ul>
+<h3 id="18-5-почему-lut-не-нужен-в-горячем-пути-cpu">18.5. Почему LUT не нужен в горячем пути CPU</h3>
+<p>На CPU <code>Cell24Lookup</code> проигрывает <code>trailing_zeros</code> + <code>selector &amp;= selector - 1</code>.
+Поэтому LUT следует считать исследовательским режимом, а не основным рантаймом.</p>
+<h3 id="18-6-почему-постоянный-пул-cuda-обязателен">18.6. Почему постоянный пул CUDA обязателен</h3>
+<p>Как показали замеры, переход от прототипа с постоянными выделениями памяти к persistent pool меняет
+картину качественно. Без него бенчмарк измеряет не алгоритм, а накладные
+расходы <code>cudaMalloc</code>/<code>cudaFree</code>.</p>
+
+<h2 id="range-10e19-10e20">19. Почему диапазон <span class="math-inline">\(10^{19}\to10^{20}\)</span> не является первой практической целью</h2>
+<p>Математически этот диапазон, конечно, достижим. Но как первый инженерный
+рубеж он плох.</p>
+<p>Между <span class="math-inline">\(10^{19}\)</span> и <span class="math-inline">\(10^{20}\)</span> находится:</p>
+<div class="math-display">\[10^{20}-10^{19}=9\cdot10^{19}\]</div>
+<p>целых чисел. После исключения классов, кратных 2 и 5, остаётся:</p>
+<div class="math-display">\[0.4\cdot 9\cdot10^{19} = 3.6\cdot10^{19}\]</div>
+<p>кандидатов.</p>
+<p>Даже если предположить суммарную скорость уровня:</p>
+<ul>
+<li><span class="math-inline">\(10^{10}\)</span> кандидатов/с,</li>
+<li><span class="math-inline">\(3\cdot10^{10}\)</span> кандидатов/с,</li>
+<li><span class="math-inline">\(10^{11}\)</span> кандидатов/с,</li>
+</ul>
+<p>то порядок времени остаётся таким:</p>
+<ul>
+<li>около 114 лет;</li>
+<li>около 38 лет;</li>
+<li>около 11.4 года.</li>
+</ul>
+<p>Поэтому диапазон <span class="math-inline">\(10^{19}\to10^{20}\)</span> полезен как <strong>теоретическая шкала
+масштаба</strong>, но не как первая задача, на которой стоит отлаживать исполнительный слой.</p>
+<p>Практически намного полезнее:</p>
+<ol>
+<li>реализовать первые <span class="math-inline">\(10^{12}\)</span> простых;</li>
+<li>затем локальный поиск отдельных больших простых;</li>
+<li>и только потом думать о гигантских непрерывных диапазонах.</li>
+</ol>
+
+<h2 id="big-primes-api">20. Большие отдельные простые: <code>isPrime(N)</code> и <code>nextPrime(N)</code></h2>
+<p>Этот раздел описывает текущий пользовательский слой для проверки и поиска больших отдельных простых чисел. Он дополняет префиксный счётчик первых <span class="math-inline">\(n\)</span> простых и работает как локальный запрос около заданного числа <span class="math-inline">\(N\)</span>.</p>
+<p>Главное разделение такое:</p>
+<ul>
+<li>быстрый режим даёт практический ответ через локальную маску и Miller–Rabin;</li>
+<li>уточнённый режим даёт доказательный ответ через ECPP-сертификат;</li>
+<li>архивный режим остаётся точным внутри уже покрытого <code>wheel210</code>-архива.</li>
+</ul>
+<h3 id="20-1-что-уже-измерено">20.1. Что уже измерено</h3>
+<p>Уже измерены и подтверждены базовые строительные блоки:</p>
+<ul>
+<li>кодек состояний;</li>
+<li>режимы сканирования CPU;</li>
+<li>разреженный GPU-декодер;</li>
+<li>устойчивый гибридный режим CPU+GPU;</li>
+<li>политика выбора формата хранения;</li>
+<li>префиксный исполнительный слой с контрольными точками для первых <span class="math-inline">\(n\)</span> простых.</li>
+</ul>
+<p>Эти компоненты ускоряют масочную и сегментную часть вычислений. Финальная проверка 1000-значного кандидата через Miller–Rabin или ECPP использует арифметику больших целых чисел.</p>
+<h3 id="20-2-текущая-поверхность-запросов">20.2. Текущая поверхность запросов</h3>
+<p>В исполнительном слое есть два связанных, но разных слоя запросов.</p>
+<p>Первый слой — архивные запросы:</p>
+<pre><code class="language-bash">make isPrime N=...
+make nextPrime N=...
+</code></pre>
+<p>Если число попадает в покрытый диапазон зафиксированного <code>wheel210</code>-архива, ответ берётся из архива и является точным для этого диапазона. Если запрос выходит за покрытый диапазон, исполнительный слой возвращает явную ошибку, а не скрывает отсутствие данных случайным обходным путём.</p>
+<p>Второй слой — запросы к большим целым числам до 1024 десятичных знаков. Этот слой работает без прохода от нуля к <span class="math-inline">\(N\)</span>: для заданного числа строится локальное масочное состояние, затем выполняется быстрая или доказательная проверка.</p>
+<h3 id="20-3-чем-локальный-запрос-отличается-от-полного-префиксного-прохода">20.3. Чем локальный запрос отличается от полного префиксного прохода</h3>
+<p>Для числа порядка <span class="math-inline">\(10^{1000}\)</span> интересна не генерация всех предыдущих простых, а локальный вход в область около <span class="math-inline">\(N\)</span>:</p>
+<ul>
+<li>входное число <span class="math-inline">\(N\)</span> переводится в wheel/channel/segment state;</li>
+<li>для малой ситовой базы вычисляются локальные offsets;</li>
+<li>строится масочное поле только для нужного локального сегмента;</li>
+<li>выжившие кандидаты проверяются Miller–Rabin;</li>
+<li>по запросу уточнения финальный кандидат получает ECPP-сертификат.</li>
+</ul>
+<p>Такой режим не строит историю масок и не проходит числовой ряд от нуля.</p>
+<h3 id="20-4-ограничение-версии-для-больших-целых">20.4. Ограничение версии для больших целых</h3>
+<p>Реализованный слой больших целых ограничен числами:</p>
+<pre><code class="language-text">max_decimal_digits = 1024
+</code></pre>
+<p>Ограничение относится к:</p>
+<ul>
+<li><code>isPrime(N)</code>;</li>
+<li><code>nextPrime(N)</code>;</li>
+<li>уточнению результата через ECPP.</li>
+</ul>
+<p>Для входов больше 1024 десятичных знаков возвращается явная ошибка о превышении поддерживаемого размера. В этом документе раньше обсуждались масштабы <span class="math-inline">\(10^{1000}\)</span> и <span class="math-inline">\(10^{10000}\)</span> как архитектурная граница локального входа в дальний диапазон. Текущий рабочий слой намеренно зафиксирован на 1024 десятичных знаках, чтобы время, поведение и интерфейс оставались управляемыми.</p>
+<h3 id="20-5-маска-как-доказательство-и-маска-как-фильтр">20.5. Маска как доказательство и маска как фильтр</h3>
+<p>Маска является доказательством простоты только в полном решетном смысле:</p>
+<pre><code class="language-text">если для кандидата x учтены все простые делители p &lt;= sqrt(x),
+и x выжило,
+то x простое.
+</code></pre>
+<p>Для 1000-значного числа такая полная база практически недоступна:</p>
+<div class="math-display">\[\sqrt{10^{1000}}=10^{500}.\]</div>
+<p>Поэтому в слое запросов к большим целым локальная маска работает как быстрый детерминированный фильтр. Она отбрасывает кандидатов, делящихся на малые простые из выбранной базы, но сама по себе не превращает выжившего кандидата в доказанное простое число.</p>
+<p>Итоговая логика:</p>
+<table>
+<thead>
+<tr>
+<th>Слой</th>
+<th>Что означает выживание кандидата</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>полная база до <span class="math-inline">\(\sqrt{x}\)</span></td>
+<td>доказательство простоты через решето</td>
+</tr>
+<tr>
+<td>малая база</td>
+<td>кандидат не делится на малые простые</td>
+</tr>
+<tr>
+<td>малая база + Miller–Rabin</td>
+<td>практическое вероятно простое</td>
+</tr>
+<tr>
+<td>малая база + Miller–Rabin + ECPP</td>
+<td>доказанное простое</td>
+</tr>
+</tbody>
+</table>
+<p>Ключевой принцип остаётся прежним:</p>
+<blockquote>
+<p>Маски локальны по позиции, но не бесплатны по базе.</p>
+</blockquote>
+<h3 id="20-6-быстрый-isprime-n">20.6. Быстрый <code>isPrime(N)</code></h3>
+<p>Обычный пользовательский вызов <code>isPrime(N)</code> выполняет быстрый путь:</p>
+<ul>
+<li>wheel-210;</li>
+<li>маска по малым простым;</li>
+<li>Miller–Rabin, обычно 16–32 раунда;</li>
+<li>возврат результата.</li>
+</ul>
+<p>Возможные статусы:</p>
+<table>
+<thead>
+<tr>
+<th>Статус</th>
+<th>Смысл</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Составное</code></td>
+<td>найден малый делитель или свидетель составности Miller–Rabin; ответ точный</td>
+</tr>
+<tr>
+<td><code>Вероятно простое</code></td>
+<td>число прошло маску и Miller–Rabin; это практический вероятностный ответ</td>
+</tr>
+</tbody>
+</table>
+<p>Если Miller–Rabin нашёл свидетель составности, ответ <code>Составное</code> является строгим. Если число прошло Miller–Rabin, быстрый ответ остаётся вероятностным, а не сертификатом простоты.</p>
+<p>В интерфейсе рядом с быстрым ответом доступно действие <code>Уточнить ответ</code>. Оно запускает доказательную проверку через ECPP.</p>
+<h3 id="20-7-уточнённый-isprime-n">20.7. Уточнённый <code>isPrime(N)</code></h3>
+<p>Уточнение использует быстрый ответ как предварительный фильтр:</p>
+<ul>
+<li>если быстрый режим уже нашёл составность, результат остаётся <code>Составное</code>;</li>
+<li>если быстрый режим вернул <code>Вероятно простое</code>, запускается ECPP;</li>
+<li>сгенерированный ECPP-сертификат проверяется перед показом результата;</li>
+<li>успешное уточнение даёт статус <code>Доказано простое</code>.</li>
+</ul>
+<p>Такой режим отделяет быстрый практический ответ от строгого математического подтверждения.</p>
+<h3 id="20-8-быстрый-nextprime-n">20.8. Быстрый <code>nextPrime(N)</code></h3>
+<p>Обычный <code>nextPrime(N)</code> ищет первое практическое вероятно простое после <span class="math-inline">\(N\)</span> через локальные сегменты:</p>
+<ul>
+<li>старт нормализуется к ближайшему допустимому wheel-кандидату;</li>
+<li>вокруг старта создаётся локальный сегмент;</li>
+<li>wheel-210 и малые маски удаляют очевидные составные;</li>
+<li>выжившие кандидаты сканируются в порядке возрастания;</li>
+<li>Miller–Rabin применяется только к выжившим кандидатам;</li>
+<li>первый кандидат, прошедший Miller–Rabin, возвращается как быстро найденное вероятно простое число.</li>
+</ul>
+<p>Если текущий сегмент не содержит подходящего кандидата, исполнительный слой расширяет поиск следующим локальным сегментом.</p>
+<h3 id="20-9-уточнённый-nextprime-n">20.9. Уточнённый <code>nextPrime(N)</code></h3>
+<p>Уточнение для <code>nextPrime(N)</code> применяется только к финальному кандидату, найденному быстрым режимом.</p>
+<p>Рабочая схема:</p>
+<ol>
+<li>локальная маска находит выживших кандидатов;</li>
+<li>Miller–Rabin выбирает первый вероятно простой кандидат <span class="math-inline">\(P\)</span>;</li>
+<li>действие <code>Уточнить ответ</code> запускает ECPP только для этого <span class="math-inline">\(P\)</span>;</li>
+<li>после успешной проверки сертификата результат получает статус <code>Доказано простое</code>.</li>
+</ol>
+<p>ECPP на каждый выживший кандидат не используется: это слишком дорогой путь и он не нужен для текущей пользовательской семантики.</p>
+<h3 id="20-10-оценка-времени-для-1000-значных-чисел">20.10. Оценка времени для 1000-значных чисел</h3>
+<p>Оценка относится к следующей конфигурации:</p>
+<ul>
+<li>CPU: i7, 6 ядер / 12 потоков;</li>
+<li>RAM: 64 GB;</li>
+<li>GPU: Nvidia GeForce GTX 1660 Ti;</li>
+<li>механизм больших целых: Rust + GMP;</li>
+<li>размер <span class="math-inline">\(N\)</span>: около 1000 десятичных знаков;</li>
+<li>ограничение версии: не более 1024 десятичных знаков.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Задача</th>
+<th>Метод</th>
+<th style="text-align:right">Примерное время на 1000 знаков</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>isPrime(N)</code></td>
+<td>маска + Miller–Rabin 16–32</td>
+<td style="text-align:right"><strong>0.05 – 1 сек</strong></td>
+</tr>
+<tr>
+<td><code>isPrime(N)</code></td>
+<td>маска + Miller–Rabin 64</td>
+<td style="text-align:right"><strong>0.2 – 3 сек</strong></td>
+</tr>
+<tr>
+<td><code>isPrime(N)</code></td>
+<td>маска + ECPP</td>
+<td style="text-align:right"><strong>10 сек – 10 мин</strong></td>
+</tr>
+<tr>
+<td><code>nextPrime(N)</code></td>
+<td>маска + Miller–Rabin</td>
+<td style="text-align:right"><strong>1 – 30 сек</strong></td>
+</tr>
+<tr>
+<td><code>nextPrime(N)</code></td>
+<td>маска + MR + ECPP финального кандидата</td>
+<td style="text-align:right"><strong>20 сек – 10+ мин</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Это инженерные оценки, а не SLA. Реальное время зависит от числа раундов Miller–Rabin, глубины маски малых простых, размера сегмента для <code>nextPrime</code>, числа выживших кандидатов и удачности генерации ECPP-сертификата.</p>
+<h3 id="20-11-роль-cpu-gpu-оптимизаций">20.11. Роль CPU/GPU оптимизаций</h3>
+<p>CPU/GPU оптимизации проекта ускоряют главным образом массовую масочную часть:</p>
+<ul>
+<li>разметку кратных;</li>
+<li>работу по wheel residue-классам;</li>
+<li>сканирование <code>E8Bitmap</code>, <code>SparseCSR</code> и <code>ImplicitFull</code>;</li>
+<li>обработку непересекающихся сегментов;</li>
+<li>гибридный режим для больших сегментных задач.</li>
+</ul>
+<p>Для одного конкретного <code>isPrime(N)</code> на 1000 знаков GPU почти не ускоряет финальную проверку: основная стоимость находится в GMP <code>pow_mod</code> и в арифметике больших целых, используемой ECPP.</p>
+<p>Практическое разделение такое:</p>
+<table>
+<thead>
+<tr>
+<th>Операция</th>
+<th>Где основной выигрыш</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>isPrime(N)</code></td>
+<td>CPU + GMP; малая маска как быстрый отсев</td>
+</tr>
+<tr>
+<td><code>nextPrime(N)</code></td>
+<td>сегментная маска; CPU/GPU/гибрид при достаточно большом сегменте</td>
+</tr>
+<tr>
+<td>ECPP</td>
+<td>арифметика больших целых и доказательство на эллиптических кривых; E8/CUDA-декодер его не заменяет</td>
+</tr>
+</tbody>
+</table>
+<h3 id="20-12-прогресс-вычислений">20.12. Прогресс вычислений</h3>
+<p>В интерфейсе прогресс появляется, когда операция длится дольше 3 секунд.</p>
+<p>Для Miller–Rabin прогресс точный:</p>
+<pre><code class="language-text">completed_rounds / total_rounds
+</code></pre>
+<p>Для сегментной маски прогресс точный внутри текущего сегмента:</p>
+<pre><code class="language-text">processed_blocks / total_blocks
+</code></pre>
+<p>Для <code>nextPrime(N)</code> общий процент до найденного простого заранее неизвестен, поэтому отображается стадийный прогресс текущего сегмента: построение маски, сканирование выживших кандидатов, Miller–Rabin для текущего кандидата и переход к следующему сегменту.</p>
+<p>Для ECPP общий процент может быть только стадийным или оценочным. Вместо фиктивной точности интерфейс показывает текущую стадию, прошедшее время, число попыток и размер текущей подзадачи. Если процент оценочный, он помечается как оценочный.</p>
+<h3 id="20-13-ecpp-не-является-ml-тригонометрическим-вычислением">20.13. ECPP не является ML/тригонометрическим вычислением</h3>
+<p>ECPP не использует sigmoid и не является нейросетевым вычислением.</p>
+<p>Основная нагрузка находится здесь:</p>
+<ul>
+<li>арифметика больших целых;</li>
+<li>модульное умножение;</li>
+<li>модульное возведение в степень;</li>
+<li>НОД;</li>
+<li>арифметика эллиптических кривых по модулю <span class="math-inline">\(N\)</span>;</li>
+<li>умножение точки на число;</li>
+<li>частичная факторизация порядков групп;</li>
+<li>генерация сертификата;</li>
+<li>проверка сертификата.</li>
+</ul>
+<p>Некоторые реализации Atkin–Morain/CM могут использовать вспомогательные высокоточные комплексные вычисления при построении данных, но пользовательский исполнительный слой этого слоя в основном нагружает целочисленную и модульную арифметику.</p>
+<h3 id="20-14-команды-и-статусы">20.14. Команды и статусы</h3>
+<p>Основные команды слоя запросов:</p>
+<pre><code class="language-bash">make isPrime N=...
+make nextPrime N=...
+</code></pre>
+<p>В интерфейс эти команды соответствуют быстрым действиям. Рядом с быстрым результатом доступно уточнение через ECPP.</p>
+<p>Типовые статусы:</p>
+<table>
+<thead>
+<tr>
+<th>Статус</th>
+<th>Где появляется</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Составное</code></td>
+<td><code>isPrime</code>, если найден делитель или свидетель составности</td>
+</tr>
+<tr>
+<td><code>Вероятно простое</code></td>
+<td>быстрый <code>isPrime</code> или быстрый <code>nextPrime</code> после Miller–Rabin</td>
+</tr>
+<tr>
+<td><code>Доказано простое</code></td>
+<td>после успешного ECPP-уточнения</td>
+</tr>
+<tr>
+<td><code>Уточнение недоступно</code></td>
+<td>если модуль ECPP не собран или не подключён</td>
+</tr>
+</tbody>
+</table>
+<p>Если модуль ECPP недоступен, результат не подделывается: быстрый ответ остаётся вероятностным, а интерфейс сообщает, что доказательное уточнение недоступно.</p>
+<h3 id="20-15-итоговая-семантика-слоя-больших-целых">20.15. Итоговая семантика слоя больших целых</h3>
+<table>
+<thead>
+<tr>
+<th>Вызов</th>
+<th>Быстрый режим</th>
+<th>Уточнённый режим</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>isPrime(N)</code></td>
+<td><code>Составное</code> или <code>Вероятно простое</code></td>
+<td><code>Составное</code> или <code>Доказано простое</code></td>
+</tr>
+<tr>
+<td><code>nextPrime(N)</code></td>
+<td>первый вероятно простой кандидат после <span class="math-inline">\(N\)</span></td>
+<td>тот же кандидат после ECPP-сертификата</td>
+</tr>
+</tbody>
+</table>
+<p>Ключевая инженерная позиция:</p>
+<pre><code class="language-text">Не считать предыдущие маски.
+Не идти от 0 до N.
+Использовать локальные offsets и сегментные маски.
+Быстрый ответ давать через Miller–Rabin.
+Доказательный ответ давать через ECPP только по запросу уточнения.
+</code></pre>
+
+<h2 id="practical-scenarios">21. Практические сценарии применения</h2>
+<h3 id="21-1-последовательный-префиксный-поиск">21.1. Последовательный префиксный поиск</h3>
+<p>Цель: получить первые <span class="math-inline">\(n\)</span> простых.</p>
+<p>Режим:</p>
+<ul>
+<li><code>count_first_n --n ...</code>;</li>
+<li>потоковое выполнение с контрольными точками;</li>
+<li>при необходимости <code>--archive-dir ...</code> для chunk-архива с delta-кодированием на диске;</li>
+<li>контроль по <code>found_count</code>, <code>last_prime</code>, <code>archive_committed_primes</code>.</li>
+</ul>
+<p>Это лучший первый производственный рубеж.</p>
+<h3 id="21-2-проверка-конкретного-большого-числа">21.2. Проверка конкретного большого числа</h3>
+<p>Цель: проверить <code>isPrime(N)</code> для одного большого <span class="math-inline">\(N\)</span>.</p>
+<p>Режим:</p>
+<ul>
+<li>не полный проход от нуля;</li>
+<li>локальная инициализация масочного состояния;</li>
+<li>быстрый ответ через маску и Miller–Rabin;</li>
+<li>доказательное уточнение через ECPP.</li>
+</ul>
+<h3 id="21-3-поиск-первого-простого-после-n">21.3. Поиск первого простого после <span class="math-inline">\(N\)</span></h3>
+<p>Цель: <code>nextPrime(N)</code>.</p>
+<p>Режим:</p>
+<ul>
+<li>локальные сегменты вокруг <span class="math-inline">\(N\)</span>;</li>
+<li>повторная инициализация фаз;</li>
+<li>возврат первого выжившего кандидата, прошедшего Miller–Rabin;</li>
+<li>ECPP-сертификат только по запросу уточнения.</li>
+</ul>
+<h3 id="21-4-гибридный-путь">21.4. Гибридный путь</h3>
+<p>Гибридный режим полезен, когда:</p>
+<ul>
+<li>задача велика;</li>
+<li>сегменты можно развести между CPU и GPU без пересечения;</li>
+<li>результат не нужно возвращать как длинный список событий через PCIe.</li>
+</ul>
+<h3 id="21-5-кластер-и-удалённые-диапазоны">21.5. Кластер и удалённые диапазоны</h3>
+<p>Кластерный режим имеет смысл для очень длинных префиксных задач или для большого пула независимых запросов <code>nextPrime(N)</code>. Но как первая практическая цель он сложнее, чем исполнительный слой на одной машине на одной машине.</p>
+
+<h2 id="sources">22. Источники</h2>
+<h3 id="22-1-внутренние-ссылки-на-текущие-расчёты">22.1. Внутренние ссылки на текущие расчёты</h3>
+<ol>
+<li><code>rust/e8_mask_codec/src/bin/bench_cpu_threads.rs</code> — базовый замер по потокам CPU.</li>
+<li><code>rust/e8_mask_codec/src/bin/bench_gpu.rs</code> — GPU sparse/dense/LUT.</li>
+<li><code>rust/e8_mask_codec/src/bin/bench_hybrid.rs</code> — устойчивый режим CPU+GPU с постоянным pool.</li>
+<li><code>rust/e8_mask_codec/src/bin/memory_report.rs</code> — политика памяти.</li>
+<li><code>rust/e8_mask_codec/src/bin/count_first_n.rs</code> — исполнительный слой с контрольными точками для первых <span class="math-inline">\(n\)</span> простых.</li>
+<li><code>rust/e8_mask_codec/src/runtime.rs</code> — сегментированный исполнительный слой подсчёта и состояние контрольной точки.</li>
+</ol>
+<h3 id="22-2-внешние-математические-источники">22.2. Внешние математические источники</h3>
+<ol>
+<li>T. Denney et al.,
+<a href="https://arxiv.org/abs/1912.06156">The Geometry of <span class="math-inline">\(H_4\)</span> Polytopes</a>.
+Разбиения 600-ячейника на пять непересекающихся 24-ячейников и связь с
+<span class="math-inline">\(E_8\)</span>.</li>
+<li>J. C. Baez,
+<a href="https://arxiv.org/abs/1712.06436">From the Icosahedron to <span class="math-inline">\(E_8\)</span></a>.
+Икосианы, золотое сечение, 600-ячейник и решётка <span class="math-inline">\(E_8\)</span>.</li>
+<li>P.-P. Dechant,
+<a href="https://arxiv.org/abs/1602.05985">The Birth of <span class="math-inline">\(E_8\)</span> out of the Spinors of the Icosahedron</a>.
+Спинорная конструкция <span class="math-inline">\(H_4\)</span> и <span class="math-inline">\(E_8\)</span>.</li>
+<li>M. Koca, M. Al-Ajmi, N. O. Koca,
+<a href="https://arxiv.org/abs/0906.2109">Quaternionic Representation of Snub 24-Cell and its Dual Polytope Derived From <span class="math-inline">\(E_8\)</span> Root System</a>.
+Кватернионные представления 24-ячейника, 600-ячейника и их орбит.</li>
+</ol>
+
+<h2 id="makefile-long-run">23. Практический запуск длинного прогона через Makefile</h2>
+<p>Для длинного прогона используется корневой <code>Makefile</code>.</p>
+<p>Основные команды:</p>
+<pre><code class="language-bash">make prime-build
+make count-start
+make count-status
+make count-stop
+make count-log
+make count-wheel210-rebuild
+</code></pre>
+<p><code>make count-start</code> — универсальная команда старта и продолжения. Она работает даже без заранее созданного файла контрольной точки:</p>
+<ul>
+<li>если существует надёжный архив, состояние берётся из архивной истины;</li>
+<li>иначе, если есть контрольная точка, состояние продолжается из неё;</li>
+<li>иначе создаётся свежее начальное состояние.</li>
+</ul>
+<p><code>make count-status</code> показывает:</p>
+<ul>
+<li>утверждение текущего прогона из <code>count.progress</code>;</li>
+<li>зафиксированное состояние архива;</li>
+<li>буферизированное состояние в RAM;</li>
+<li><code>ETA</code> и скорость, рассчитанные по модели «архив + буфер»;</li>
+<li>текущий размер <code>wheel210</code> на диске.</li>
+</ul>
+<p>Таким образом, длинный прогон управляется как нормальный фоновый вычислительный процесс, а не как одноразовый интерактивный запуск.</p>
+<h3 id="23-1-wheel210-only-режим-хранения">23.1. Wheel210-only режим хранения</h3>
+<p>Текущий производственный режим архива использует <code>--archive-mode wheel210</code>, чтобы не держать на диске одновременно точный архив с delta-кодированием и побочный <code>wheel210</code>-архив.</p>
+<p>Именно <code>wheel210-only</code> соответствует целевой оценке порядка <code>20–40 GiB</code> на <code>10^11</code> простых. Режим <code>both</code> сохраняется только как переходный или отладочный.</p>
+
+<h2 id="runtime-update-appendix">24. Приложение: текущий исполнительный и операционный слой</h2>
+<p>Это приложение фиксирует текущий исполнительный слой и слой эксплуатации, не меняя математическую часть документа.</p>
+<p>В реализации сейчас есть:</p>
+<ul>
+<li>универсальный интерфейс Makefile для длинного префиксного поиска;</li>
+<li>архивные запросы к простым числам;</li>
+<li>честная трёхслойная модель статуса;</li>
+<li>локальное состояние сборки и кэша проекта внутри <code>data/</code>;</li>
+<li><code>wheel210-only</code> как основной производственный режим архивного хранения.</li>
+</ul>
+
+<h2 id="universal-makefile-operations">25. Универсальные операции Makefile</h2>
+<p>Публичный операционный интерфейс — параметризованный корневой <code>Makefile</code>.</p>
+<p>Основные команды:</p>
+<pre><code class="language-bash">make prime-build
+make test
+make count-start
+make count-stop
+make count-status
+make count-progress
+make count-log
+make isPrime N=2760727302517
+make nextPrime N=2760727302510
+</code></pre>
+<p>Те же команды используются для альтернативных прогонов через переопределение переменных:</p>
+<ul>
+<li><code>RUN_DIR</code>;</li>
+<li><code>TARGET_N</code>;</li>
+<li><code>ARCHIVE_DIR</code>;</li>
+<li><code>CHECKPOINT_FILE</code>;</li>
+<li><code>PROGRESS_FILE</code>;</li>
+<li><code>PID_FILE</code>;</li>
+<li><code>LOG_FILE</code>.</li>
+</ul>
+<p>Отдельные специализированные псевдокоманды для <code>start</code>/<code>stop</code>/<code>status</code> в рабочем режиме не требуются.</p>
+
+<h2 id="truth-model-long-runs">26. Модель истины для длинных прогонов</h2>
+<p><code>make count-status</code> разделяет три слоя истины. Слой запросов также доступен через локальный HTTP-интерфейс.</p>
+<h3 id="26-1-утверждение-текущего-прогона">26.1. Утверждение текущего прогона</h3>
+<p>Это то, что сообщает текущий файл <code>count.progress</code>:</p>
+<ul>
+<li>запрошенная цель;</li>
+<li>последнее заявленное значение <code>found_count</code>;</li>
+<li>последнее заявленное значение <code>last_prime</code>;</li>
+<li>текущий режим исполнения и телеметрия исполнительного слоя.</li>
+</ul>
+<h3 id="26-2-зафиксированная-истина-архива">26.2. Зафиксированная истина архива</h3>
+<p>Это авторитетное зафиксированное состояние на диске:</p>
+<ul>
+<li>итоговые значения из manifest <code>wheel210</code>;</li>
+<li>число зафиксированных chunk-файлов;</li>
+<li>диапазон архива, доступный для запросов;</li>
+<li>текущий размер архива на диске.</li>
+</ul>
+<h3 id="26-3-буферизированная-истина-в-ram">26.3. Буферизированная истина в RAM</h3>
+<p>Это работа, которая уже найдена, но ещё не зафиксирована надёжной записью:</p>
+<ul>
+<li>простые, находящиеся в RAM-буфере;</li>
+<li>оценочный размер RAM-буфера;</li>
+<li>состояние очереди записи/сжатия.</li>
+</ul>
+<p>Такое разделение не смешивает устаревшие утверждения процесса с зафиксированным состоянием архива.</p>
+
+<h2 id="archive-backed-prime-queries">27. Архивные запросы к простым числам</h2>
+<p>Проект предоставляет архивный поиск простых через существующие CLI-команды:</p>
+<pre><code class="language-bash">make isPrime N=...
+make nextPrime N=...
+</code></pre>
+<p>Поведение:</p>
+<ul>
+<li>если <code>N</code> покрыто <code>wheel210</code>-архивом, ответ точный;</li>
+<li><code>nextPrime(N)</code> возвращает первое архивное простое строго больше <code>N</code>;</li>
+<li>пропуски архива или запросы за пределами диапазона возвращают явные ошибки;</li>
+<li>пользовательский вывод чистый и ориентирован на результат.</li>
+</ul>
+<p>Это уже не будущая цель API: архивный слой запросов существует и входит в текущую поверхность исполнительного слоя.</p>
+
+<h2 id="current-production-runtime-shape">28. Текущая рабочая форма исполнительного слоя</h2>
+<p>Текущий исполнительный слой использует следующие константы и политики:</p>
+<ul>
+<li>базовый CPU-режим: 8 потоков;</li>
+<li>целевой устойчивый GPU-режим: примерно 131072 активных потоков;</li>
+<li>рабочие потоки архивной записи: 3;</li>
+<li>RAM-буферизированный архивный конвейер с обратным давлением;</li>
+<li><code>wheel210-only</code> как производственный режим архива;</li>
+<li>локальная среда сборки и кэша проекта внутри <code>data/</code>.</li>
+</ul>
+<p>Операционно это означает:</p>
+<ul>
+<li>новое состояние проекта не пишется в <code>$HOME</code>;</li>
+<li>кэш сборки живёт в <code>data/cargo-home</code> и <code>data/cargo-target</code>;</li>
+<li>вспомогательные файлы исполнительного слоя живут внутри выбранного <code>RUN_DIR</code>;</li>
+<li>продолжение из архива предпочтительно, если существует зафиксированное состояние архива.</li>
+</ul>
+
+<h2 id="targets-and-neutral-roadmap">29. Цели и нейтральная дорожная карта</h2>
+<p>Активные цели исполнительного слоя и хранилища:</p>
+<ul>
+<li>сжатый архив меньше <code>40 GiB</code>;</li>
+<li>гибридная производительность выше только CPU на прогонах с архивом, приближённых к рабочему режиму;</li>
+<li>продолжение использования <code>wheel210-only</code> для надёжный архива;</li>
+<li>будущая полная переупаковка/пересжатие архива как следующий крупный шаг по хранилищу.</li>
+</ul>
+<p>Эти цели зафиксированы как активные инженерные ориентиры без превращения приложения в отчёт о регрессиях.</p>
+
+<h2 id="local-ui-prime-queries">30. Локальный интерфейс для <code>isPrime(N)</code> и <code>nextPrime(N)</code></h2>
+<p>Для архивных запросов к простым числам доступен локальный одностраничный интерфейс. Первая версия намеренно локальная и привязана к <code>127.0.0.1</code>.</p>
+<h3 id="30-1-что-показывает-интерфейс">30.1. Что показывает интерфейс</h3>
+<p>Интерфейс открывает две операции:</p>
+<ul>
+<li><code>isPrime(N)</code>;</li>
+<li><code>nextPrime(N)</code>.</li>
+</ul>
+<p>Обе операции вызывают исполнительный слой Rust напрямую. Если запрошенное число покрыто зафиксированным <code>wheel210</code>-архивом, ответ возвращается из архивного пути запросов. Если архив не настроен, исполнительный слой может использовать прямую оценку через <code>E8</code>-маску.</p>
+<h3 id="30-2-локальная-http-поверхность">30.2. Локальная HTTP-поверхность</h3>
+<p>Локальный сервер предоставляет:</p>
+<ul>
+<li><code>GET /</code> — встроенный одностраничный интерфейс;</li>
+<li><code>GET /healthz</code> — локальная проверка состояния и путь к архиву;</li>
+<li><code>POST /api/is-prime</code> — JSON-запрос с <code>n</code> в виде строки;</li>
+<li><code>POST /api/next-prime</code> — JSON-запрос с <code>n</code> в виде строки.</li>
+</ul>
+<p>Большие целые передаются строками и в запросах, и в ответах, чтобы браузерный код не зависел от точности целых чисел JavaScript с плавающей точкой.</p>
+<h3 id="30-3-почему-интерфейс-выглядит-именно-так">30.3. Почему интерфейс выглядит именно так</h3>
+<p>Визуальный язык следует двум ограничениям:</p>
+<ol>
+<li>сдержанный инфраструктурный неоновый стиль вместо тяжёлого Web3-оформления;</li>
+<li>геометрические мотивы из иерархии E8 / 24-cell / тессеракт, развитой выше в документе.</li>
+</ol>
+<p>Поэтому интерфейс использует тёмное поле, тонкие решётчатые наложения и многослойные геометрические каркасные элементы, но остаётся практическим локальным инструментом, а не промо-страницей.</p>
+<h3 id="30-4-связь-интерфейса-с-архивом">30.4. Связь интерфейса с архивом</h3>
+<p>Интерфейс сам не выполняет подсчёт. Это тонкая локальная поверхность запросов поверх существующего исполнительного слоя и архива:</p>
+<ul>
+<li>архив остаётся источником истины;</li>
+<li>интерфейс выполняет только запросы на чтение;</li>
+<li>тот же путь на базе <code>wheel210</code> используется CLI и HTTP-слоем.</li>
+</ul>
+<h3 id="30-5-локальный-запуск">30.5. Локальный запуск</h3>
+<p>Канонический запуск:</p>
+<pre><code class="language-bash">make ui-start ARCHIVE_DIR=data/runs/count_1e11/archive
+</code></pre>
+<p>После этого открыть:</p>
+<pre><code class="language-text">http://127.0.0.1:4173
+</code></pre>
+<p>Команды жизненного цикла:</p>
+<pre><code class="language-bash">make ui-status
+make ui-stop
+</code></pre>
+<p>Все артефакты интерфейса остаются внутри <code>data/</code>, и интерфейс соблюдает ту же дисциплину без записи в <code>$HOME</code>, что и остальные точки входа проекта.</p>
+
+    </article>
+  </main>
+</body>
+</html>
