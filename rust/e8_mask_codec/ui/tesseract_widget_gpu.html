@@ -1,0 +1,138 @@
+<!--
+  ЗАМЕНА для:
+    <div class="wireframe" aria-hidden="true"></div>
+
+  CSS 3D — GPU compositor, нулевая нагрузка на CPU.
+  Pause/Play через JS toggles animation-play-state.
+-->
+
+<div class="wireframe" style="position:relative; overflow:hidden; padding:0; border:none; background:none; background: radial-gradient(circle at 50% 48%, rgba(66,232,122,0.13), transparent 55%);">
+
+  <div id="tess-scene" style="
+    width: 100%;
+    height: 100%;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 600px;
+  ">
+    <div id="tess-rotor-xw" style="
+      width: 160px; height: 160px;
+      transform-style: preserve-3d;
+      animation: tess-xw 14s linear infinite;
+    ">
+      <div id="tess-rotor-yz" style="
+        width: 160px; height: 160px;
+        transform-style: preserve-3d;
+        animation: tess-yz 9s linear infinite;
+      ">
+        <div id="tess-rotor-xy" style="
+          width: 160px; height: 160px;
+          transform-style: preserve-3d;
+          animation: tess-xy 21s linear infinite;
+        ">
+
+          <!-- OUTER CUBE: 12 edges via faces with only border visible -->
+          <!-- We build the tesseract as outer cube + inner cube + connectors using divs -->
+
+          <!-- Outer cube faces (used only as edge frames) -->
+          <div class="tess-face" style="transform: translateZ(80px)"></div>
+          <div class="tess-face" style="transform: translateZ(-80px)"></div>
+          <div class="tess-face" style="transform: rotateY(90deg) translateZ(80px)"></div>
+          <div class="tess-face" style="transform: rotateY(90deg) translateZ(-80px)"></div>
+          <div class="tess-face" style="transform: rotateX(90deg) translateZ(80px)"></div>
+          <div class="tess-face" style="transform: rotateX(90deg) translateZ(-80px)"></div>
+
+          <!-- Inner cube (scaled down 40%) -->
+          <div style="
+            position:absolute; top:50%; left:50%;
+            width:0; height:0;
+            transform-style: preserve-3d;
+          ">
+            <div class="tess-face tess-inner" style="transform: translateZ(32px)"></div>
+            <div class="tess-face tess-inner" style="transform: translateZ(-32px)"></div>
+            <div class="tess-face tess-inner" style="transform: rotateY(90deg) translateZ(32px)"></div>
+            <div class="tess-face tess-inner" style="transform: rotateY(90deg) translateZ(-32px)"></div>
+            <div class="tess-face tess-inner" style="transform: rotateX(90deg) translateZ(32px)"></div>
+            <div class="tess-face tess-inner" style="transform: rotateX(90deg) translateZ(-32px)"></div>
+          </div>
+
+          <!-- 8 connecting edges (outer corners to inner corners) -->
+          <!-- Each connector is a thin rod from outer to inner corner -->
+          <!-- We approximate with 4 diagonal face-crossing struts -->
+          <div class="tess-strut" style="transform: translate3d(-80px,-80px,-80px) rotate3d(1,1,1,54.7deg) rotateZ(45deg)"></div>
+          <div class="tess-strut" style="transform: translate3d( 80px,-80px,-80px) rotate3d(-1,1,1,54.7deg) rotateZ(-45deg)"></div>
+          <div class="tess-strut" style="transform: translate3d(-80px, 80px,-80px) rotate3d(1,-1,1,54.7deg) rotateZ(-45deg)"></div>
+          <div class="tess-strut" style="transform: translate3d( 80px, 80px,-80px) rotate3d(-1,-1,1,54.7deg) rotateZ(45deg)"></div>
+          <div class="tess-strut" style="transform: translate3d(-80px,-80px, 80px) rotate3d(1,1,-1,54.7deg) rotateZ(-45deg)"></div>
+          <div class="tess-strut" style="transform: translate3d( 80px,-80px, 80px) rotate3d(-1,1,-1,54.7deg) rotateZ(45deg)"></div>
+          <div class="tess-strut" style="transform: translate3d(-80px, 80px, 80px) rotate3d(1,-1,-1,54.7deg) rotateZ(45deg)"></div>
+          <div class="tess-strut" style="transform: translate3d( 80px, 80px, 80px) rotate3d(-1,-1,-1,54.7deg) rotateZ(-45deg)"></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- pause / play buttons -->
+  <div style="position:absolute; bottom:14px; right:14px; display:flex; gap:8px; z-index:3;">
+    <button id="tess-pause-btn" class="btn-secondary" type="button"
+      style="padding:8px 16px; font-size:13px; border-radius:999px;">⏸ Pause</button>
+    <button id="tess-play-btn" class="btn-primary" type="button"
+      style="padding:8px 16px; font-size:13px; border-radius:999px; display:none;">▶ Play</button>
+  </div>
+</div>
+
+<style>
+.tess-face {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 160px; height: 160px;
+  margin: -80px 0 0 -80px;
+  border: 1.5px solid rgba(90, 244, 154, 0.72);
+  background: transparent;
+  box-shadow: 0 0 12px rgba(66, 232, 122, 0.18), inset 0 0 8px rgba(66, 232, 122, 0.06);
+  backface-visibility: visible;
+}
+.tess-inner {
+  width: 64px; height: 64px;
+  margin: -32px 0 0 -32px;
+  border-color: rgba(90, 244, 154, 0.52);
+  box-shadow: 0 0 8px rgba(66, 232, 122, 0.14);
+}
+.tess-strut {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 2px;
+  height: 96px; /* sqrt((80-32)^2 * 3) ≈ 83px, slight extra */
+  margin: 0 0 0 -1px;
+  background: linear-gradient(to bottom, rgba(90,244,154,0.65), rgba(66,232,122,0.25));
+  transform-origin: top center;
+  box-shadow: 0 0 6px rgba(66,232,122,0.2);
+}
+
+@keyframes tess-xw { from { transform: rotateX(0deg) rotateW(0deg); } to { transform: rotateX(360deg); } }
+@keyframes tess-yz { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+@keyframes tess-xy { from { transform: rotateZ(0deg); } to { transform: rotateZ(360deg); } }
+</style>
+
+<script>
+(function () {
+  const rotors = ['tess-rotor-xw','tess-rotor-yz','tess-rotor-xy'];
+  let paused = false;
+
+  document.getElementById('tess-pause-btn').addEventListener('click', function () {
+    paused = true;
+    rotors.forEach(id => document.getElementById(id).style.animationPlayState = 'paused');
+    this.style.display = 'none';
+    document.getElementById('tess-play-btn').style.display = '';
+  });
+  document.getElementById('tess-play-btn').addEventListener('click', function () {
+    paused = false;
+    rotors.forEach(id => document.getElementById(id).style.animationPlayState = 'running');
+    this.style.display = 'none';
+    document.getElementById('tess-pause-btn').style.display = '';
+  });
+})();
+</script>

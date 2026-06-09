@@ -1,0 +1,56 @@
+<!--
+  ЗАМЕНА для:
+    <div class="wireframe" aria-hidden="true"></div>
+
+  Положи tesseract.webp рядом с prime_ui.html.
+  Кнопки используют уже существующие классы .btn-secondary / .btn-primary.
+-->
+
+<div class="wireframe" style="position:relative; overflow:hidden; padding:0; border:none; background:none; min-height:280px;">
+
+  <!-- живая анимация -->
+  <img id="tess-img"
+    src="tesseract.webp"
+    style="width:100%; height:100%; object-fit:contain; display:block;"
+    alt="tesseract" />
+
+  <!-- стоп-кадр поверх (скрыт) -->
+  <canvas id="tess-freeze"
+    style="position:absolute; inset:0; width:100%; height:100%; display:none; object-fit:contain;"></canvas>
+
+  <div style="position:absolute; bottom:14px; right:14px; display:flex; gap:8px; z-index:3;">
+    <button id="tess-pause-btn" class="btn-secondary" type="button"
+      style="padding:8px 16px; font-size:13px; border-radius:999px;">⏸ Pause</button>
+    <button id="tess-play-btn" class="btn-primary" type="button"
+      style="padding:8px 16px; font-size:13px; border-radius:999px; display:none;">▶ Play</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  const img    = document.getElementById('tess-img');
+  const freeze = document.getElementById('tess-freeze');
+  const pauseBtn = document.getElementById('tess-pause-btn');
+  const playBtn  = document.getElementById('tess-play-btn');
+
+  pauseBtn.addEventListener('click', function () {
+    // draw current frame onto canvas, hide img
+    freeze.width  = img.naturalWidth  || img.offsetWidth;
+    freeze.height = img.naturalHeight || img.offsetHeight;
+    freeze.getContext('2d').drawImage(img, 0, 0, freeze.width, freeze.height);
+    img.style.display    = 'none';
+    freeze.style.display = 'block';
+    pauseBtn.style.display = 'none';
+    playBtn.style.display  = '';
+  });
+
+  playBtn.addEventListener('click', function () {
+    // reload gif to restart from beginning (browsers resume from frame 0 on src reassign)
+    img.src = img.src;
+    freeze.style.display = 'none';
+    img.style.display    = 'block';
+    playBtn.style.display  = 'none';
+    pauseBtn.style.display = '';
+  });
+})();
+</script>

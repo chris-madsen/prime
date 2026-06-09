@@ -45,7 +45,7 @@
     }
     @keyframes drift { from { transform: translateY(-8px) scale(1); } to { transform: translateY(10px) scale(1.02); } }
     .shell { position: relative; z-index: 1; width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 56px; }
-    .badge { display: inline-flex; gap: 10px; align-items: center; border: 1px solid var(--border); background: rgba(8, 18, 14, 0.55); color: var(--muted); padding: 10px 14px; border-radius: 999px; backdrop-filter: blur(18px); box-shadow: var(--shadow); font-size: 13px; }
+    .badge { display: inline-flex; gap: 10px; align-items: center; border: 1px solid var(--border); background: rgba(8, 18, 14, 0.55); color: var(--muted); padding: 10px 14px; border-radius: 999px; backdrop-filter: blur(18px); box-shadow: var(--shadow); font-size: 15px; }
     .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); box-shadow: 0 0 18px rgba(90, 244, 154, 0.95); }
     .hero { display: grid; grid-template-columns: 1.25fr 0.95fr; gap: 24px; margin-top: 24px; }
     .card { background: linear-gradient(180deg, rgba(10, 22, 16, 0.92), rgba(6, 14, 10, 0.9)); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); backdrop-filter: blur(18px); overflow: hidden; }
@@ -55,11 +55,11 @@
     }
     h1 { margin: 0 0 14px; font-size: clamp(34px, 5vw, 64px); line-height: 0.95; letter-spacing: -0.04em; }
     .accent { background: linear-gradient(90deg, var(--cyan), #7af4a0 50%, #c4f47a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .lead { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.75; max-width: 64ch; }
+    .lead { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.75; max-width: 64ch; }
     .hero-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
     .stat { padding: 18px; border-radius: 18px; background: rgba(255,255,255,0.02); border: 1px solid rgba(66,232,122,0.08); }
     .stat strong { display: block; font-size: 20px; margin-bottom: 8px; }
-    .stat span { color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .stat span { color: var(--muted); font-size: 15px; line-height: 1.5; }
     .hero-side { padding: 26px; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; position: relative; }
     .wireframe {
       min-height: 280px;
@@ -88,9 +88,9 @@
       border: 1px solid rgba(66,232,122,0.22);
       border-bottom: none;
     }
-    .section-divider h2 { margin: 0 0 4px; font-size: 18px; font-weight: 700; color: var(--cyan); letter-spacing: -0.01em; }
-    .section-divider p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
-    .section-range { display: inline-block; font-family: ui-monospace, monospace; font-size: 12px; background: rgba(66,232,122,0.12); border: 1px solid rgba(66,232,122,0.28); color: var(--cyan); padding: 2px 9px; border-radius: 999px; margin-top: 6px; }
+    .section-divider h2 { margin: 0 0 4px; font-size: 20px; font-weight: 700; color: var(--cyan); letter-spacing: -0.01em; }
+    .section-divider p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.6; }
+    .section-range { display: inline-block; font-family: ui-monospace, monospace; font-size: 14px; background: rgba(66,232,122,0.12); border: 1px solid rgba(66,232,122,0.28); color: var(--cyan); padding: 2px 9px; border-radius: 999px; margin-top: 6px; }
 
     .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-top: 0; border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); overflow: hidden; }
     .tool-grid .card { border-radius: 0; border: none; border-right: 1px solid var(--border); }
@@ -100,7 +100,7 @@
     .tool h2 { margin: 0 0 8px; font-size: 22px; }
     .tool p { margin: 0 0 18px; color: var(--muted); line-height: 1.65; }
     .input-shell { display: flex; flex-direction: column; gap: 12px; }
-    label { font-size: 13px; color: var(--muted); letter-spacing: 0.02em; text-transform: uppercase; }
+    label { font-size: 15px; color: var(--muted); letter-spacing: 0.02em; text-transform: uppercase; }
     input {
       width: 100%; padding: 16px 18px; border-radius: 16px; border: 1px solid rgba(66,232,122,0.22);
       background: rgba(2, 10, 6, 0.72); color: var(--text); font-size: 16px; outline: none;
@@ -119,9 +119,9 @@
     .btn-stop { background: linear-gradient(90deg, rgba(255,108,122,0.18), rgba(255,80,100,0.14)); color: #ffb0b8; border: 1px solid rgba(255,108,122,0.30); display: none; }
     .btn-stop.visible { display: inline-flex; align-items: center; gap: 6px; }
     .result { margin-top: 18px; padding: 18px; min-height: 144px; border-radius: 18px; background: rgba(255,255,255,0.02); border: 1px solid rgba(66,232,122,0.10); }
-    .result h3 { margin: 0 0 10px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .result h3 { margin: 0 0 10px; font-size: 15px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
     .value { font-size: 22px; font-weight: 800; line-height: 1.35; word-break: break-word; }
-    .meta { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; color: var(--muted); font-size: 13px; }
+    .meta { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; color: var(--muted); font-size: 15px; }
     .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(66,232,122,0.10); background: rgba(66,232,122,0.04); }
     .ok { color: var(--green); }
     .bad { color: var(--red); }
@@ -135,25 +135,25 @@
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
     textarea {
       width: 100%; padding: 16px 18px; border-radius: 16px; border: 1px solid rgba(212,232,66,0.26);
-      background: rgba(2, 10, 6, 0.72); color: var(--text); font-size: 13px; outline: none;
+      background: rgba(2, 10, 6, 0.72); color: var(--text); font-size: 15px; outline: none;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02); resize: vertical; min-height: 480px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1.5;
     }
     textarea:focus { border-color: rgba(212,232,66,0.58); box-shadow: 0 0 0 4px rgba(212,232,66,0.10); }
     .file-drop {
       width: 100%; padding: 18px; border-radius: 16px; border: 2px dashed rgba(66,232,122,0.28);
-      background: rgba(2, 10, 6, 0.5); color: var(--muted); font-size: 13px; text-align: center;
+      background: rgba(2, 10, 6, 0.5); color: var(--muted); font-size: 15px; text-align: center;
       cursor: pointer; transition: border-color .2s, background .2s;
     }
     .file-drop:hover, .file-drop.drag-over { border-color: rgba(66,232,122,0.6); background: rgba(66,232,122,0.05); color: var(--cyan); }
     .file-drop input[type=file] { display: none; }
     .tab-bar { display: flex; gap: 4px; margin-bottom: 14px; }
     .tab { padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08);
-      background: transparent; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; }
+      background: transparent; color: var(--muted); font-size: 15px; font-weight: 600; cursor: pointer; transition: all .15s; }
     .tab.active { background: rgba(66,232,122,0.12); border-color: rgba(66,232,122,0.4); color: var(--cyan); }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-    .digits-badge { font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .digits-badge { font-size: 14px; color: var(--muted); margin-top: 6px; }
     .big-result-value { font-size: 16px; font-weight: 800; line-height: 1.5; word-break: break-all; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 
     /* ── Large-section divider ── */
@@ -165,26 +165,26 @@
       border: 1px solid rgba(212,232,66,0.26);
       border-bottom: none;
     }
-    .big-section-divider h2 { margin: 0 0 4px; font-size: 18px; font-weight: 700; color: var(--yellow); letter-spacing: -0.01em; }
-    .big-section-divider p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
-    .big-section-range { display: inline-block; font-family: ui-monospace, monospace; font-size: 12px; background: rgba(212,232,66,0.10); border: 1px solid rgba(212,232,66,0.32); color: var(--yellow); padding: 2px 9px; border-radius: 999px; margin-top: 6px; }
+    .big-section-divider h2 { margin: 0 0 4px; font-size: 20px; font-weight: 700; color: var(--yellow); letter-spacing: -0.01em; }
+    .big-section-divider p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.6; }
+    .big-section-range { display: inline-block; font-family: ui-monospace, monospace; font-size: 14px; background: rgba(212,232,66,0.10); border: 1px solid rgba(212,232,66,0.32); color: var(--yellow); padding: 2px 9px; border-radius: 999px; margin-top: 6px; }
 
     .big-section { display: flex; flex-direction: column; gap: 0; border: 1px solid rgba(212,232,66,0.22); border-top: none; border-radius: 0 0 var(--radius) var(--radius); overflow: hidden; }
     .big-section > .card { border-radius: 0; border: none; border-bottom: 1px solid rgba(212,232,66,0.14); }
     .big-section > .card:last-child { border-bottom: none; }
 
     .section-title { font-size: 20px; font-weight: 700; margin: 32px 0 4px; letter-spacing: -0.02em; }
-    .section-sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+    .section-sub { color: var(--muted); font-size: 15px; margin: 0 0 18px; }
     .refine-row { margin-top: 14px; display: none; }
     .refine-row.visible { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-    .refine-note { font-size: 13px; color: var(--muted); }
+    .refine-note { font-size: 15px; color: var(--muted); }
 
     /* ── Progress bar ── */
     .progress-wrap { margin-top: 10px; display: none; }
     .progress-wrap.visible { display: block; }
     .progress-bar-track { width: 100%; height: 6px; background: rgba(66,232,122,0.12); border-radius: 999px; overflow: hidden; }
     .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #5af49a, #7af4a0 50%, #d4e842 100%); border-radius: 999px; transition: width 0.3s ease; width: 0%; }
-    .progress-label { font-size: 12px; color: var(--muted); margin-top: 5px; }
+    .progress-label { font-size: 14px; color: var(--muted); margin-top: 5px; }
 
     @media (max-width: 960px) {
       .hero { grid-template-columns: 1fr; }
@@ -219,8 +219,8 @@
 
     <!-- Small numbers section -->
     <div class="section-divider">
-      <h2>Малые числа</h2>
-      <p>Числа до 100 миллиардов — точный ответ из wheel210-архива или E8-маски.</p>
+      <h2>Small numbers</h2>
+      <p>Numbers up to 100 billion — exact answer from the wheel210 archive or E8 mask.</p>
       <span class="section-range">N &lt; 100 000 000 000</span>
     </div>
     <section class="tool-grid">
@@ -263,9 +263,9 @@
 
     <!-- Large numbers section -->
     <div class="big-section-divider">
-      <h2>Большие числа</h2>
-      <p>Произвольно большие целые до 10<sup>1024</sup> — Miller-Rabin с GMP, E8-маска-фильтр, опционально ECPP-доказательство.</p>
-      <span class="big-section-range">100 млрд &lt; N &lt; 10<sup>1024</sup></span>
+      <h2>Large numbers</h2>
+      <p>Arbitrarily large integers up to 10<sup>1024</sup> — Miller-Rabin with GMP, E8 mask filter, optional ECPP proof.</p>
+      <span class="big-section-range">100 billion &lt; N &lt; 10<sup>1024</sup></span>
     </div>
     <section class="big-section">
       <article class="card tool">
@@ -291,13 +291,13 @@
           </div>
           <div class="btn-row">
             <button id="is-prime-big-btn" class="btn-primary">Check primality</button>
-            <button id="stop-is-prime-big-btn" class="btn-stop" type="button">&#9632; Остановить вычисление</button>
+            <button id="stop-is-prime-big-btn" class="btn-stop" type="button">&#9632; Stop computation</button>
             <button id="copy-is-prime-big-btn" class="btn-secondary" type="button">Copy result</button>
           </div>
         </div>
         <div class="progress-wrap" id="ip-big-progress-wrap">
           <div class="progress-bar-track"><div class="progress-bar-fill" id="ip-big-progress-bar"></div></div>
-          <div class="progress-label" id="ip-big-progress-label">Подготовка…</div>
+          <div class="progress-label" id="ip-big-progress-label">Preparing…</div>
         </div>
         <div id="is-prime-big-result" class="result">
           <h3>Result</h3>
@@ -305,8 +305,8 @@
           <div class="meta"></div>
         </div>
         <div class="refine-row" id="ip-big-refine-row">
-          <button id="refine-is-prime-big-btn" class="btn-secondary" type="button">Уточнить ответ</button>
-          <button id="stop-refine-is-prime-big-btn" class="btn-stop" type="button">&#9632; Остановить вычисление</button>
+          <button id="refine-is-prime-big-btn" class="btn-secondary" type="button">Refine answer (ECPP)</button>
+          <button id="stop-refine-is-prime-big-btn" class="btn-stop" type="button">&#9632; Stop computation</button>
           <span class="refine-note" id="ip-big-refine-note"></span>
         </div>
       </article>
@@ -334,13 +334,13 @@
           </div>
           <div class="btn-row">
             <button id="next-prime-big-btn" class="btn-primary">Find next prime</button>
-            <button id="stop-next-prime-big-btn" class="btn-stop" type="button">&#9632; Остановить вычисление</button>
+            <button id="stop-next-prime-big-btn" class="btn-stop" type="button">&#9632; Stop computation</button>
             <button id="copy-next-prime-big-btn" class="btn-secondary" type="button">Copy result</button>
           </div>
         </div>
         <div class="progress-wrap" id="np-big-progress-wrap">
           <div class="progress-bar-track"><div class="progress-bar-fill" id="np-big-progress-bar"></div></div>
-          <div class="progress-label" id="np-big-progress-label">Подготовка…</div>
+          <div class="progress-label" id="np-big-progress-label">Preparing…</div>
         </div>
         <div id="next-prime-big-result" class="result">
           <h3>Result</h3>
@@ -348,8 +348,8 @@
           <div class="meta"></div>
         </div>
         <div class="refine-row" id="np-big-refine-row">
-          <button id="refine-next-prime-big-btn" class="btn-secondary" type="button">Уточнить ответ</button>
-          <button id="stop-refine-next-prime-big-btn" class="btn-stop" type="button">&#9632; Остановить вычисление</button>
+          <button id="refine-next-prime-big-btn" class="btn-secondary" type="button">Refine answer (ECPP)</button>
+          <button id="stop-refine-next-prime-big-btn" class="btn-stop" type="button">&#9632; Stop computation</button>
           <span class="refine-note" id="np-big-refine-note"></span>
         </div>
       </article>
@@ -363,7 +363,7 @@
             <li><strong>wheel210 archive</strong> — exact lookup from committed compressed chunks.</li>
             <li><strong>E8 mask filter</strong> — wheel-210 + small-prime sieve, eliminates candidates before Miller-Rabin.</li>
             <li><strong>Miller-Rabin (GMP)</strong> — probabilistic primality, 32–64 rounds with GMP-accelerated pow_mod.</li>
-            <li><strong>ECPP (PARI/GP)</strong> — deterministic certificate via "Уточнить ответ".</li>
+            <li><strong>ECPP (PARI/GP)</strong> — deterministic certificate via "Refine answer".</li>
             <li><strong>Local-only binding</strong> — v1 listens on <span class="mono">127.0.0.1</span> only.</li>
           </ul>
         </article>
@@ -420,37 +420,94 @@
     }
 
     // ── Progress helpers ──
-    // Simulates % progress for Miller-Rabin (32 rounds default).
-    // Since HTTP is sync, we animate during the wait using elapsed time heuristics.
-    function startProgress(wrapId, barId, labelId, totalRounds, onStop) {
+    // Time-based progress estimation: uses elapsed wall time against a per-digit
+    // estimate so the bar tracks real computation, not a fixed round count.
+    // The bar reaches ~90% at estimated completion, then holds until the server
+    // responds — this prevents the "hangs at 97%" problem from a fixed round count.
+    function startProgress(wrapId, barId, labelId, nDigits) {
       const wrap = document.getElementById(wrapId);
       const bar = document.getElementById(barId);
       const label = document.getElementById(labelId);
       wrap.classList.add('visible');
       bar.style.width = '0%';
-      label.textContent = 'Подготовка…';
+      label.textContent = 'Preparing…';
 
-      let round = 0;
-      // Each round is ~equal weight; animate smoothly
-      // We don't know real round count from HTTP, so we simulate
-      const interval = setInterval(() => {
-        if (round < totalRounds - 1) {
-          round++;
-          const pct = Math.round((round / totalRounds) * 100);
-          bar.style.width = `${pct}%`;
-          label.textContent = `Miller-Rabin: ${round} / ${totalRounds} rounds = ${pct}%`;
-        }
-      }, 180); // ~180ms per simulated round — realistic for large N
+      // Empirical estimate: ~0.04ms per digit per MR round at 32 rounds.
+      // This gives a rough total ms for the whole computation.
+      const estimatedMs = Math.max(500, nDigits * 0.04 * 32);
+      const t0 = Date.now();
+      let rafId = null;
+
+      function tick() {
+        const elapsed = Date.now() - t0;
+        // Use asymptotic curve: pct approaches 90% as elapsed → estimatedMs,
+        // then continues slowly toward 95% — never hits 100% until finish().
+        const ratio = elapsed / estimatedMs;
+        const pct = Math.min(95, Math.round(90 * (1 - Math.exp(-ratio * 1.5))));
+        bar.style.width = `${pct}%`;
+        const elapsedSec = (elapsed / 1000).toFixed(1);
+        label.textContent = `Computing… ${pct}%  (${elapsedSec}s elapsed)`;
+        rafId = requestAnimationFrame(tick);
+      }
+
+      // Start animating after 3 s
+      const delayTimer = setTimeout(() => { rafId = requestAnimationFrame(tick); }, 3000);
 
       return {
         finish(elapsed_ms) {
-          clearInterval(interval);
+          clearTimeout(delayTimer);
+          if (rafId !== null) cancelAnimationFrame(rafId);
           bar.style.width = '100%';
-          label.textContent = `Готово · ${(elapsed_ms / 1000).toFixed(2)} сек`;
+          label.textContent = `Done · ${(elapsed_ms / 1000).toFixed(2)} s`;
           setTimeout(() => wrap.classList.remove('visible'), 2500);
         },
         cancel() {
-          clearInterval(interval);
+          clearTimeout(delayTimer);
+          if (rafId !== null) cancelAnimationFrame(rafId);
+          bar.style.width = '0%';
+          wrap.classList.remove('visible');
+        }
+      };
+    }
+
+    // ECPP progress: stage-based with elapsed timer (ECPP has no predictable step count)
+    function startEcppProgress(wrapId, barId, labelId) {
+      const wrap = document.getElementById(wrapId);
+      const bar = document.getElementById(barId);
+      const label = document.getElementById(labelId);
+      wrap.classList.add('visible');
+      bar.style.width = '2%';
+
+      const stages = [
+        { pct: 8,  name: 'Precheck' },
+        { pct: 20, name: 'Wheel filter' },
+        { pct: 38, name: 'Curve search' },
+        { pct: 60, name: 'Order factorisation' },
+        { pct: 80, name: 'Certificate chain' },
+        { pct: 92, name: 'Verification' },
+      ];
+      let stageIdx = 0;
+      const t0 = Date.now();
+
+      const timer = setInterval(() => {
+        const elapsedSec = Math.round((Date.now() - t0) / 1000);
+        // Advance one stage every ~15 s (heuristic for 1000-digit numbers)
+        const newIdx = Math.min(stages.length - 1, Math.floor(elapsedSec / 15));
+        if (newIdx > stageIdx) stageIdx = newIdx;
+        const { pct, name } = stages[stageIdx];
+        bar.style.width = `${pct}%`;
+        label.textContent = `ECPP: ${name} — ${elapsedSec}s elapsed (estimated ${pct}%)`;
+      }, 1000);
+
+      return {
+        finish(elapsed_ms) {
+          clearInterval(timer);
+          bar.style.width = '100%';
+          label.textContent = `Done · ${(elapsed_ms / 1000).toFixed(2)} s`;
+          setTimeout(() => wrap.classList.remove('visible'), 3000);
+        },
+        cancel() {
+          clearInterval(timer);
           bar.style.width = '0%';
           wrap.classList.remove('visible');
         }
@@ -488,10 +545,10 @@
       setResult(root, 'Searching…', ['processing local request']);
       try {
         const data = await postJson('/api/next-prime', { n: input });
-        state.nextPrimeText = `${data.n} => next_prime=${data.next_prime}`;
+        state.nextPrimeText = `nextPrime(${data.n}) = ${data.next_prime}`;
         setResult(
           root,
-          `nextPrime(${data.n}) > ${data.n} => ${data.next_prime}`,
+          `nextPrime(${data.n}) = ${data.next_prime}`,
           [`source: ${data.source}`, `elapsed: ${data.elapsed_ms.toFixed(3)} ms`],
           'ok'
         );
@@ -543,6 +600,11 @@
     bindCopy('copy-next-prime-btn', () => state.nextPrimeText);
 
     // --- Tab switching ---
+    // When the "Upload file" tab is clicked, immediately open the file picker.
+    const FILE_TAB_TO_INPUT = {
+      'ip-big-file': 'ip-big-file-input',
+      'np-big-file': 'np-big-file-input',
+    };
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => {
         const group = tab.dataset.group;
@@ -552,6 +614,14 @@
         const card = tab.closest('.card');
         card.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
         card.querySelector(`#${targetId}`).classList.add('active');
+
+        // If this is the file upload tab, open the picker immediately
+        const fileInputId = FILE_TAB_TO_INPUT[targetId];
+        if (fileInputId) {
+          const fi = document.getElementById(fileInputId);
+          fi.value = '';
+          fi.click();
+        }
       });
     });
 
@@ -568,16 +638,18 @@
     updateDigitCount('next-prime-big-input', 'np-big-digits');
 
     // --- File drop zones ---
-    // Always reset input.value before triggering click so browser fires
-    // the change event even if the same file is selected again.
+    // fileInput.value is reset before each click so the browser always fires
+    // the change event, even when the same file is selected again.
     function setupFileDrop(dropId, fileInputId, labelId, badgeId, targetTextareaId) {
       const drop = document.getElementById(dropId);
       const fileInput = document.getElementById(fileInputId);
       const label = document.getElementById(labelId);
       const badge = document.getElementById(badgeId);
 
-      drop.addEventListener('click', () => {
-        fileInput.value = '';   // reset so change always fires
+      drop.addEventListener('click', (e) => {
+        // Prevent any parent handlers from interfering
+        e.stopPropagation();
+        fileInput.value = '';   // reset so change always fires for same file
         fileInput.click();
       });
       drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
@@ -604,17 +676,18 @@
           return;
         }
         const reader = new FileReader();
-        reader.onload = e => {
-          const content = e.target.result.replace(/\s/g, '');
+        reader.onload = ev => {
+          const content = ev.target.result.replace(/\s/g, '');
           if (!/^\d+$/.test(content)) {
             badge.textContent = 'Error: file must contain only decimal digits';
             badge.style.color = 'var(--red)';
             return;
           }
           document.getElementById(targetTextareaId).value = content;
-          // update digit counter
           const digits = content.length;
-          document.getElementById(badgeId === 'ip-big-file-digits' ? 'ip-big-digits' : 'np-big-digits').textContent = `${digits.toLocaleString()} digits`;
+          // update both the textarea digit counter and the file badge
+          const taDigitsBadgeId = badgeId === 'ip-big-file-digits' ? 'ip-big-digits' : 'np-big-digits';
+          document.getElementById(taDigitsBadgeId).textContent = `${digits.toLocaleString()} digits`;
           label.textContent = `${file.name} — ${digits.toLocaleString()} digits loaded`;
           badge.textContent = `${digits.toLocaleString()} digits`;
           badge.style.color = '';
@@ -647,44 +720,37 @@
       refineNote.textContent = '';
       setResult(root, `Checking ${input.length.toLocaleString()} digits…`, ['processing']);
 
-      // abort controller
       abortIsPrimeBig = new AbortController();
       stopBtn.onclick = () => { abortIsPrimeBig.abort(); };
 
-      // progress: show after 3s, animate rounds
-      const totalRounds = 32;
-      let progress = null;
-      const progressDelay = setTimeout(() => {
-        progress = startProgress('ip-big-progress-wrap', 'ip-big-progress-bar', 'ip-big-progress-label', totalRounds);
-      }, 3000);
+      // Time-based progress — starts after 3 s
+      const progress = startProgress('ip-big-progress-wrap', 'ip-big-progress-bar', 'ip-big-progress-label', input.length);
 
       const t0 = Date.now();
       try {
         const data = await postJson('/api/is-prime-big', { n: input }, abortIsPrimeBig.signal);
-        clearTimeout(progressDelay);
         const elapsed_ms = data.elapsed_ms || (Date.now() - t0);
-        if (progress) progress.finish(elapsed_ms);
-        const statusLabel = data.is_prime ? 'Вероятно простое' : 'Составное';
+        progress.finish(elapsed_ms);
+        const statusLabel = data.is_prime ? 'Probably prime' : 'Composite';
         state.isPrimeBigText = `${data.n_preview} => ${statusLabel}`;
         setResult(
           root,
-          data.is_prime ? `PRIME` : `COMPOSITE`,
+          data.is_prime ? 'PRIME' : 'COMPOSITE',
           [
             `${data.n_digits.toLocaleString()} digits`,
-            `метод: ${data.method || 'miller-rabin'}`,
-            `статус: ${statusLabel}`,
-            `время: ${(elapsed_ms / 1000).toFixed(2)} сек`,
+            `method: ${data.method || 'miller-rabin'}`,
+            `status: ${statusLabel}`,
+            `time: ${(elapsed_ms / 1000).toFixed(2)} s`,
           ],
           data.is_prime ? 'ok' : 'bad'
         );
         refineRow.classList.add('visible');
         refineNote.textContent = '';
       } catch (err) {
-        clearTimeout(progressDelay);
-        if (progress) progress.cancel();
+        progress.cancel();
         state.isPrimeBigText = '';
         if (err.name === 'AbortError') {
-          setResult(root, 'Вычисление остановлено.', [], 'bad');
+          setResult(root, 'Computation stopped.', [], 'bad');
         } else {
           setResult(root, `Error: ${err.message}`, ['request failed'], 'bad');
         }
@@ -716,22 +782,18 @@
       abortNextPrimeBig = new AbortController();
       stopBtn.onclick = () => { abortNextPrimeBig.abort(); };
 
-      const totalRounds = 32;
-      let progress = null;
-      const progressDelay = setTimeout(() => {
-        progress = startProgress('np-big-progress-wrap', 'np-big-progress-bar', 'np-big-progress-label', totalRounds);
-      }, 3000);
+      // nextPrime may scan multiple candidates — use the same time-based progress
+      const progress = startProgress('np-big-progress-wrap', 'np-big-progress-bar', 'np-big-progress-label', input.length);
 
       const t0 = Date.now();
       try {
         const data = await postJson('/api/next-prime-big', { n: input }, abortNextPrimeBig.signal);
-        clearTimeout(progressDelay);
         const elapsed_ms = data.elapsed_ms || (Date.now() - t0);
-        if (progress) progress.finish(elapsed_ms);
+        progress.finish(elapsed_ms);
         state.nextPrimeBigText = `nextPrime(${data.n_preview}) = ${data.next_prime}`;
         const nextLen = data.next_prime.length;
         const nextPreview = nextLen > 40
-          ? `${data.next_prime.slice(0,20)}…${data.next_prime.slice(-10)} (${nextLen} digits)`
+          ? `${data.next_prime.slice(0, 20)}…${data.next_prime.slice(-10)} (${nextLen} digits)`
           : data.next_prime;
         setResult(
           root,
@@ -739,19 +801,18 @@
           [
             `input: ${data.n_digits.toLocaleString()} digits`,
             `result: ${nextLen.toLocaleString()} digits`,
-            `метод: ${data.method || 'miller-rabin'}`,
-            `время: ${(elapsed_ms / 1000).toFixed(2)} сек`,
+            `method: ${data.method || 'miller-rabin'}`,
+            `time: ${(elapsed_ms / 1000).toFixed(2)} s`,
           ],
           'ok'
         );
         refineRow.classList.add('visible');
         refineNote.textContent = '';
       } catch (err) {
-        clearTimeout(progressDelay);
-        if (progress) progress.cancel();
+        progress.cancel();
         state.nextPrimeBigText = '';
         if (err.name === 'AbortError') {
-          setResult(root, 'Вычисление остановлено.', [], 'bad');
+          setResult(root, 'Computation stopped.', [], 'bad');
         } else {
           setResult(root, `Error: ${err.message}`, ['request failed'], 'bad');
         }
@@ -768,73 +829,70 @@
     bindCopy('copy-is-prime-big-btn', () => state.isPrimeBigText);
     bindCopy('copy-next-prime-big-btn', () => state.nextPrimeBigText);
 
-    // --- Уточнить ответ (ECPP via /api/is-prime-big-proven) ---
+    // --- Refine answer (ECPP via /api/is-prime-big-proven) ---
     document.getElementById('refine-is-prime-big-btn').addEventListener('click', async () => {
       const input = document.getElementById('is-prime-big-input').value.replace(/\s/g, '');
       const note = document.getElementById('ip-big-refine-note');
       const btn = document.getElementById('refine-is-prime-big-btn');
       const stopBtn = document.getElementById('stop-refine-is-prime-big-btn');
       const root = document.getElementById('is-prime-big-result');
-      if (!input) { note.textContent = 'Нет входных данных.'; return; }
+      if (!input) { note.textContent = 'No input.'; return; }
 
       btn.disabled = true;
       stopBtn.classList.add('visible');
-      note.textContent = 'Запуск ECPP…';
+      note.textContent = 'Starting ECPP…';
       note.style.color = 'var(--muted)';
 
       abortRefineIsPrimeBig = new AbortController();
       stopBtn.onclick = () => { abortRefineIsPrimeBig.abort(); };
 
-      // ECPP doesn't have predictable rounds — show elapsed time
-      let elapsed = 0;
-      const timer = setInterval(() => {
-        elapsed++;
-        note.textContent = `ECPP вычисляется… ${elapsed}s`;
-      }, 1000);
+      // Stage-based ECPP progress
+      const progress = startEcppProgress('ip-big-progress-wrap', 'ip-big-progress-bar', 'ip-big-progress-label');
 
+      const t0 = Date.now();
       try {
         const data = await postJson('/api/is-prime-big-proven', { n: input }, abortRefineIsPrimeBig.signal);
-        clearInterval(timer);
+        const elapsed_ms = data.elapsed_ms || (Date.now() - t0);
+        progress.finish(elapsed_ms);
         if (data.error) {
           note.textContent = data.error;
           note.style.color = 'var(--muted)';
           return;
         }
-        const elapsed_ms = data.elapsed_ms || elapsed * 1000;
         if (data.status === 'proven_prime') {
           const certInfo = data.certificate_snippet
-            ? `Сертификат: ${data.certificate_snippet.slice(0, 80)}…`
-            : 'Сертификат получен';
-          setResult(root, 'PRIME (ДОКАЗАНО)', [
+            ? `Certificate: ${data.certificate_snippet.slice(0, 80)}…`
+            : 'Certificate received';
+          setResult(root, 'PRIME (PROVEN)', [
             `${data.n_digits.toLocaleString()} digits`,
-            `метод: ${data.method}`,
-            `статус: Доказано простое`,
-            `время: ${(elapsed_ms / 1000).toFixed(2)} сек`,
+            `method: ${data.method}`,
+            `status: Proven prime`,
+            `time: ${(elapsed_ms / 1000).toFixed(2)} s`,
             certInfo,
           ], 'ok');
-          state.isPrimeBigText = `${data.n_preview} => Доказано простое`;
-          note.textContent = '✓ ECPP: доказано простое';
+          state.isPrimeBigText = `${data.n_preview} => Proven prime`;
+          note.textContent = '✓ ECPP: proven prime';
           note.style.color = 'var(--green)';
         } else if (data.status === 'composite') {
           setResult(root, 'COMPOSITE', [
             `${data.n_digits.toLocaleString()} digits`,
-            `метод: ${data.method}`,
-            `статус: Составное`,
-            `время: ${(elapsed_ms / 1000).toFixed(2)} сек`,
+            `method: ${data.method}`,
+            `status: Composite`,
+            `time: ${(elapsed_ms / 1000).toFixed(2)} s`,
           ], 'bad');
-          note.textContent = 'Составное число.';
+          note.textContent = 'Composite number.';
           note.style.color = 'var(--muted)';
         } else {
-          note.textContent = `Результат: ${data.status} (${data.method})`;
+          note.textContent = `Result: ${data.status} (${data.method})`;
           note.style.color = 'var(--muted)';
         }
       } catch (err) {
-        clearInterval(timer);
+        progress.cancel();
         if (err.name === 'AbortError') {
-          note.textContent = 'ECPP остановлено.';
+          note.textContent = 'ECPP stopped.';
           note.style.color = 'var(--muted)';
         } else {
-          note.textContent = `Ошибка ECPP: ${err.message}`;
+          note.textContent = `ECPP error: ${err.message}`;
           note.style.color = 'var(--red)';
         }
       } finally {
@@ -850,62 +908,57 @@
       const btn = document.getElementById('refine-next-prime-big-btn');
       const stopBtn = document.getElementById('stop-refine-next-prime-big-btn');
       const root = document.getElementById('next-prime-big-result');
-      if (!input) { note.textContent = 'Нет входных данных.'; return; }
+      if (!input) { note.textContent = 'No input.'; return; }
 
       btn.disabled = true;
       stopBtn.classList.add('visible');
-      note.textContent = 'Запуск ECPP…';
+      note.textContent = 'Starting ECPP…';
       note.style.color = 'var(--muted)';
 
       abortRefineNextPrimeBig = new AbortController();
       stopBtn.onclick = () => { abortRefineNextPrimeBig.abort(); };
 
-      let elapsed = 0;
-      const timer = setInterval(() => {
-        elapsed++;
-        note.textContent = `ECPP вычисляется… ${elapsed}s`;
-      }, 1000);
+      const progress = startEcppProgress('np-big-progress-wrap', 'np-big-progress-bar', 'np-big-progress-label');
 
+      const t0 = Date.now();
       try {
         const data = await postJson('/api/next-prime-big-proven', { n: input }, abortRefineNextPrimeBig.signal);
-        clearInterval(timer);
+        const elapsed_ms = data.elapsed_ms || (Date.now() - t0);
+        progress.finish(elapsed_ms);
         if (data.error) {
           note.textContent = data.error;
           note.style.color = 'var(--muted)';
           return;
         }
-        const elapsed_ms = data.elapsed_ms || elapsed * 1000;
         const nextLen = (data.next_prime || '').length;
         const nextPreview = nextLen > 40
-          ? `${data.next_prime.slice(0,20)}…${data.next_prime.slice(-10)} (${nextLen} digits)`
+          ? `${data.next_prime.slice(0, 20)}…${data.next_prime.slice(-10)} (${nextLen} digits)`
           : data.next_prime;
         const certInfo = data.certificate_snippet
-          ? `Сертификат: ${data.certificate_snippet.slice(0, 80)}…`
+          ? `Certificate: ${data.certificate_snippet.slice(0, 80)}…`
           : '';
-        const statusLabel = data.status === 'proven_prime' ? 'Доказано простое' : 'Вероятно простое';
+        const statusLabel = data.status === 'proven_prime' ? 'Proven prime' : 'Probably prime';
         const lines = [
           `input: ${data.n_digits.toLocaleString()} digits`,
           `result: ${nextLen.toLocaleString()} digits`,
-          `метод: ${data.method}`,
-          `статус: ${statusLabel}`,
-          `время: ${(elapsed_ms / 1000).toFixed(2)} сек`,
+          `method: ${data.method}`,
+          `status: ${statusLabel}`,
+          `time: ${(elapsed_ms / 1000).toFixed(2)} s`,
         ];
         if (certInfo) lines.push(certInfo);
         setResult(root, nextPreview, lines, 'ok');
         state.nextPrimeBigText = `nextPrime(...) = ${data.next_prime}`;
         note.textContent = data.status === 'proven_prime'
-          ? '✓ ECPP: доказано простое'
-          : `Статус: ${statusLabel}`;
-        note.style.color = data.status === 'proven_prime'
-          ? 'var(--green)'
-          : 'var(--muted)';
+          ? '✓ ECPP: proven prime'
+          : `Status: ${statusLabel}`;
+        note.style.color = data.status === 'proven_prime' ? 'var(--green)' : 'var(--muted)';
       } catch (err) {
-        clearInterval(timer);
+        progress.cancel();
         if (err.name === 'AbortError') {
-          note.textContent = 'ECPP остановлено.';
+          note.textContent = 'ECPP stopped.';
           note.style.color = 'var(--muted)';
         } else {
-          note.textContent = `Ошибка ECPP: ${err.message}`;
+          note.textContent = `ECPP error: ${err.message}`;
           note.style.color = 'var(--red)';
         }
       } finally {

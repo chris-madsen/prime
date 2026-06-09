@@ -3691,9 +3691,9 @@ fn miller_rabin_gmp_inner(n_gmp: &GmpInt, d_gmp: &GmpInt, r: u64, a: u64) -> boo
     false
 }
 
-trait StrExt { fn if_empty(self, fallback: &str) -> &str; }
+trait StrExt { fn if_empty<'a>(self, fallback: &'a str) -> &'a str where Self: 'a; }
 impl StrExt for &str {
-    fn if_empty(self, fallback: &str) -> &str { if self.is_empty() { fallback } else { self } }
+    fn if_empty<'a>(self, fallback: &'a str) -> &'a str where Self: 'a { if self.is_empty() { fallback } else { self } }
 }
 
 // ===========================================================================
@@ -4379,7 +4379,7 @@ impl PrimalityProver for NullProver {
         _progress: Option<&ProgressCallback>,
     ) -> Result<EcppCertificate, ProverError> {
         Err(ProverError::NotAvailable(
-            "ECPP backend не подключён. Установите PARI/GP (pari-gp).".to_string()
+            "ECPP backend not available. Install pari-gp.".to_string()
         ))
     }
 
@@ -4389,7 +4389,7 @@ impl PrimalityProver for NullProver {
         _cert: &EcppCertificate,
     ) -> Result<bool, ProverError> {
         Err(ProverError::NotAvailable(
-            "ECPP backend не подключён. Установите PARI/GP (pari-gp).".to_string()
+            "ECPP backend not available. Install pari-gp.".to_string()
         ))
     }
 }

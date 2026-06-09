@@ -42,7 +42,18 @@ WHEEL_REPAIR_PID ?= $(RUN_DIR)/repair_wheel210_missing.pid
 WHEEL_REPAIR_PARALLEL_LOG ?= $(RUN_DIR)/repair_wheel210_parallel.log
 WHEEL_REPAIR_PARALLEL_PID ?= $(RUN_DIR)/repair_wheel210_parallel.pid
 
-.PHONY: help prime-build test ui-build ui-start ui-status ui-stop count-start count-start-fresh count-stop count-status count-progress count-log count-wheel210-rebuild count-wheel210-status count-wheel210-repair-missing count-wheel210-repair-status count-wheel210-repair-parallel count-wheel210-repair-parallel-status count-restart is-prime next-prime isPrime nextPrime is-prime-big next-prime-big isPrimeBig nextPrimeBig is-prime-big-file next-prime-big-file isPrimeBigFile nextPrimeBigFile
+# ── Docker / Podman ──────────────────────────────────────────────
+CONTAINER_RUNTIME ?= podman
+IMAGE_NAME        ?= localhost/prime-ui
+IMAGE_TAG         ?= latest
+CONTAINER_NAME    ?= math_service
+CF_TOKEN_FILE     ?= infra/CF2.txt
+# Extract token: last word on the Authorization: Bearer line
+CF_API_TOKEN      ?= $(shell grep -oP '(?<=Bearer )[^\s"]+' $(CF_TOKEN_FILE) 2>/dev/null)
+DATA_VOLUME       ?= $(CURDIR)/data
+CADDY_VOLUME      ?= caddy_certs
+
+.PHONY: help prime-build test ui-build ui-start ui-status ui-stop count-start count-start-fresh count-stop count-status count-progress count-log count-wheel210-rebuild count-wheel210-status count-wheel210-repair-missing count-wheel210-repair-status count-wheel210-repair-parallel count-wheel210-repair-parallel-status count-restart is-prime next-prime isPrime nextPrime is-prime-big next-prime-big isPrimeBig nextPrimeBig is-prime-big-file next-prime-big-file isPrimeBigFile nextPrimeBigFile docker-build docker-run docker-stop docker-logs docker-status
 
 help:
 	@echo "make prime-build"
@@ -68,6 +79,11 @@ help:
 	@echo "make nextPrimeBig N=<large_number> [BACKEND=cpu|gpu|hybrid]"
 	@echo "make isPrimeBigFile FILE=<path> [BACKEND=cpu|gpu|hybrid]"
 	@echo "make nextPrimeBigFile FILE=<path> [BACKEND=cpu|gpu|hybrid]"
+	@echo "make docker-build [IMAGE_NAME=...] [IMAGE_TAG=...]"
+	@echo "make docker-run   [CF_API_TOKEN=...] [DATA_VOLUME=...] [CADDY_VOLUME=...]"
+	@echo "make docker-stop"
+	@echo "make docker-logs"
+	@echo "make docker-status"
 	@echo "  build/cache env: HOME=$(PROJECT_HOME) CARGO_HOME=$(CARGO_HOME) CARGO_TARGET_DIR=$(CARGO_TARGET_DIR)"
 
 ENV_PREFIX = HOME=$(PROJECT_HOME) PATH=$(TOOLCHAIN_BIN):$$PATH CARGO_HOME=$(CARGO_HOME) CARGO_TARGET_DIR=$(CARGO_TARGET_DIR) RUSTC=$(RUSTC) RUSTDOC=$(RUSTDOC)
@@ -225,6 +241,46 @@ next-prime-big-file: prime-build
 isPrimeBigFile: is-prime-big-file
 
 nextPrimeBigFile: next-prime-big-file
+
+# ── Docker / Podman targets ──────────────────────────────────────
+
+docker-build:
+	@test -n "$(CF_API_TOKEN)" || { echo "ERROR: CF_API_TOKEN is empty — check $(CF_TOKEN_FILE)"; exit 1; }
+	$(CONTAINER_RUNTIME) build \
+		-f infra/dockerfile \
+		-t $(IMAGE_NAME):$(IMAGE_TAG) \
+		.
+
+docker-run:
+	@test -n "$(CF_API_TOKEN)" || { echo "ERROR: CF_API_TOKEN is empty — check $(CF_TOKEN_FILE)"; exit 1; }
+	@if $(CONTAINER_RUNTIME) container exists $(CONTAINER_NAME) 2>/dev/null; then \
+		echo "Container '$(CONTAINER_NAME)' already exists — stop it first with: make docker-stop"; \
+		exit 1; \
+	fi
+	$(CONTAINER_RUNTIME) run -d \
+		-p 80:80 \
+		-p 443:443 \
+		-e CF_API_TOKEN="$(CF_API_TOKEN)" \
+		-v "$(DATA_VOLUME):/app/data" \
+		-v "$(CADDY_VOLUME):/root/.local/share/caddy" \
+		--restart unless-stopped \
+		--name $(CONTAINER_NAME) \
+		$(IMAGE_NAME):$(IMAGE_TAG)
+	@echo "Container started: $(CONTAINER_NAME)"
+	@echo "Logs: make docker-logs"
+
+docker-stop:
+	@$(CONTAINER_RUNTIME) stop $(CONTAINER_NAME) 2>/dev/null && \
+		$(CONTAINER_RUNTIME) rm $(CONTAINER_NAME) 2>/dev/null && \
+		echo "Container '$(CONTAINER_NAME)' stopped and removed." || \
+		echo "Container '$(CONTAINER_NAME)' not running."
+
+docker-logs:
+	$(CONTAINER_RUNTIME) logs -f $(CONTAINER_NAME)
+
+docker-status:
+	@$(CONTAINER_RUNTIME) ps --filter name=$(CONTAINER_NAME) --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" 2>/dev/null || \
+		echo "No container named '$(CONTAINER_NAME)' running."
 
 count-wheel210-repair-missing: prime-build
 	@mkdir -p $(RUN_DIR)

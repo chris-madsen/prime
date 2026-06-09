@@ -1,62 +1,80 @@
-# ── Stage 1: Сборка Rust бинарников и кастомного Caddy ───────────
-FROM docker.io/rust:1.87-slim-bookworm AS builder
+# ── Build-time arguments (override with --build-arg) ─────────────
+ARG RUST_VERSION=1.87
+ARG DEBIAN_VERSION=bookworm
+ARG GO_VERSION=1.22.4
+ARG XCADDY_VERSION=0.4.4
+ARG CADDY_VERSION=2.11.4
+ARG CADDY_DNS_MODULE=github.com/caddy-dns/cloudflare
+ARG APP_PORT=43173
+ARG DOMAIN=math.network-communications.net
 
-RUN apt-get update && apt-get install -y \
+# ── Stage 1: Build Rust binaries + custom Caddy ──────────────────
+FROM docker.io/rust:${RUST_VERSION}-slim-${DEBIAN_VERSION} AS builder
+
+ARG GO_VERSION
+ARG XCADDY_VERSION
+ARG CADDY_VERSION
+ARG CADDY_DNS_MODULE
+
+RUN printf 'APT::Sandbox::User "root";\nAcquire::ForceIPv4 "true";\n' > /etc/apt/apt.conf.d/99podman \
+    && apt-get update && apt-get install -y \
     build-essential \
     curl \
+    m4 \
     && rm -rf /var/lib/apt/lists/*
 
-# Сборка твоего Rust приложения
+# Install Go (bookworm ships 1.19 which is too old for Caddy 2.8)
+RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" \
+    | tar -C /usr/local -xz
+ENV PATH="/usr/local/go/bin:${PATH}"
+ENV GOPATH="/app/gopath"
+ENV GOCACHE="/app/gocache"
+
+# Build Rust application
 WORKDIR /app
 COPY rust/ ./rust/
 RUN cargo build --release --manifest-path rust/e8_mask_codec/Cargo.toml
 
-# Сборка Caddy с модулем для Cloudflare DNS
-# Скачиваем xcaddy (официальный билдер)
-RUN curl -sL "https://github.com/caddyserver/xcaddy/releases/download/v0.4.4/xcaddy_0.4.4_linux_amd64.tar.gz" | tar -xz -C /usr/local/bin/ xcaddy
-RUN xcaddy build v2.8.4 --with github.com/caddy-dns/cloudflare
+# Build Caddy with Cloudflare DNS module via xcaddy
+RUN curl -fsSL \
+    "https://github.com/caddyserver/xcaddy/releases/download/v${XCADDY_VERSION}/xcaddy_${XCADDY_VERSION}_linux_amd64.tar.gz" \
+    | tar -xz -C /usr/local/bin/ xcaddy
+RUN xcaddy build "v${CADDY_VERSION}" --with "${CADDY_DNS_MODULE}"
 
 
-# ── Stage 2: Минимальный Runtime (Финальный образ) ───────────────
-FROM docker.io/debian:bookworm-slim
+# ── Stage 2: Minimal runtime image ───────────────────────────────
+FROM docker.io/debian:${DEBIAN_VERSION}-slim
 
-RUN apt-get update && apt-get install -y \
+ARG APP_PORT
+ARG DOMAIN
+
+RUN printf 'APT::Sandbox::User "root";\nAcquire::ForceIPv4 "true";\n' > /etc/apt/apt.conf.d/99podman \
+    && apt-get update && apt-get install -y \
     ca-certificates \
+    pari-gp \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Копируем кастомный Caddy из билдера
+# Caddy binary
 COPY --from=builder /usr/local/bin/caddy /usr/local/bin/caddy
 
-# Копируем твои Rust бинарники
+# Rust binaries
 COPY --from=builder /app/rust/e8_mask_codec/target/release/prime_ui      ./bin/
 COPY --from=builder /app/rust/e8_mask_codec/target/release/count_first_n  ./bin/
 COPY --from=builder /app/rust/e8_mask_codec/target/release/is_prime       ./bin/
 COPY --from=builder /app/rust/e8_mask_codec/target/release/next_prime     ./bin/
 
-# Пишем Caddyfile. Он будет брать токен из переменной окружения CF_API_TOKEN
-RUN echo 'math.network-communications.net {\n\
-    tls {\n\
-        dns cloudflare {env.CF_API_TOKEN}\n\
-    }\n\
-    reverse_proxy 127.0.0.1:43173\n\
-}' > /app/Caddyfile
+# Caddyfile — domain and port come from build args
+RUN printf '%s {\n    tls {\n        dns cloudflare {env.CF_API_TOKEN}\n    }\n    reverse_proxy 127.0.0.1:%s\n}\n' \
+    "${DOMAIN}" "${APP_PORT}" > /app/Caddyfile
 
-# Скрипт-entrypoint для одновременного запуска бэкенда и прокси
-RUN echo '#!/bin/sh\n\
-# Запуск Rust приложения в фоне\n\
-/app/bin/prime_ui --host 127.0.0.1 --port 43173 --archive-dir /app/data/archive &\n\
-\n\
-# Запуск Caddy на переднем плане\n\
-exec caddy run --config /app/Caddyfile --adapter caddyfile\n\
-' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+# Entrypoint: start backend then Caddy
+RUN printf '#!/bin/sh\n/app/bin/prime_ui --host 127.0.0.1 --port %s --archive-dir /app/data/archive &\nexec caddy run --config /app/Caddyfile --adapter caddyfile\n' \
+    "${APP_PORT}" > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
-# Открываем только стандартные веб-порты наружу
-EXPOSE 80
-EXPOSE 443
+EXPOSE 80 443
 
-# Папки для данных приложения и для сохранения сертификатов Let's Encrypt
 VOLUME ["/app/data", "/root/.local/share/caddy"]
 
 CMD ["/app/entrypoint.sh"]
