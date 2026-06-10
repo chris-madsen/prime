@@ -561,9 +561,13 @@
           </ul>
         </article>
         <article class="card info">
-          <h2>Diagnostics</h2>
-          <p>This panel reflects local health and the archive configuration that the server was started with.</p>
-          <div class="diag" id="diag"></div>
+          <h2>Documentation</h2>
+          <p>The documentation describes the prime-number runtime, the wheel210 archive, the E8 mask filter, and the large-number query flow. It also explains how fast Miller-Rabin checks differ from the ECPP refinement path.</p>
+          <p>Use this PDF when you need the full technical notes, implementation details, benchmark context, and the current behavior of <span class="mono">isPrime(N)</span> and <span class="mono">nextPrime(N)</span>.</p>
+          <div class="btn-row" style="margin-top:18px;">
+            <button id="download-doc-btn" class="btn-primary" type="button" style="display:inline-flex; align-items:center; justify-content:center; text-decoration:none; border-radius:999px; padding:14px 18px; font-size:14px; font-weight:700; letter-spacing:0.01em;">Download documentation PDF</button>
+          </div>
+          <div id="diag" style="display:none;"></div>
         </article>
       </section>
 
@@ -1160,6 +1164,55 @@
         abortRefineNextPrimeBig = null;
       }
     });
+
+
+    // Force documentation PDF download instead of opening it in the browser.
+    (function bindDocumentationDownload() {
+      const btn = document.getElementById('download-doc-btn');
+      if (!btn) return;
+
+      const pdfUrl = 'https://cdn.network-communications.net/primeNumbers.pdf';
+      const filename = 'primeNumbers.pdf';
+
+      btn.addEventListener('click', async () => {
+        const oldText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Preparing download…';
+
+        try {
+          const response = await fetch(pdfUrl, { cache: 'no-store' });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = filename;
+          a.style.display = 'none';
+          document.body.appendChild(a);
+          a.click();
+
+          setTimeout(() => {
+            URL.revokeObjectURL(blobUrl);
+            a.remove();
+          }, 1000);
+        } catch (_) {
+          // Fallback for environments where fetch of local files is blocked.
+          const a = document.createElement('a');
+          a.href = pdfUrl;
+          a.download = filename;
+          a.rel = 'noopener';
+          a.style.display = 'none';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        } finally {
+          btn.disabled = false;
+          btn.textContent = oldText;
+        }
+      });
+    })();
 
     refreshHealth();
   </script>

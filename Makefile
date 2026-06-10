@@ -248,6 +248,7 @@ docker-build:
 	@test -n "$(CF_API_TOKEN)" || { echo "ERROR: CF_API_TOKEN is empty — check $(CF_TOKEN_FILE)"; exit 1; }
 	$(CONTAINER_RUNTIME) build \
 		--network host \
+		--no-cache \
 		-f infra/dockerfile \
 		-t $(IMAGE_NAME):$(IMAGE_TAG) \
 		.
@@ -262,9 +263,11 @@ docker-run:
 		-p 80:80 \
 		-p 443:443 \
 		-e CF_API_TOKEN="$(CF_API_TOKEN)" \
+		-e ARCHIVE_DIR="/app/data/runs/count_1e11/archive" \
 		-v "$(DATA_VOLUME):/app/data" \
 		-v "$(CADDY_VOLUME):/root/.local/share/caddy" \
 		-v "$(CURDIR)/rust/e8_mask_codec/ui:/app/ui:ro" \
+		-v "$(CURDIR)/docs:/app/docs:ro" \
 		--restart unless-stopped \
 		--name $(CONTAINER_NAME) \
 		$(IMAGE_NAME):$(IMAGE_TAG)

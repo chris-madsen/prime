@@ -74,7 +74,7 @@ COPY --from=builder /app/rust/e8_mask_codec/target/release/next_prime     ./bin/
 RUN printf '%s {\n    tls {\n        dns cloudflare {env.CF_API_TOKEN}\n    }\n    reverse_proxy 127.0.0.1:%s\n}\n' \
     "${DOMAIN}" "${APP_PORT}" > /app/Caddyfile
 
-RUN printf '#!/bin/sh\n/app/bin/prime_ui --host 127.0.0.1 --port %s --archive-dir /app/data/archive &\nexec caddy run --config /app/Caddyfile --adapter caddyfile\n' \
+RUN printf '#!/bin/sh\n/app/bin/prime_ui --host 127.0.0.1 --port %s --archive-dir "${ARCHIVE_DIR:-/app/data/runs/count_1e11/archive}" &\nexec caddy run --config /app/Caddyfile --adapter caddyfile\n' \
     "${APP_PORT}" > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 EXPOSE 80 443
